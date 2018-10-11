@@ -1,0 +1,1 @@
+{"targets":[{"nameTarget":"Target","guid":"TargetGuid","tasks":[{"nameTask":"1","isComplete":false,"uniqueId":"Target1","subTasks":[{"nameTask":"1.1","isComplete":false,"uniqueId":"11.1"},{"nameTask":"1.2","isComplete":true,"uniqueId":"11.2"}]}]},{"nameTarget":"Target 2!","tasks":[]}]}

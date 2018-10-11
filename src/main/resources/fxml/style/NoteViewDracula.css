@@ -1,0 +1,97 @@
+/*
+ * Copyright (c) Alexander <gasfull98@gmail.com> Chapchuk
+ * Project name: PinNote
+ *
+ * Licensed under the MIT License. See LICENSE file in the project root for license information.
+ */
+
+.root {
+    -fx-background-color: #3f4143;
+}
+
+#addTarget {
+    -fx-text-fill: #abadaf;
+}
+
+.tree-view {
+    -fx-border-width: 0px;
+    -fx-border-color: transparent;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow {
+    -fx-background-color: #bababa;
+    -fx-font-size: 14px;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+    -fx-background-color: #bababa;
+    -fx-font-size: 14px;
+}
+
+.tree-cell {
+    -fx-background-color: #3f4143;
+    -fx-border-width: 0px;
+    -fx-border-color: transparent;
+}
+
+.tree-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+}
+
+.tree-view:focused .tree-cell:filled:selected .text-field {
+    -fx-background-color: transparent;
+}
+
+.label {
+    -fx-text-fill: #bababa;
+}
+
+.check-box {
+    -fx-padding: 5px 0 10px 5px;
+    -fx-font-size: 10px;
+}
+
+.check-box .box {
+    -fx-background-color: #474b4c;
+    -fx-border-color: grey;
+    -fx-border-radius: 3px;
+
+}
+
+.check-box:selected .mark {
+    -fx-border-color: grey;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #474b4c;
+}
+
+.text-field {
+    -fx-pref-width: 300px;
+    -fx-background-color: #474b4c;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-background-radius: 0;
+    -fx-text-fill: #bababa;
+    -fx-border-color: #646464;
+    -fx-border-radius: 3px;
+    -fx-border-width: 2px;
+}
+
+.text-field:focused {
+    -fx-border-color: #456286;
+}
+
+.button {
+    -fx-pref-width: 29px;
+    -fx-pref-height: 29px;
+    -fx-padding: 0 0 0 0em;
+    -fx-label-padding: 0 0 0 0em;
+    -fx-text-fill: #bababa;
+    -fx-background-color: transparent;
+}
+
+.button:hover {
+    -fx-border-color: #757a7f;
+}

@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) Alexander <gasfull98@gmail.com> Chapchuk
+  ~ Project name: PinNote
+  ~
+  ~ Licensed under the MIT License. See LICENSE file in the project root for license information.
+  -->
+
+<idea-plugin>
+    <id>org.bigtows.PinNote</id>
+    <name>PinNote</name>
+    <version>1.0</version>
+    <vendor email="gasfull98@gmail.com" url="http://github.com/BigTows/PinNote">Alexander Chapchuk</vendor>
+
+    <description><![CDATA[
+        A PinNote is a way to write notes in JetBrains.<br>
+        Now supported:
+          <ul>
+             <li>Evernote Storage</li>
+             <li>Sync with storage</li>
+             <li>Entity: Target, task and SubTask</li>
+          </ul>
+    ]]></description>
+
+    <idea-version since-build="7000"/>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- <applicationConfigurable instance="org.bigtows.window.SettingsWindow"/>-->
+        <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right" factoryClass="org.bigtows.window.RightToolWindow"/>
+    </extensions>
+
+    <actions>
+    </actions>
+    <application-components>
+        <component>
+            <implementation-class>org.bigtows.PinNote</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.bigtows.components.ThemeManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.bigtows.components.PinNoteNotification</implementation-class>
+        </component>
+
+    </application-components>
+</idea-plugin>

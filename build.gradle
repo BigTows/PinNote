@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.3.9'
+}
+
+group 'org.bigtows'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'org.mockito:mockito-core:2.7.22'
+    compile 'com.evernote:evernote-api:1.25.1'
+    compile 'org.jsoup:jsoup:1.11.3'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.1'
+    compile group: 'com.google.inject', name: 'guice', version: '4.2.0'
+}
+
+intellij {
+    version '2018.2.3'
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "org.bigtows.PinNote"
+        )
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+patchPluginXml {
+    changeNotes """
+          Release: 1.0<br>
+           <i>View Description</i> 
+               
+      """
+    version "1.0"
+    sinceBuild "7000"
+
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PinNote>
+    <settings>
+        <debug enable="true"/>
+        <Evernote>
+            <OAuth2Server url="http://testServer.ru/debug"/>
+        </Evernote>
+    </settings>
+</PinNote>
