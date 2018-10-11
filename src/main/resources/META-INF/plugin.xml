@@ -10,7 +10,6 @@
     <name>PinNote</name>
     <version>1.0</version>
     <vendor email="gasfull98@gmail.com" url="http://github.com/BigTows/PinNote">Alexander Chapchuk</vendor>
-
     <description><![CDATA[
         A PinNote is a way to write notes in JetBrains.<br>
         Now supported:
@@ -19,6 +18,10 @@
              <li>Sync with storage</li>
              <li>Entity: Target, task and SubTask</li>
           </ul>
+          <br>
+          <a href="https://github.com/BigTows/PinNote">GitHub</a>
+          <br>
+          <p> Created by: Alexander Chapchuk @BigTows<p>
     ]]></description>
 
     <idea-version since-build="7000"/>
