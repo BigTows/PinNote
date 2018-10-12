@@ -6,7 +6,8 @@ Notes plugin for JetBrains IDE.
 ## Demo.
 ![Demo](http://images.vfl.ru/ii/1539356680/aba811a4/23764138_m.png)
 
-## Future
+Features
+--------
  * Support Evernote storage
  * Sync with you server notes and local
  * Can create Target, Task and subtask
