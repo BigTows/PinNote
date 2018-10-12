@@ -10,4 +10,6 @@ Notes plugin for JetBrains IDE.
  * Support Evernote storage
  * Sync with you server notes and local
  * Can create Target, Task and subtask
+ * JavaFX element's
+ * 2 theme dark and white
  
