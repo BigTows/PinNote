@@ -11,10 +11,14 @@ import com.evernote.auth.EvernoteAuth;
 import com.evernote.auth.EvernoteService;
 import com.evernote.clients.ClientFactory;
 import com.evernote.clients.NoteStoreClient;
+import com.evernote.edam.error.EDAMNotFoundException;
+import com.evernote.edam.error.EDAMSystemException;
+import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
+import com.evernote.thrift.TException;
 import com.google.gson.Gson;
 import org.bigtows.note.NoteTarget;
 import org.bigtows.note.evernote.EvernoteNotes;
@@ -179,12 +183,25 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         return notes;
     }
 
+    public EvernoteNotes addTarget(EvernoteNotes notes, String nameTarget) {
+        EvernoteTarget target = notes.addTarget(nameTarget);
+        Note note = this.tryCreateTarget(target);
+        try {
+            noteStore.updateNote(note);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        target.setGuid(note.getGuid());
+        return notes;
+    }
+
     private EvernoteNotes loadAllNotesFromServer() {
         EvernoteNotes notes = new EvernoteNotes();
         for (Note note : this.tryGetAllTarget()) {
             String content;
             try {
                 content = noteStore.getNoteContent(note.getGuid());
+                Thread.sleep(40);
             } catch (Exception e) {
                 logger.error("Error load note.", e);
                 throw new LoadNotesException("Error load note.", e);

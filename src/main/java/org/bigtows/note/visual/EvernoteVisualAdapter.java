@@ -501,7 +501,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             while (true) {
                 try {
                     Thread.yield();
-                    Thread.sleep(2500);
+                    Thread.sleep(5000);
                     if (noteStatus == NoteStatus.EDITING) {
                         noteStatus = NoteStatus.NONE;
                         needUpload = true;
