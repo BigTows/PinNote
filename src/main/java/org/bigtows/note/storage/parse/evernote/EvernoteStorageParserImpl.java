@@ -104,10 +104,14 @@ public class EvernoteStorageParserImpl implements EvernoteStorageParser {
      * @return list Context
      */
     private List<TaskContext> parseHtml(Document parse) {
-        Element element = parse.body().child(0).child(0);
-        TaskContext context = null;
-        List<TaskContext> taskContextList = new ArrayList<>();
 
+        List<TaskContext> taskContextList = new ArrayList<>();
+        Element element = parse.body().child(0);
+        if (element.childNodeSize() == 0) {
+            return taskContextList;
+        }
+        element = element.child(0);
+        TaskContext context = null;
         for (Node taskNode : element.childNodes()) {
             String uniqueId = taskNode.attr("title");
             if (((Element) taskNode.childNodes().get(0)).tag().getName().equals("div")) {
