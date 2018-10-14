@@ -57,8 +57,8 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
     }
 
     public EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser, Logger logger) {
-        noteStore = this.initializeNoteStore(credential);
         this.logger = logger;
+        noteStore = this.initializeNoteStore(credential);
         this.notebook = this.initializeNotebook();
         this.parser = parser;
     }
@@ -201,10 +201,9 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
             String content;
             try {
                 content = noteStore.getNoteContent(note.getGuid());
-                Thread.sleep(40);
             } catch (Exception e) {
                 logger.error("Error load note.", e);
-                throw new LoadNotesException("Error load note.", e);
+                throw new LoadNotesException("Error loading notes may be the fault of the server side.", e);
             }
             EvernoteTarget target = parser.parseTarget(notes, content);
             if (target != null) {

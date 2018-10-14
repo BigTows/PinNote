@@ -102,8 +102,11 @@ public class NoteViewController {
         addTarget.setOnMouseClicked(this::onClickButtonAddNewTargetEvent);
         visualAdapter.forceUpdate(notesView);
         visualAdapter.setErrorHandler((subjectError, additional) -> {
-            pinNoteNotification.errorNotification(subjectError);
-            logger.error(additional.toString());
+            String content = null;
+            if (additional.length > 0) {
+                content = additional[0];
+            }
+            pinNoteNotification.errorNotification(subjectError, content);
         });
     }
 

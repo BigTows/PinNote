@@ -9,6 +9,7 @@ package org.bigtows.window;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -19,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import org.bigtows.PinNote;
+import org.bigtows.components.PinNoteNotification;
 import org.bigtows.components.ThemeManager;
 import org.bigtows.components.enums.ThemeEnum;
 import org.bigtows.config.settings.PinNoteSettings;
@@ -52,6 +54,11 @@ public class RightToolWindow implements ToolWindowFactory {
     @Inject
     private EvernoteCredential evernoteCredential;
 
+    /**
+     * Instance notification helper
+     */
+    private PinNoteNotification pinNoteNotification = ServiceManager.getService(PinNoteNotification.class);
+
     public RightToolWindow() {
         PinNote.injector.injectMembers(this);
     }
@@ -79,12 +86,18 @@ public class RightToolWindow implements ToolWindowFactory {
                 this.initEvernoteToken(fxPanel);
             }));
         } else {
-            openNoteView(fxPanel,
-                    new EvernoteStorage(
-                            evernoteCredential,
-                            new EvernoteStorageParserImpl()
-                    )
-            );
+            try {
+                EvernoteStorage storage = new EvernoteStorage(
+                        evernoteCredential,
+                        new EvernoteStorageParserImpl()
+                );
+                openNoteView(fxPanel, storage);
+            } catch (Exception edamSystemException) {
+                //Bad token
+                evernoteCredential.setToken(null);
+                pinNoteNotification.errorNotification("Your token is outdated.", "Please re-authenticate on Evernote.");
+                this.initEvernoteToken(fxPanel);
+            }
         }
     }
 
