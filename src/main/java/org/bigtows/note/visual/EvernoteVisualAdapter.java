@@ -114,21 +114,24 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
 
     private void syncTarget(TreeView treeView) {
         ObservableList<TreeItem> listVisualTarget = treeView.getRoot().getChildren();
-
+        List<Integer> outdatedTarget = new ArrayList<>();
+        int indexTreeView = 0;
         for (TreeItem visualTarget : listVisualTarget) {
             if (visualTarget instanceof TargetTreeItem && ((TargetTreeItem) visualTarget).getTarget() instanceof EvernoteTarget) {
                 if (this.hasTargetTreeItemInNotes((TargetTreeItem) visualTarget, notes)) {
                     ((TargetTreeItem) visualTarget).update();
                     this.syncTask(visualTarget.getChildren(), notes.getTarget((EvernoteTarget) ((TargetTreeItem) visualTarget).getTarget()));
                 } else {
-                    //TODO mb Exception
-                    listVisualTarget.remove(visualTarget);
+                    outdatedTarget.add(indexTreeView);
                 }
             } else {
                 logger.error("In tree view found unsupported Target...");
             }
+            indexTreeView++;
         }
         this.notes = notes;
+        this.removeFromList(listVisualTarget, outdatedTarget, 0);
+
     }
 
     private void syncTask(ObservableList<TreeItem> treeView, EvernoteTarget evernoteTarget) {
@@ -501,7 +504,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             while (true) {
                 try {
                     Thread.yield();
-                    Thread.sleep(2500);
+                    Thread.sleep(5000);
                     if (noteStatus == NoteStatus.EDITING) {
                         noteStatus = NoteStatus.NONE;
                         needUpload = true;

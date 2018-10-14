@@ -51,6 +51,17 @@ public class PinNoteNotification implements ApplicationComponent {
         this.initializeNotification(notification);
     }
 
+    public void errorNotification(String title, String content) {
+        Notification notification = new Notification(
+                title,
+                title,
+                content,
+                NotificationType.ERROR
+        );
+
+        this.initializeNotification(notification);
+    }
+
 
     private void initializeNotification(Notification notification) {
         SwingUtilities.invokeLater(() -> notification.notify(null));

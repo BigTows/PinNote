@@ -16,6 +16,8 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import org.bigtows.components.PinNoteNotification;
 import org.bigtows.note.Notes;
+import org.bigtows.note.evernote.EvernoteNotes;
+import org.bigtows.note.storage.EvernoteStorage;
 import org.bigtows.note.storage.NoteStorage;
 import org.bigtows.note.visual.VisualAdapter;
 import org.bigtows.window.controller.exception.ControllerException;
@@ -51,6 +53,8 @@ public class NoteViewController {
      */
     private Notes notes;
 
+    private EvernoteStorage evernoteStorage;
+
     /**
      * Instance notification helper
      */
@@ -68,6 +72,7 @@ public class NoteViewController {
 
     private NoteViewController(VisualAdapter visualAdapter, NoteStorage noteStorage, Logger logger) {
         this.logger = logger;
+        this.evernoteStorage = (EvernoteStorage) noteStorage;
         this.notes = this.downloadNotes(visualAdapter, noteStorage);
         this.visualAdapter = visualAdapter;
     }
@@ -97,8 +102,11 @@ public class NoteViewController {
         addTarget.setOnMouseClicked(this::onClickButtonAddNewTargetEvent);
         visualAdapter.forceUpdate(notesView);
         visualAdapter.setErrorHandler((subjectError, additional) -> {
-            pinNoteNotification.errorNotification(subjectError);
-            logger.error(additional.toString());
+            String content = null;
+            if (additional.length > 0) {
+                content = additional[0];
+            }
+            pinNoteNotification.errorNotification(subjectError, content);
         });
     }
 
@@ -124,7 +132,8 @@ public class NoteViewController {
      * @param nameTarget Name of target
      */
     private void addNewTarget(String nameTarget) {
-        notes.addTarget(nameTarget);
+        this.notes = evernoteStorage.addTarget((EvernoteNotes) notes, nameTarget);
+        visualAdapter.setNotes(notes);
         Platform.runLater(() -> {
             visualAdapter.forceUpdate(notesView);
         });
