@@ -76,6 +76,10 @@ public class MergeNotes {
             return;
         }
 
+        clientTarget.setNameTarget(
+                this.resolveTargetName(cacheTarget, clientTarget, serverTarget)
+        );
+
         for (EvernoteTask task : serverTarget.getAllTask()) {
             this.syncTask(
                     clientTarget,
@@ -204,12 +208,21 @@ public class MergeNotes {
     }
 
 
+    private String resolveTargetName(EvernoteTarget cacheTarget, @NotNull EvernoteTarget clientTarget, @NotNull EvernoteTarget serverTarget) {
+        if (cacheTarget != null && cacheTarget.getName().equals(clientTarget.getName())) {
+            //Client don't rename Task
+            return serverTarget.getName().trim();
+        } else {
+            return clientTarget.getName().trim();
+        }
+    }
+
     private String resolveTaskName(Task cacheTask, @NotNull Task clientTask, @NotNull Task serverTask) {
         if (cacheTask != null && cacheTask.getNameTask().equals(clientTask.getNameTask())) {
             //Client don't rename Task
-            return serverTask.getNameTask();
+            return serverTask.getNameTask().trim();
         } else {
-            return clientTask.getNameTask();
+            return clientTask.getNameTask().trim();
         }
     }
 

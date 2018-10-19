@@ -112,8 +112,50 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
     }
 
 
-    private void syncTarget(TreeView treeView) {
+    private void syncTarget(TreeView treeView //TODO append Notes
+    ) {
+
         ObservableList<TreeItem> listVisualTarget = treeView.getRoot().getChildren();
+        int indexTreeView = 0;
+        boolean byPassSync = false;
+        TreeItem treeItem;
+        for (EvernoteTarget target : notes.getAllTarget()) {
+
+            if (indexTreeView >= listVisualTarget.size()) {
+                treeItem = null;
+            } else {
+                treeItem = listVisualTarget.get(indexTreeView);
+            }
+
+            if (!byPassSync && treeItem == null) {
+                byPassSync = true;
+            }
+            if (byPassSync) {
+                listVisualTarget.add(this.fill(target));
+            } else {
+                if (treeItem instanceof TargetTreeItem && ((TargetTreeItem) treeItem).getTarget() instanceof EvernoteTarget) {
+                    EvernoteTarget visualTarget = ((EvernoteTarget) ((TargetTreeItem) treeItem).getTarget());
+                    if (visualTarget.getGuid().equals(target.getGuid())) {
+                        ((TargetTreeItem) treeItem).update();
+                        this.syncTask(treeItem.getChildren(), target);
+                    } else {
+                        listVisualTarget.remove(treeItem);
+                        TreeItem newTreeItem = this.fill(target);
+                        listVisualTarget.add(indexTreeView, newTreeItem);
+                    }
+                }
+            }
+            indexTreeView++;
+        }
+
+        List<Integer> listOfRemoves = new ArrayList<>();
+        if (listVisualTarget.size() != indexTreeView) {
+            for (int i = indexTreeView; i < listVisualTarget.size(); i++) {
+                listOfRemoves.add(i);
+            }
+        }
+        this.removeFromList(listVisualTarget, listOfRemoves, 0);
+       /* ObservableList<TreeItem> listVisualTarget = treeView.getRoot().getChildren();
         List<Integer> outdatedTarget = new ArrayList<>();
         int indexTreeView = 0;
         for (TreeItem visualTarget : listVisualTarget) {
@@ -123,6 +165,8 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
                     this.syncTask(visualTarget.getChildren(), notes.getTarget((EvernoteTarget) ((TargetTreeItem) visualTarget).getTarget()));
                 } else {
                     outdatedTarget.add(indexTreeView);
+                    TreeItem newTreeItem = this.fill((EvernoteTarget) ((TargetTreeItem) visualTarget).getTarget());
+                    listVisualTarget.add(indexTreeView, newTreeItem);
                 }
             } else {
                 logger.error("In tree view found unsupported Target...");
@@ -130,7 +174,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             indexTreeView++;
         }
         this.notes = notes;
-        this.removeFromList(listVisualTarget, outdatedTarget, 0);
+        this.removeFromList(listVisualTarget, outdatedTarget, 0);*/
 
     }
 
@@ -380,10 +424,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
         if (null != focusedTextField) {
             this.setFocusOnTextField(focusedTextField);
         }
-        if (keyEvent.getText().length() == 1 && !keyEvent.getText().equals(" ")) {
-            noteTask.editNameTask(node.getValue().getText() + keyEvent.getText());
-        }
-
+        this.changeNameTask(noteTask, keyEvent, node);
     }
 
     private void onKeyPressNoteTask(KeyEvent keyEvent, TreeItem<TextField> node, EvernoteSubTask noteSubTask) {
@@ -400,10 +441,22 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             logger.debug("TextField status changed");
             noteStatus = NoteStatus.EDITING;
         }
-        if (keyEvent.getText().length() == 1 && !keyEvent.getText().equals(" ")) {
-            noteSubTask.editNameTask(node.getValue().getText() + keyEvent.getText());
-        }
+        this.changeNameTask(noteSubTask, keyEvent, node);
 
+    }
+
+    private void changeNameTask(Task task, KeyEvent keyEvent, TreeItem<TextField> node) {
+        if (keyEvent.getText().length() == 1 && !keyEvent.getText().equals(" ")) {
+            StringBuilder stringBuilder = new StringBuilder(node.getValue().getText());
+            if (Character.isISOControl(keyEvent.getText().charAt(0))) {
+                if (keyEvent.getCode() == KeyCode.BACK_SPACE && node.getValue().getCaretPosition() != 0) {
+                    stringBuilder.deleteCharAt(node.getValue().getCaretPosition() - 1);
+                }
+            } else {
+                stringBuilder.insert(node.getValue().getCaretPosition(), keyEvent.getText());
+            }
+            task.editNameTask(stringBuilder.toString().trim());
+        }
     }
 
     /**
@@ -549,6 +602,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
         treeItem.setOnActionCheckBox(event -> this.onCheckBoxAction(treeItem, task));
 
         if (task instanceof EvernoteTask) {
+
             treeItem.setOnActionTextField(keyEvent -> this.onKeyPressNoteTask(keyEvent, treeItem, (EvernoteTask) task));
         }
 

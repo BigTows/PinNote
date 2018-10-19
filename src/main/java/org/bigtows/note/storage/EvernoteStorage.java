@@ -11,14 +11,10 @@ import com.evernote.auth.EvernoteAuth;
 import com.evernote.auth.EvernoteService;
 import com.evernote.clients.ClientFactory;
 import com.evernote.clients.NoteStoreClient;
-import com.evernote.edam.error.EDAMNotFoundException;
-import com.evernote.edam.error.EDAMSystemException;
-import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
-import com.evernote.thrift.TException;
 import com.google.gson.Gson;
 import org.bigtows.note.NoteTarget;
 import org.bigtows.note.evernote.EvernoteNotes;
@@ -33,6 +29,7 @@ import org.bigtows.note.storage.util.MergeNotes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -139,7 +136,8 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
 
     @Override
     public EvernoteNotes updateNotes(EvernoteNotes notes) {
-        EvernoteNotes syncedNotes = mergeNotes.sync(notes, this.loadAllNotesFromServer());
+        List<Note> rawNotes = this.tryGetAllRawNotes();
+        EvernoteNotes syncedNotes = mergeNotes.sync(notes, this.prepareRawNotesToEvernoteNotes(rawNotes));
         for (EvernoteTarget target : syncedNotes.getAllTarget()) {
             try {
                 Thread.sleep(300);
@@ -147,23 +145,28 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
                 e.printStackTrace();
             }
             String guid = target.getGuid();
-            Note note;
+            Note note = null;
             if (null == guid) {
+                logger.info("{} note created by user, and try upload to server.", target.getName());
                 //This NoteTarget created on Client
                 note = this.tryCreateTarget(target);
             } else {
-                try {
-                    note = noteStore.getNote(guid, false, false, false, false);
-                } catch (Exception e) {
-                    logger.error("Error load note.", e);
-                    throw new LoadNotesException("Error load note.", e);
+
+                for (Note rawNote : rawNotes) {
+                    if (rawNote.getGuid().equals(guid)) {
+                        note = rawNote;
+                        break;
+                    }
                 }
+            }
+            if (note == null) {
+                continue;
             }
             note.setContent(parser.parseTarget(target));
             try {
                 noteStore.updateNote(note);
             } catch (Exception e) {
-                logger.error("Error save notes.", e);
+                logger.error("Error save notes: {}", e.getMessage(), e);
                 throw new SaveNotesException("Error save notes.", e);
             }
         }
@@ -195,9 +198,10 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         return notes;
     }
 
+
     private EvernoteNotes loadAllNotesFromServer() {
         EvernoteNotes notes = new EvernoteNotes();
-        for (Note note : this.tryGetAllTarget()) {
+        for (Note note : this.tryGetAllRawNotes()) {
             String content;
             try {
                 content = noteStore.getNoteContent(note.getGuid());
@@ -205,27 +209,73 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
                 logger.error("Error load note.", e);
                 throw new LoadNotesException("Error loading notes may be the fault of the server side.", e);
             }
-            EvernoteTarget target = parser.parseTarget(notes, content);
-            if (target != null) {
-                target.setNameTarget(note.getTitle());
-                target.setGuid(note.getGuid());
-                notes.addTarget(target);
-                logger.info("Target: {}, load success.", note.getTitle());
-            }
+            this.createTargetAndAddedToNotes(notes, content, note);
         }
         return notes;
     }
 
+    /**
+     * Create EvernoteNotes from raw Notes
+     *
+     * @param rawNotes Notes raw from Server
+     * @return Collection target's
+     */
+    private EvernoteNotes prepareRawNotesToEvernoteNotes(List<Note> rawNotes) {
+        EvernoteNotes notes = new EvernoteNotes();
+        for (Note note : rawNotes) {
+            String content;
+            try {
+                content = noteStore.getNoteContent(note.getGuid());
+            } catch (Exception e) {
+                logger.error("Error load content for Note: {}.", e.getMessage(), e);
+                throw new LoadNotesException("Error loading content for note: " + note.getTitle(), e);
+            }
+            this.createTargetAndAddedToNotes(notes, content, note);
+        }
+        return notes;
+    }
 
-    private List<Note> tryGetAllTarget() {
+    /**
+     * Create and Added target to EvernoteNote
+     *
+     * @param evernoteNotes Collection target's
+     * @param content       Content note
+     * @param rawNote       Note raw from Server
+     */
+    private void createTargetAndAddedToNotes(EvernoteNotes evernoteNotes, String content, Note rawNote) {
+        EvernoteTarget target = parser.parseTarget(evernoteNotes, content);
+        if (target != null) {
+            target.setNameTarget(rawNote.getTitle());
+            target.setGuid(rawNote.getGuid());
+            evernoteNotes.addTarget(target);
+            logger.info("Target: {}, load success.", rawNote.getTitle());
+        } else {
+            logger.error("With note: {}, same problems.");
+        }
+    }
+
+    /**
+     * Return raw notes Evernote.
+     *
+     * @return List raw notes
+     */
+    private List<Note> tryGetAllRawNotes() {
         NoteFilter filter = new NoteFilter();
+        List<Note> notes = new ArrayList<>();
         filter.setNotebookGuid(notebook.getGuid());
-
-        //Hmmm why 10000?!??!?!?
         try {
-            return noteStore.findNotes(filter, 0, 10000).getNotes();
+            int offset = 0;
+            while (true) {
+                int sizeAfter = notes.size();
+                notes.addAll(noteStore.findNotes(filter, offset, 20).getNotes());
+                if (sizeAfter == notes.size()) {
+                    break;
+                }
+                offset += 20;
+            }
+            return notes;
         } catch (Exception e) {
-            logger.error("Error load notes", e);
+            logger.error("Error load notes: {}", e.getMessage(), e);
             throw new LoadNotesException("Error load notes", e);
         }
     }
