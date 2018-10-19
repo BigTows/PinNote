@@ -7,6 +7,17 @@
 
 package org.bigtows.note.storage.event;
 
+import javax.annotation.Nullable;
+
+/**
+ * Interface of Update note in storage
+ */
 public interface UpdateNoteProgressEvent {
-    public void onChangeProgress(String title, double progress);
+    /**
+     * Then progress has been change
+     *
+     * @param title    Title of operation, can bee null
+     * @param progress Progress of operation
+     */
+    void onChangeProgress(@Nullable String title, double progress);
 }

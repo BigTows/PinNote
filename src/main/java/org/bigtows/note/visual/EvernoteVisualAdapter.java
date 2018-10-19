@@ -76,6 +76,8 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
 
     private ProgressIndicator progressIndicator;
 
+    private TreeView lastTreeView;
+
     /**
      * Constructor with default logger
      *
@@ -114,8 +116,6 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
     public void setNotes(EvernoteNotes notes) {
         this.notes = notes;
     }
-
-    private TreeView lastTreeView;
 
     @Override
     public void forceUpdate(TreeView treeView) {
