@@ -10,6 +10,8 @@ package org.bigtows.window;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -48,6 +50,7 @@ public class RightToolWindow implements ToolWindowFactory {
     private ThemeEnum themeEnum;
 
 
+    private Task.Backgroundable backgroundable;
     @Inject
     private PinNoteSettings pinNoteSettings;
 
@@ -63,9 +66,11 @@ public class RightToolWindow implements ToolWindowFactory {
         PinNote.injector.injectMembers(this);
     }
 
+    private Project project;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        this.project = project;
         themeManager = project.getComponent(ThemeManager.class);
         themeEnum = themeManager.getTheme((ToolWindowImpl) toolWindow);
         JComponent component = toolWindow.getComponent();
@@ -91,6 +96,18 @@ public class RightToolWindow implements ToolWindowFactory {
                         evernoteCredential,
                         new EvernoteStorageParserImpl()
                 );
+                /*storage.subscribeUpdateNoteProgress(progress -> {
+                    ProgressManager.getInstance().run(new Task.Backgroundable(project, "Update") {
+                        @Override
+                        public void run(@NotNull com.intellij.openapi.progress.ProgressIndicator indicator) {
+                            indicator.setIndeterminate(true);
+                            indicator.setText("This is how you update the indicator");
+                            indicator.setFraction(progress);  // halfway done
+                        }
+                    });
+                });*/
+
+
                 openNoteView(fxPanel, storage);
             } catch (Exception edamSystemException) {
                 //Bad token
@@ -131,7 +148,7 @@ public class RightToolWindow implements ToolWindowFactory {
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader();
-                new EvernoteVisualAdapter(loader, (EvernoteStorage) noteStorage);
+                new EvernoteVisualAdapter(loader, (EvernoteStorage) noteStorage, this.project);
                 loader.setClassLoader(getClass().getClassLoader()); // set the plugin's class loader
                 loader.setLocation(getClass().getResource("/fxml/NoteView.fxml"));
                 Parent root = loader.load();

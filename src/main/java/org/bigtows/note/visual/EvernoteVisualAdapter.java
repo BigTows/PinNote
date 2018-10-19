@@ -7,6 +7,9 @@
 
 package org.bigtows.note.visual;
 
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -23,12 +26,14 @@ import org.bigtows.note.evernote.EvernoteSubTask;
 import org.bigtows.note.evernote.EvernoteTarget;
 import org.bigtows.note.evernote.EvernoteTask;
 import org.bigtows.note.storage.EvernoteStorage;
+import org.bigtows.note.storage.event.UpdateNoteProgressEvent;
 import org.bigtows.note.visual.component.NoteCheckBox;
 import org.bigtows.note.visual.component.NoteCustomComponent;
 import org.bigtows.note.visual.component.TargetTreeItem;
 import org.bigtows.note.visual.component.TaskTreeItem;
 import org.bigtows.note.visual.enums.NoteStatus;
 import org.bigtows.window.controller.NoteViewController;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +44,11 @@ import java.util.List;
  * Evernote Notes visualization
  */
 public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNotes> {
+
+    /**
+     * Instance of Project
+     */
+    private final Project project;
 
     /**
      * Evernote notes
@@ -59,14 +69,18 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
 
     private Logger logger;
 
+    private UpdateNoteProgressEvent noteProgressEvent;
+
+    private ProgressIndicator progressIndicator;
+
     /**
      * Constructor with default logger
      *
      * @param fxmlLoader  fxml loader
      * @param noteStorage Notes Storage
      */
-    public EvernoteVisualAdapter(FXMLLoader fxmlLoader, EvernoteStorage noteStorage) {
-        this(fxmlLoader, noteStorage, LoggerFactory.getLogger("EvernoteVisualAdapter"));
+    public EvernoteVisualAdapter(FXMLLoader fxmlLoader, EvernoteStorage noteStorage, Project project) {
+        this(fxmlLoader, noteStorage, project, LoggerFactory.getLogger("EvernoteVisualAdapter"));
     }
 
     /**
@@ -76,10 +90,20 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
      * @param noteStorage Notes Storage
      * @param logger      logget
      */
-    public EvernoteVisualAdapter(FXMLLoader fxmlLoader, EvernoteStorage noteStorage, Logger logger) {
+    public EvernoteVisualAdapter(FXMLLoader fxmlLoader, EvernoteStorage noteStorage, Project project, Logger logger) {
         fxmlLoader.setControllerFactory((clazz) -> new NoteViewController(this, noteStorage));
         this.noteStorage = noteStorage;
         this.logger = logger;
+        this.project = project;
+        this.noteProgressEvent = new UpdateNoteProgressEvent() {
+            @Override
+            public void onChangeProgress(double progress) {
+                if (progressIndicator != null) {
+                    progressIndicator.setFraction(progress);
+                }
+            }
+        };
+        noteStorage.subscribeUpdateNoteProgress(noteProgressEvent);
     }
 
 
@@ -155,27 +179,6 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             }
         }
         this.removeFromList(listVisualTarget, listOfRemoves, 0);
-       /* ObservableList<TreeItem> listVisualTarget = treeView.getRoot().getChildren();
-        List<Integer> outdatedTarget = new ArrayList<>();
-        int indexTreeView = 0;
-        for (TreeItem visualTarget : listVisualTarget) {
-            if (visualTarget instanceof TargetTreeItem && ((TargetTreeItem) visualTarget).getTarget() instanceof EvernoteTarget) {
-                if (this.hasTargetTreeItemInNotes((TargetTreeItem) visualTarget, notes)) {
-                    ((TargetTreeItem) visualTarget).update();
-                    this.syncTask(visualTarget.getChildren(), notes.getTarget((EvernoteTarget) ((TargetTreeItem) visualTarget).getTarget()));
-                } else {
-                    outdatedTarget.add(indexTreeView);
-                    TreeItem newTreeItem = this.fill((EvernoteTarget) ((TargetTreeItem) visualTarget).getTarget());
-                    listVisualTarget.add(indexTreeView, newTreeItem);
-                }
-            } else {
-                logger.error("In tree view found unsupported Target...");
-            }
-            indexTreeView++;
-        }
-        this.notes = notes;
-        this.removeFromList(listVisualTarget, outdatedTarget, 0);*/
-
     }
 
     private void syncTask(ObservableList<TreeItem> treeView, EvernoteTarget evernoteTarget) {
@@ -278,49 +281,6 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             }
         }
         this.removeFromList(treeView, listOfRemoves, 0);
-
-
-
-/*        int indexTreeView = 0;
-        boolean byPassSync = false;
-        for (EvernoteSubTask subTask : evernoteTask.getSubTask()) {
-            TreeItem treeItem = treeView.get(indexTreeView);
-            if (!byPassSync && treeItem == null) {
-                byPassSync = true;
-            }
-            if (byPassSync) {
-                treeView.add(this.createVisualTaskByTask(subTask));
-            } else {
-                if (treeItem instanceof TaskTreeItem && ((TaskTreeItem) treeItem).getTask() instanceof EvernoteSubTask) {
-                    EvernoteSubTask visualTask = ((EvernoteSubTask) ((TaskTreeItem) treeItem).getTask());
-                    if (visualTask.getUniqueId().equals(subTask.getUniqueId())) {
-                        ((TaskTreeItem) treeItem).update();
-                    } else {
-                        treeView.remove(treeItem);
-                    }
-                }
-            }
-            indexTreeView++;
-        }
-        List<Integer> listOfRemoves = new ArrayList<>();
-        if (treeView.size() != indexTreeView) {
-            for (int i = indexTreeView; i < treeView.size(); i++) {
-                listOfRemoves.add(i);
-            }
-        }
-        this.removeFromList(treeView, listOfRemoves, 0);*/
-    }
-
-
-    private boolean hasTargetTreeItemInNotes(TargetTreeItem targetTreeItem, EvernoteNotes notes) {
-        for (EvernoteTarget target : notes.getAllTarget()) {
-            if (targetTreeItem.getTarget() instanceof EvernoteTarget) {
-                if (target.getGuid().equals(((EvernoteTarget) targetTreeItem.getTarget()).getGuid())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 
@@ -581,8 +541,16 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
     private void uploadNotes() {
         try {
             logger.info("Try upload notes.");
-            noteStorage.updateNotes(notes);
-            Platform.runLater(() -> update(lastTreeView));
+            ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "???") {
+                @Override
+                public void run(@NotNull com.intellij.openapi.progress.ProgressIndicator indicator) {
+                    indicator.setFraction(0);
+                    progressIndicator = indicator;
+                    indicator.setText("Update notes");
+                    noteStorage.updateNotes(notes);
+                    Platform.runLater(() -> update(lastTreeView));
+                }
+            });
         } catch (Exception e) {
             errorHandler.onError("Upload notes error", e.getMessage());
             logger.error("Error upload notes. ", e);

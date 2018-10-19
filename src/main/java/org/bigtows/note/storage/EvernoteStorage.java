@@ -21,6 +21,7 @@ import org.bigtows.note.evernote.EvernoteNotes;
 import org.bigtows.note.evernote.EvernoteTarget;
 import org.bigtows.note.storage.credential.EvernoteCredential;
 import org.bigtows.note.storage.credential.evernote.ServiceType;
+import org.bigtows.note.storage.event.UpdateNoteProgressEvent;
 import org.bigtows.note.storage.exception.LoadNotesException;
 import org.bigtows.note.storage.exception.SaveNotesException;
 import org.bigtows.note.storage.exception.StorageException;
@@ -48,6 +49,7 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
+    private List<UpdateNoteProgressEvent> progressEvents = new ArrayList<>();
 
     public EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser) {
         this(credential, parser, LoggerFactory.getLogger("Evernote Storage"));
@@ -138,12 +140,10 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
     public EvernoteNotes updateNotes(EvernoteNotes notes) {
         List<Note> rawNotes = this.tryGetAllRawNotes();
         EvernoteNotes syncedNotes = mergeNotes.sync(notes, this.prepareRawNotesToEvernoteNotes(rawNotes));
+        double progress = 0;
+        this.changeProgress(progress);
+        double partProgress = 1.0 / syncedNotes.getAllTarget().size();
         for (EvernoteTarget target : syncedNotes.getAllTarget()) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             String guid = target.getGuid();
             Note note = null;
             if (null == guid) {
@@ -151,7 +151,6 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
                 //This NoteTarget created on Client
                 note = this.tryCreateTarget(target);
             } else {
-
                 for (Note rawNote : rawNotes) {
                     if (rawNote.getGuid().equals(guid)) {
                         note = rawNote;
@@ -165,6 +164,8 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
             note.setContent(parser.parseTarget(target));
             try {
                 noteStore.updateNote(note);
+                progress += partProgress;
+                this.changeProgress(progress);
             } catch (Exception e) {
                 logger.error("Error save notes: {}", e.getMessage(), e);
                 throw new SaveNotesException("Error save notes.", e);
@@ -184,6 +185,11 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         EvernoteNotes notes = this.loadAllNotesFromServer();
         mergeNotes.setCacheNotes(this.cloneNotes(notes));
         return notes;
+    }
+
+    @Override
+    public void subscribeUpdateNoteProgress(UpdateNoteProgressEvent event) {
+        this.progressEvents.add(event);
     }
 
     public EvernoteNotes addTarget(EvernoteNotes notes, String nameTarget) {
@@ -260,6 +266,8 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
      * @return List raw notes
      */
     private List<Note> tryGetAllRawNotes() {
+        double progress = 0;
+        this.changeProgress(progress);
         NoteFilter filter = new NoteFilter();
         List<Note> notes = new ArrayList<>();
         filter.setNotebookGuid(notebook.getGuid());
@@ -268,11 +276,14 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
             while (true) {
                 int sizeAfter = notes.size();
                 notes.addAll(noteStore.findNotes(filter, offset, 20).getNotes());
+                progress += 0.1;
                 if (sizeAfter == notes.size()) {
                     break;
                 }
                 offset += 20;
+                this.changeProgress(progress);
             }
+            this.changeProgress(1);
             return notes;
         } catch (Exception e) {
             logger.error("Error load notes: {}", e.getMessage(), e);
@@ -328,6 +339,10 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
             builder.append(content);
         }
         return builder.append("</en-note>").toString();
+    }
+
+    private void changeProgress(double progress) {
+        this.progressEvents.forEach(event -> event.onChangeProgress(progress));
     }
 
 }
