@@ -65,6 +65,9 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
      */
     private EvernoteStorage noteStorage;
 
+    /**
+     * Error handler
+     */
     private VisualAdapterErrorHandler errorHandler;
 
     private Logger logger;
@@ -95,11 +98,11 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
         this.noteStorage = noteStorage;
         this.logger = logger;
         this.project = project;
-        this.noteProgressEvent = new UpdateNoteProgressEvent() {
-            @Override
-            public void onChangeProgress(double progress) {
-                if (progressIndicator != null) {
-                    progressIndicator.setFraction(progress);
+        this.noteProgressEvent = (title, progress) -> {
+            if (progressIndicator != null) {
+                progressIndicator.setFraction(progress);
+                if (title != null) {
+                    progressIndicator.setText(title);
                 }
             }
         };

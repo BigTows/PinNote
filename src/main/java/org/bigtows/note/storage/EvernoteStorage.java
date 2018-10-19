@@ -16,7 +16,6 @@ import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
 import com.google.gson.Gson;
-import org.bigtows.note.NoteTarget;
 import org.bigtows.note.evernote.EvernoteNotes;
 import org.bigtows.note.evernote.EvernoteTarget;
 import org.bigtows.note.storage.credential.EvernoteCredential;
@@ -32,13 +31,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
+/**
+ * Storage for Evernote Task
+ */
 public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarget> {
 
+    /**
+     * Logger of storage
+     */
     private final Logger logger;
 
+    /**
+     * Note client for evernote services
+     */
     private final NoteStoreClient noteStore;
 
     private final Notebook notebook;
@@ -47,15 +53,13 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
 
     private MergeNotes mergeNotes = new MergeNotes();
 
-    private Executor executor = Executors.newSingleThreadExecutor();
-
     private List<UpdateNoteProgressEvent> progressEvents = new ArrayList<>();
 
     public EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser) {
         this(credential, parser, LoggerFactory.getLogger("Evernote Storage"));
     }
 
-    public EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser, Logger logger) {
+    EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser, Logger logger) {
         this.logger = logger;
         noteStore = this.initializeNoteStore(credential);
         this.notebook = this.initializeNotebook();
@@ -140,44 +144,51 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
     public EvernoteNotes updateNotes(EvernoteNotes notes) {
         List<Note> rawNotes = this.tryGetAllRawNotes();
         EvernoteNotes syncedNotes = mergeNotes.sync(notes, this.prepareRawNotesToEvernoteNotes(rawNotes));
+        this.uploadEvernoteNotes(syncedNotes, rawNotes);
+        mergeNotes.setCacheNotes(this.cloneNotes(notes));
+        return syncedNotes;
+    }
+
+    /**
+     * Upload notes to server
+     *
+     * @param evernoteNotes Evernote notes for upload to server
+     * @param serverNotes   Server notes
+     */
+    private void uploadEvernoteNotes(EvernoteNotes evernoteNotes, List<Note> serverNotes) {
+        //Setup progress
         double progress = 0;
         this.changeProgress(progress);
-        double partProgress = 1.0 / syncedNotes.getAllTarget().size();
-        for (EvernoteTarget target : syncedNotes.getAllTarget()) {
+        double partProgress = 1.0 / evernoteNotes.getAllTarget().size();
+
+        for (EvernoteTarget target : evernoteNotes.getAllTarget()) {
             String guid = target.getGuid();
-            Note note = null;
-            if (null == guid) {
+            Note note;
+            if (null != guid) {
+                note = serverNotes.stream().filter(rawNote -> rawNote.getGuid().equals(guid)).findFirst().orElse(null);
+            } else {
                 logger.info("{} note created by user, and try upload to server.", target.getName());
                 //This NoteTarget created on Client
                 note = this.tryCreateTarget(target);
-            } else {
-                for (Note rawNote : rawNotes) {
-                    if (rawNote.getGuid().equals(guid)) {
-                        note = rawNote;
-                        break;
-                    }
-                }
             }
             if (note == null) {
                 continue;
             }
             note.setContent(parser.parseTarget(target));
             try {
+                this.changeProgress("Upload " + note.getTitle() + " note.", progress);
                 noteStore.updateNote(note);
                 progress += partProgress;
-                this.changeProgress(progress);
             } catch (Exception e) {
                 logger.error("Error save notes: {}", e.getMessage(), e);
                 throw new SaveNotesException("Error save notes.", e);
             }
         }
-        mergeNotes.setCacheNotes(this.cloneNotes(notes));
-        return syncedNotes;
     }
 
     @Override
     public void deleteTarget(EvernoteTarget target) {
-
+        throw new StorageException("This method not supported.");
     }
 
     @Override
@@ -192,6 +203,13 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         this.progressEvents.add(event);
     }
 
+    /**
+     * Added target to notes
+     *
+     * @param notes      Evernote notes
+     * @param nameTarget target
+     * @return self notes
+     */
     public EvernoteNotes addTarget(EvernoteNotes notes, String nameTarget) {
         EvernoteTarget target = notes.addTarget(nameTarget);
         Note note = this.tryCreateTarget(target);
@@ -204,7 +222,11 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         return notes;
     }
 
-
+    /**
+     * Generate EvernoteNotes by server note
+     *
+     * @return Evernote notes
+     */
     private EvernoteNotes loadAllNotesFromServer() {
         EvernoteNotes notes = new EvernoteNotes();
         for (Note note : this.tryGetAllRawNotes()) {
@@ -281,7 +303,7 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
                     break;
                 }
                 offset += 20;
-                this.changeProgress(progress);
+                this.changeProgress("Load notes form server.", progress);
             }
             this.changeProgress(1);
             return notes;
@@ -291,8 +313,13 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         }
     }
 
-
-    private Note tryCreateTarget(NoteTarget target) {
+    /**
+     * Try create target on server
+     *
+     * @param target Evernote Target
+     * @return Server note
+     */
+    private Note tryCreateTarget(EvernoteTarget target) {
         NoteFilter filter = new NoteFilter();
         filter.setNotebookGuid(notebook.getGuid());
         NoteList noteList;
@@ -302,6 +329,7 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
             logger.error("Error load notes.", e);
             throw new LoadNotesException("Error load notes.", e);
         }
+        //If service has this target
         for (Note note : noteList.getNotes()) {
             if (note.getTitle().equals(target.getName())) {
                 return note;
@@ -310,7 +338,7 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
 
         Note note = new Note();
         note.setTitle(target.getName());
-        note.setContent(this.getDefaultContent());
+        note.setContent(this.parser.parseTarget(target));
         note.setNotebookGuid(notebook.getGuid());
 
         try {
@@ -321,28 +349,35 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
         }
     }
 
-
+    /**
+     * Clone Evernote Notes
+     *
+     * @param notes Master notes
+     * @return Cloned notes
+     */
     private EvernoteNotes cloneNotes(EvernoteNotes notes) {
-        //TODO This Best clone EVER xD
-        //Save cache
+        //Save cache This Best clone EVER xD
         Gson gson = new Gson();
         return gson.fromJson(notes.toString(), EvernoteNotes.class);
     }
 
-
-    private String getDefaultContent(String... data) {
-        StringBuilder builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">"
-                + "<en-note>");
-
-        for (String content : data) {
-            builder.append(content);
-        }
-        return builder.append("</en-note>").toString();
+    /**
+     * Change progress and title
+     *
+     * @param title    title of progress bar
+     * @param progress value of progress
+     */
+    private void changeProgress(String title, double progress) {
+        this.progressEvents.forEach(event -> event.onChangeProgress(title, progress));
     }
 
+    /**
+     * Change progress
+     *
+     * @param progress value of progress
+     */
     private void changeProgress(double progress) {
-        this.progressEvents.forEach(event -> event.onChangeProgress(progress));
+        this.progressEvents.forEach(event -> event.onChangeProgress(null, progress));
     }
 
 }

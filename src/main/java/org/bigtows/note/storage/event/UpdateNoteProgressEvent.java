@@ -8,5 +8,5 @@
 package org.bigtows.note.storage.event;
 
 public interface UpdateNoteProgressEvent {
-    public void onChangeProgress(double progress);
+    public void onChangeProgress(String title, double progress);
 }
