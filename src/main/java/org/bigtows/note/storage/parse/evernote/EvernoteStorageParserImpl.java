@@ -7,6 +7,7 @@
 
 package org.bigtows.note.storage.parse.evernote;
 
+import org.bigtows.note.Task;
 import org.bigtows.note.evernote.EvernoteNotes;
 import org.bigtows.note.evernote.EvernoteSubTask;
 import org.bigtows.note.evernote.EvernoteTarget;
@@ -58,16 +59,42 @@ public class EvernoteStorageParserImpl implements EvernoteStorageParser {
     @Override
     public String parseTarget(EvernoteTarget target) {
         StringBuilder builder = new StringBuilder();
+        Document document = Jsoup.parse("<ul></ul>");
+        Element root = document.body().child(0);
 
-        builder.append("<ul>");
+        for (EvernoteTask task : target.getAllTask()) {
+
+            Element taskElement = this.appendTaskInDom(root, task);
+            if (task.getSubTask().size() > 0) {
+                Element rootSubTaskElement = taskElement.appendElement("ul");
+                for (EvernoteSubTask subTask : task.getSubTask()) {
+                    this.appendTaskInDom(rootSubTaskElement, subTask);
+                }
+            }
+        }
+
+        return this.getDefaultContent(
+                root.toString()
+                        .replaceAll("</en-todo>", "")
+                        .replaceAll("<en-todo checked=\"true\">\n   ", "<en-todo checked=\"true\"/>")
+                        .replaceAll("<en-todo checked=\"true\">\n  ", "<en-todo checked=\"true\"/>")
+                        .replaceAll("<en-todo checked=\"true\">\n ", "<en-todo checked=\"true\"/>")
+                        .replaceAll("<en-todo checked=\"true\">\n", "<en-todo checked=\"true\"/>")
+                        .replaceAll("<en-todo>\n   ", "<en-todo/>")
+                        .replaceAll("\n ", "")
+                        .replaceAll("> <", "><")
+        );
+
+
+       /* builder.append("<ul>");
 
         for (EvernoteTask task : target.getAllTask()) {
 
             builder.append("<li title=\"").append(task.getUniqueId()).append("\">");
             if (task.isCompleted()) {
-                builder.append("<en-todo checked=\"true\"/>").append(task.getNameTask()).append("\n");
+                builder.append("<en-todo checked=\"true\"/>").append(task.getNameTask().trim());
             } else {
-                builder.append("<en-todo/>").append(task.getNameTask()).append("\n");
+                builder.append("<en-todo/>").append(task.getNameTask().trim());
             }
 
 
@@ -78,9 +105,9 @@ public class EvernoteStorageParserImpl implements EvernoteStorageParser {
 
                     builder.append("<li title=\"").append(subTask.getUniqueId()).append("\">");
                     if (subTask.isCompleted()) {
-                        builder.append("<en-todo checked=\"true\"/>").append(subTask.getNameTask()).append("\n");
+                        builder.append("<en-todo checked=\"true\"/>").append(subTask.getNameTask().trim());
                     } else {
-                        builder.append("<en-todo/>").append(subTask.getNameTask()).append("\n");
+                        builder.append("<en-todo/>").append(subTask.getNameTask().trim());
                     }
                     builder.append("</li>");
                 }
@@ -92,9 +119,29 @@ public class EvernoteStorageParserImpl implements EvernoteStorageParser {
         }
 
 
-        builder.append("</ul>");
+        builder.append("</ul>");*/
+    }
 
-        return this.getDefaultContent(builder.toString());
+    private Element appendTaskInDom(Element rootElement, Task task) {
+        String uniqueId = null;
+        if (task instanceof EvernoteTask) {
+            uniqueId = ((EvernoteTask) task).getUniqueId();
+        } else if (task instanceof EvernoteSubTask) {
+            uniqueId = ((EvernoteSubTask) task).getUniqueId();
+        }
+
+        Element taskElement = rootElement.appendElement("li");
+        if (uniqueId != null) {
+            taskElement.attr("title", uniqueId);
+        }
+
+        //Insert Task
+        Element evernoteTodoTagTask = taskElement.appendElement("en-todo");
+        if (task.isCompleted()) {
+            evernoteTodoTagTask.attr("checked", "true");
+        }
+        evernoteTodoTagTask.appendText(task.getNameTask().trim());
+        return taskElement;
     }
 
     /**
