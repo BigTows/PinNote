@@ -61,5 +61,4 @@ Release: 1.2<br>
       """
     version "1.2"
     sinceBuild "7000"
-
 }
