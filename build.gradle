@@ -38,7 +38,7 @@ jar {
 
 patchPluginXml {
     changeNotes """
-Release: 1.2<br>
+<h1>Release: 1.2</h1><br>
 <ul>
     <li>Fix bugs:
         <ul>
