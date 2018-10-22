@@ -9,9 +9,12 @@ package org.bigtows.window.controller;
 
 
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import org.bigtows.components.PinNoteNotification;

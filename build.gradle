@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '1.1'
+version '1.2'
 
 sourceCompatibility = 1.8
 
@@ -38,10 +38,27 @@ jar {
 
 patchPluginXml {
     changeNotes """
-          Release: 1.1<br>
-           <i>Fix many bugs.</i> 
+<h1>Release: 1.2</h1><br>
+<ul>
+    <li>Fix bugs:
+        <ul>
+            <li>Error load notes from server.</li>
+            <li>Cursor change position while saving on Evernote.</li>
+            <li>New target not synced.</li>
+        </ul>
+    </li>
+    <li>New features:
+        <ul>
+            <li>Added progress bar.</li>
+        </ul>
+    </li>
+    <li>Optimizations:
+        <ul>
+            <li>Internet traffic.</li>
+        </ul>
+    </li>
+</ul>     
       """
-    version "1.1"
+    version "1.2"
     sinceBuild "7000"
-
 }

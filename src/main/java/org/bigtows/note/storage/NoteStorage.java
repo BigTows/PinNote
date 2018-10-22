@@ -13,7 +13,7 @@ import com.evernote.edam.error.EDAMUserException;
 import com.evernote.thrift.TException;
 import org.bigtows.note.NoteTarget;
 import org.bigtows.note.Notes;
-import org.bigtows.note.evernote.EvernoteNotes;
+import org.bigtows.note.storage.event.UpdateNoteProgressEvent;
 
 public interface NoteStorage<N extends Notes, T extends NoteTarget> {
 
@@ -23,5 +23,7 @@ public interface NoteStorage<N extends Notes, T extends NoteTarget> {
     public void deleteTarget(T target);
 
     public N getAllNotes() throws EDAMUserException, EDAMSystemException, EDAMNotFoundException, TException;
+
+    public void subscribeUpdateNoteProgress(UpdateNoteProgressEvent event);
 
 }
