@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.intellij.ide.util.PropertiesComponent;
-import org.bigtows.components.SimpleUserStorage;
+import org.bigtows.components.SimpleEvernoteTokenStorage;
 import org.bigtows.config.settings.PinNoteSettings;
 import org.bigtows.config.settings.parser.PinNoteSettingsXmlParser;
 import org.bigtows.config.settings.parser.exception.ParserException;
@@ -36,7 +36,7 @@ public class PinNoteConfigurator extends AbstractModule {
     public EvernoteCredential providerEvernoteCredential(PinNoteSettings settings) {
         return new EvernoteCredentialImpl(
                 settings,
-                new SimpleUserStorage()
+                new SimpleEvernoteTokenStorage()
         );
     }
 

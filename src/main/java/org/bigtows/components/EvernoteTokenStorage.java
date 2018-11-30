@@ -10,7 +10,7 @@ package org.bigtows.components;
 /**
  * Interface of user storage
  */
-public interface UserStorage {
+public interface EvernoteTokenStorage {
 
     /**
      * Save evernote token
@@ -25,5 +25,11 @@ public interface UserStorage {
      * @return evernote token
      */
     String getEvernoteToken();
+
+    /**
+     * Check avaliable evernote token
+     * @return {@code true} if token has in storage, else {@code false}
+     */
+    boolean hasEvernoteToken();
 
 }

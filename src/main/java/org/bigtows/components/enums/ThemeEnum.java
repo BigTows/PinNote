@@ -8,6 +8,6 @@
 package org.bigtows.components.enums;
 
 public enum ThemeEnum {
-    DARCULA,
+    DRACULA,
     LIGHT
 }

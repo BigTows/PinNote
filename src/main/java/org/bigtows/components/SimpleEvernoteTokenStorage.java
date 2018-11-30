@@ -12,7 +12,7 @@ import com.intellij.ide.util.PropertiesComponent;
 /**
  * Implements user storage. Based on JetBrains "PropertiesComponent"
  */
-public class SimpleUserStorage implements UserStorage {
+public class SimpleEvernoteTokenStorage implements EvernoteTokenStorage {
 
     /**
      * Instance of JetBrains component for access to property storage.
@@ -28,5 +28,10 @@ public class SimpleUserStorage implements UserStorage {
     @Override
     public String getEvernoteToken() {
         return propertiesComponent.getValue("Evernote.Token");
+    }
+
+    @Override
+    public boolean hasEvernoteToken() {
+        return propertiesComponent.getValue("Evernote.Token") != null;
     }
 }

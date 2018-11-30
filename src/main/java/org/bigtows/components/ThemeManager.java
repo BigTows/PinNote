@@ -10,31 +10,28 @@ package org.bigtows.components;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.wm.impl.ToolWindowImpl;
 import org.bigtows.components.enums.ThemeEnum;
+import org.bigtows.components.exception.PinNoteComponentException;
 
 public class ThemeManager implements ApplicationComponent {
-
-    public ThemeManager() {
-    }
-
 
     public ThemeEnum getTheme(ToolWindowImpl toolWindow) {
 
         if (toolWindow.getContentUI().getBackground().getRGB() == -12828863) {
-            return ThemeEnum.DARCULA;
+            return ThemeEnum.DRACULA;
         }
         return ThemeEnum.LIGHT;
-        // project.getCo
     }
 
 
     public String getNameResource(ThemeEnum themeEnum) {
         switch (themeEnum) {
-            case DARCULA:
+            case DRACULA:
                 return "NoteViewDracula.css";
             case LIGHT:
                 return "NoteViewLight.css";
+                default:
+                    throw new PinNoteComponentException("Try get resource for undefined theme: "+themeEnum.toString());
         }
-        return "WHAT??!??!?!";
     }
 
 }
