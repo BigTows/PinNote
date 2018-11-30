@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.3.9'
+    id 'org.jetbrains.intellij' version '0.3.12'
 }
 
 group 'org.bigtows'
-version '1.2'
+version '1.2.1'
 
 sourceCompatibility = 1.8
 
@@ -23,7 +23,7 @@ dependencies {
 
 
 intellij {
-    version '2018.2.3'
+    version '2018.3'
     pluginName 'PinNote'
 }
 
@@ -38,27 +38,16 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 1.2</h1><br>
+<h1>Release: 1.2.1</h1><br>
 <ul>
-    <li>Fix bugs:
-        <ul>
-            <li>Error load notes from server.</li>
-            <li>Cursor change position while saving on Evernote.</li>
-            <li>New target not synced.</li>
-        </ul>
-    </li>
     <li>New features:
         <ul>
-            <li>Added progress bar.</li>
+            <li>Compatibility with 183.* versions.</li>
         </ul>
     </li>
-    <li>Optimizations:
-        <ul>
-            <li>Internet traffic.</li>
-        </ul>
-    </li>
+   
 </ul>     
       """
-    version "1.2"
+    version "1.2.1"
     sinceBuild "7000"
 }
