@@ -7,11 +7,23 @@
 
 package org.bigtows.components;
 
+/**
+ * Interface of user storage
+ */
 public interface UserStorage {
 
+    /**
+     * Save evernote token
+     *
+     * @param token token for access to api
+     */
+    void saveEvernoteToken(String token);
 
-    public void saveEvernoteToken(String token);
-
-    public String getEvernoteToken();
+    /**
+     * Get evernote token for access to api
+     *
+     * @return evernote token
+     */
+    String getEvernoteToken();
 
 }

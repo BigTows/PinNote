@@ -9,8 +9,14 @@ package org.bigtows.components;
 
 import com.intellij.ide.util.PropertiesComponent;
 
+/**
+ * Implements user storage. Based on JetBrains "PropertiesComponent"
+ */
 public class SimpleUserStorage implements UserStorage {
 
+    /**
+     * Instance of JetBrains component for access to property storage.
+     */
     private final PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
 
 
