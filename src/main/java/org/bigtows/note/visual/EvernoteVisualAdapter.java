@@ -70,6 +70,9 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
      */
     private VisualAdapterErrorHandler errorHandler;
 
+    /**
+     * Logger
+     */
     private Logger logger;
 
     private UpdateNoteProgressEvent noteProgressEvent;
@@ -461,7 +464,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
     /**
      * Set focus for TreeItem
      *
-     * @param treeItem
+     * @param treeItem item in tree view
      */
     private void setFocusOnTextField(TreeItem<TextField> treeItem) {
         new Thread(() -> {
