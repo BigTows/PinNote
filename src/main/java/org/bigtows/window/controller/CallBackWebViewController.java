@@ -7,7 +7,15 @@
 
 package org.bigtows.window.controller;
 
+/**
+ * Interface event for webview
+ */
 public interface CallBackWebViewController {
 
-    public void onFnishPageOpened(String content);
+    /**
+     * When completed auth
+     *
+     * @param content response out server
+     */
+    void onAuthCompleted(String content);
 }

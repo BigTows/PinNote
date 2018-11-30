@@ -13,6 +13,9 @@ import com.intellij.openapi.components.BaseComponent;
 import org.bigtows.config.PinNoteConfigurator;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Base class
+ */
 public class PinNote implements BaseComponent {
 
     /**

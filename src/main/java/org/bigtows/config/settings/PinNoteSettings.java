@@ -5,7 +5,7 @@ public class PinNoteSettings {
     /**
      * Pin Note running in debug mode
      */
-    private boolean debugMode = false;
+    private boolean debugMode;
 
     private EvernoteSettings evernoteSettings;
 

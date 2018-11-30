@@ -27,12 +27,13 @@ public class PinNoteNotification implements ApplicationComponent {
         Notification notification = new Notification(
                 "Exception-" + e.getClass(),
                 title,
-                e.getMessage(),
+                "Please create issues: " + e.getMessage() + "\n" + this.getTextStackTraceByStackTrace(e.getStackTrace()),
                 NotificationType.ERROR
         );
 
         this.initializeNotification(notification);
     }
+
 
     /**
      * Error notification
@@ -49,6 +50,14 @@ public class PinNoteNotification implements ApplicationComponent {
         );
 
         this.initializeNotification(notification);
+    }
+
+    private String getTextStackTraceByStackTrace(StackTraceElement[] stackTraceElements) {
+        StringBuilder builder = new StringBuilder();
+        for (StackTraceElement stackTraceElement : stackTraceElements) {
+            builder.append(stackTraceElement.toString()).append("\n");
+        }
+        return builder.toString();
     }
 
     public void errorNotification(String title, String content) {

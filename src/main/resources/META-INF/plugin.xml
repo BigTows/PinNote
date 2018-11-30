@@ -40,7 +40,7 @@
             <implementation-class>org.bigtows.PinNote</implementation-class>
         </component>
         <component>
-            <implementation-class>org.bigtows.components.ThemeManager</implementation-class>
+            <implementation-class>org.bigtows.components.ThemeHelper</implementation-class>
         </component>
         <component>
             <implementation-class>org.bigtows.components.PinNoteNotification</implementation-class>
