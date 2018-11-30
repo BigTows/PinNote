@@ -5,18 +5,20 @@
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
 
-package org.bigtows.window.component.browser.callback;
+package org.bigtows.window.component.browser.event;
 
-import org.bigtows.note.storage.credential.EvernoteCredential;
 import org.bigtows.window.controller.ResponseToken;
 
-public interface EvernoteOAuth2BrowserCallback {
+/**
+ * Event of success prepare token
+ */
+public interface EvernoteOAuth2BrowserTokenSuccessProcessedEvent {
 
     /**
-     * On
-     * @param responseToken
+     * On success prepare token
+     *
+     * @param responseToken response token
      */
-    void onToken (ResponseToken responseToken);
+    void onTokenSuccessProcessed(ResponseToken responseToken);
 
-    void onError(Exception e);
 }

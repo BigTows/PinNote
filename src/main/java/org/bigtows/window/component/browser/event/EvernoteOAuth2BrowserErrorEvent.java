@@ -7,14 +7,15 @@
 
 package org.bigtows.window.component.browser.event;
 
-import org.bigtows.window.controller.ResponseToken;
-
-public interface EvernoteOAuth2BrowserTokenSuccessProcessedEvent {
-
+/**
+ * Event of error
+ */
+public interface EvernoteOAuth2BrowserErrorEvent {
     /**
-     * On
-     * @param responseToken
+     * Event call when component execute error's
+     *
+     * @param exception exception
      */
-    void onTokenSuccessProcessed (ResponseToken responseToken);
-    
+    void onError(Exception exception);
+
 }
