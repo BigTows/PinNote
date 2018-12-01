@@ -188,7 +188,14 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
 
     @Override
     public void deleteTarget(EvernoteTarget target) {
-        throw new StorageException("This method not supported.");
+        new Thread(() -> {
+            try {
+                noteStore.deleteNote(target.getGuid());
+            } catch (Exception e) {
+                logger.error("Error delete target {}({})", target.getName(), target.getGuid(), e);
+                throw new StorageException("Error delete target: " + target.getName(), e);
+            }
+        }).start();
     }
 
     @Override

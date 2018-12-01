@@ -13,9 +13,7 @@ import com.intellij.openapi.project.Project;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.bigtows.note.NoteSubTask;
@@ -330,7 +328,16 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
 
 
     private TreeItem fill(EvernoteTarget target) {
-        TreeItem targetItem = new TargetTreeItem(target);
+        TargetTreeItem targetItem = new TargetTreeItem(target);
+
+        targetItem.setOnActionDelete(() -> {
+            try {
+                noteStorage.deleteTarget(target);
+                noteStatus = NoteStatus.EDITING;
+            } catch (Exception e) {
+                errorHandler.onError("Error delete target: " + target.getName(), e.getMessage());
+            }
+        });
 
         for (EvernoteTask task : target.getAllTask()) {
             targetItem.getChildren().add(this.getVisualTask(task));
@@ -573,17 +580,45 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
      */
     private TreeItem<TextField> createVisualTaskByTask(Task task) {
         TaskTreeItem treeItem = new TaskTreeItem(task);
-        treeItem.setOnActionCheckBox(event -> this.onCheckBoxAction(treeItem, task));
+        treeItem.setOnActionCheckBox(event -> this.onCheckBoxAction(treeItem, task))
+                .setOnActionDelete(() -> noteStatus = NoteStatus.EDITING);
+
+
+        treeItem.getValue().setContextMenu(this.buildContextMenuForTask(treeItem, task));
 
         if (task instanceof EvernoteTask) {
-
             treeItem.setOnActionTextField(keyEvent -> this.onKeyPressNoteTask(keyEvent, treeItem, (EvernoteTask) task));
+
         }
 
         if (task instanceof EvernoteSubTask) {
             treeItem.setOnActionTextField(keyEvent -> this.onKeyPressNoteTask(keyEvent, treeItem, (EvernoteSubTask) task));
         }
         return treeItem;
+    }
+
+    /**
+     * Build context menu for task
+     *
+     * @param treeItem item in tree
+     * @param task     task
+     * @return context menu
+     */
+    private ContextMenu buildContextMenuForTask(TreeItem treeItem, Task task) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem menuItem = new MenuItem("Remove");
+
+
+        menuItem.setOnAction((actionEvent) -> {
+            task.remove();
+            treeItem.getParent().getChildren().remove(treeItem);
+            noteStatus = NoteStatus.EDITING;
+        });
+
+        contextMenu.getItems().add(menuItem);
+
+        return contextMenu;
     }
 
 }

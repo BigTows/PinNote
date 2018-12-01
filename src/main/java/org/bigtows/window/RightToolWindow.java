@@ -123,7 +123,6 @@ public class RightToolWindow implements ToolWindowFactory {
                 })
                 .onError((exception) -> pinNoteNotification.errorNotification("Error open browser for authentication", exception))
                 .openBrowser(fxPanel, pinNoteSettings);
-
     }
 
 
