@@ -54,3 +54,19 @@
     -fx-text-fill: #6e6e6e;
     -fx-background-color: transparent;
 }
+
+.context-menu {
+    -fx-min-width: 250px;
+    -fx-font-size: 12px;
+    -fx-font-weight: medium;
+    -fx-background-color: #F7F7F7;
+    -fx-padding: 0;
+}
+
+.menu-item:hover {
+    -fx-min-width: 250px;
+    -fx-background-color: #C5D0F4;
+}
+.menu-item:focused{
+    -fx-background-color: #C5D0F4;
+}

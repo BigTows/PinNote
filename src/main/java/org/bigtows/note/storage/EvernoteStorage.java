@@ -47,18 +47,37 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
      */
     private final NoteStoreClient noteStore;
 
+    /**
+     * Evernote notebook
+     */
     private final Notebook notebook;
 
+    /**
+     * Parser
+     */
     private final EvernoteStorageParser parser;
 
     private MergeNotes mergeNotes = new MergeNotes();
 
     private List<UpdateNoteProgressEvent> progressEvents = new ArrayList<>();
 
+    /**
+     * Instantiates a new Evernote storage.
+     *
+     * @param credential the credential
+     * @param parser     the parser
+     */
     public EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser) {
         this(credential, parser, LoggerFactory.getLogger("Evernote Storage"));
     }
 
+    /**
+     * Instantiates a new Evernote storage.
+     *
+     * @param credential the credential
+     * @param parser     the parser
+     * @param logger     the logger
+     */
     EvernoteStorage(EvernoteCredential credential, EvernoteStorageParser parser, Logger logger) {
         this.logger = logger;
         noteStore = this.initializeNoteStore(credential);
@@ -363,7 +382,7 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
      * @return Cloned notes
      */
     private EvernoteNotes cloneNotes(EvernoteNotes notes) {
-        //Save cache This Best clone EVER xD
+        //Save cache. This Best clone EVER xD
         Gson gson = new Gson();
         return gson.fromJson(notes.toString(), EvernoteNotes.class);
     }
