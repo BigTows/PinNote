@@ -98,7 +98,6 @@
 .context-menu {
     -fx-min-width: 250px;
     -fx-font-size: 12px;
-    -fx-font-weight: medium;
     -fx-background-color: #47494B;
     -fx-padding: 0;
 }

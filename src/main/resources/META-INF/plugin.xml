@@ -24,13 +24,9 @@
           <p> Created by: Alexander Chapchuk @BigTows<p>
     ]]></description>
 
-    <idea-version since-build="7000"/>
-
-    <depends>com.intellij.modules.lang</depends>
-
     <extensions defaultExtensionNs="com.intellij">
         <!-- <applicationConfigurable instance="org.bigtows.window.SettingsWindow"/>-->
-        <toolWindow id="PinNote" icon="/icons/toolWindowRight_2.png" anchor="right" factoryClass="org.bigtows.window.RightToolWindow"/>
+        <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right" factoryClass="org.bigtows.window.RightToolWindow"/>
     </extensions>
 
     <actions>
