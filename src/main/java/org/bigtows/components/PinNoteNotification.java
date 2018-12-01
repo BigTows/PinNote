@@ -10,10 +10,11 @@ package org.bigtows.components;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 
 import javax.swing.*;
 
-public class PinNoteNotification implements ApplicationComponent {
+public class PinNoteNotification implements BaseComponent {
 
 
     /**

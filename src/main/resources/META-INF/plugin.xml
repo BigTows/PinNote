@@ -36,11 +36,7 @@
             <implementation-class>org.bigtows.PinNote</implementation-class>
         </component>
         <component>
-            <implementation-class>org.bigtows.components.ThemeHelper</implementation-class>
-        </component>
-        <component>
             <implementation-class>org.bigtows.components.PinNoteNotification</implementation-class>
         </component>
-
     </application-components>
 </idea-plugin>

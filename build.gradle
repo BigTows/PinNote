@@ -42,8 +42,14 @@ patchPluginXml {
 <ul>
     <li>New features:
         <ul>
-            <li>Added ability to delete: Target, Task and SubTask</li>
-            <li>Added ability to delete: Target, Task and SubTask</li>
+            <li>Added ability to delete: Target, Task and SubTask.</li>
+        </ul>
+    </li>
+    <li>Updates:
+        <ul>
+            <li>New icon.</li>
+            <li>Theme.</li>
+            <li>
         </ul>
     </li>
    

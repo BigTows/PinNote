@@ -4,6 +4,9 @@
  *
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
+.root {
+    -fx-accent: #364C8B;
+}
 
 .tree-view {
     -fx-background-color: transparent;
