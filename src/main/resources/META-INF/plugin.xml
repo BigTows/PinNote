@@ -11,22 +11,27 @@
     <version>1.2</version>
     <vendor email="gasfull98@gmail.com" url="http://github.com/BigTows/PinNote">Alexander Chapchuk</vendor>
     <description><![CDATA[
-        A PinNote is a way to write notes in JetBrains.<br>
+        A PinNote is a way to write notes in IDE by JetBrains.<br>
         Now supported:
           <ul>
-             <li>Evernote Storage</li>
-             <li>Sync with storage</li>
-             <li>Entity: Target, task and SubTask</li>
+             <li>Store your notes in <a href="https://evernote.com">Evernote</a>.</li>
+             <li>Sync notes between many instance IDE.</li>
+             <li>The opportunity to share notes on target.
+                <ul>
+                    <li>Support for SubTasks.</li>
+                </ul>
+             </li>
           </ul>
           <br>
           <a href="https://github.com/BigTows/PinNote">GitHub</a>
           <br>
-          <p> Created by: Alexander Chapchuk @BigTows<p>
+          <p>Created by: Alexander Chapchuk @BigTows<p>
     ]]></description>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- <applicationConfigurable instance="org.bigtows.window.SettingsWindow"/>-->
-        <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right" factoryClass="org.bigtows.window.RightToolWindow"/>
+        <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right"
+                    factoryClass="org.bigtows.window.RightToolWindow"/>
     </extensions>
 
     <actions>

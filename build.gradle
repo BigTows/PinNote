@@ -48,8 +48,7 @@ patchPluginXml {
     <li>Updates:
         <ul>
             <li>New icon.</li>
-            <li>Theme.</li>
-            <li>
+            <li>Updated styles: ScrollBar, MenuItem, Task, SubTask.</li>
         </ul>
     </li>
    
