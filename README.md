@@ -1,5 +1,5 @@
 # PinNote
-Notes plugin for JetBrains IDE. 
+A PinNote is a way to write notes in IDE by JetBrains.
 
 ## JetBrain repositoty [link](https://plugins.jetbrains.com/plugin/11224-pinnote)
 
