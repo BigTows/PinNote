@@ -19,7 +19,6 @@ import java.awt.*;
  */
 public class AddTargetDialog extends DialogWrapper {
 
-
     /**
      * Component JPanel
      */

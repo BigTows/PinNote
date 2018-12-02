@@ -10,6 +10,10 @@ package org.bigtows.window.controller;
 public class ResponseToken {
     private String accessToken;
 
+    /**
+     *
+     * @return
+     */
     public String getAccessToken() {
         return accessToken;
     }

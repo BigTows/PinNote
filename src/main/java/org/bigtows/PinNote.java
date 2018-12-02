@@ -9,13 +9,18 @@ package org.bigtows;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.BaseComponent;
 import org.bigtows.config.PinNoteConfigurator;
 import org.jetbrains.annotations.NotNull;
 
-public class PinNote implements ApplicationComponent {
+/**
+ * Base class
+ */
+public class PinNote implements BaseComponent {
 
-
+    /**
+     * Instance of injector
+     */
     public static Injector injector;
 
     @NotNull

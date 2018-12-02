@@ -12,12 +12,12 @@ public interface EvernoteCredential extends Credential {
      *
      * @return Service type
      */
-    public ServiceType getServiceType();
+    ServiceType getServiceType();
 
     /**
      * Setup token
      *
      * @param token Key auth
      */
-    public void setToken(String token);
+    void setToken(String token);
 }

@@ -5,9 +5,7 @@
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
 
-package org.bigtows.components.enums;
+package org.bigtows.note.visual.component.action;
 
-public enum ThemeEnum {
-    DRACULA,
-    LIGHT
+public interface TreeItemActionEvent {
 }

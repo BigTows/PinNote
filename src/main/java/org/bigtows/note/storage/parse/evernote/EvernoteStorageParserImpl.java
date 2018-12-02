@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 public class EvernoteStorageParserImpl implements EvernoteStorageParser {
 
-    private Logger logger = Logger.getLogger("[PinNote] Evernote parser");
+    private final Logger logger = Logger.getLogger("[PinNote] Evernote parser");
 
 
     @Override

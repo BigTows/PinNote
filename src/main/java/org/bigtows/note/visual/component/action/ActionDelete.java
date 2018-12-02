@@ -5,13 +5,8 @@
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
 
-package org.bigtows.components;
+package org.bigtows.note.visual.component.action;
 
-public interface UserStorage {
-
-
-    public void saveEvernoteToken(String token);
-
-    public String getEvernoteToken();
-
+public interface ActionDelete extends TreeItemActionEvent {
+     void onDelete();
 }

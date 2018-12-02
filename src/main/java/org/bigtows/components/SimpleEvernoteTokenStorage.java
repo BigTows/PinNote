@@ -9,8 +9,14 @@ package org.bigtows.components;
 
 import com.intellij.ide.util.PropertiesComponent;
 
-public class SimpleUserStorage implements UserStorage {
+/**
+ * Implements user storage. Based on JetBrains "PropertiesComponent"
+ */
+public class SimpleEvernoteTokenStorage implements EvernoteTokenStorage {
 
+    /**
+     * Instance of JetBrains component for access to property storage.
+     */
     private final PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
 
 
@@ -22,5 +28,10 @@ public class SimpleUserStorage implements UserStorage {
     @Override
     public String getEvernoteToken() {
         return propertiesComponent.getValue("Evernote.Token");
+    }
+
+    @Override
+    public boolean hasEvernoteToken() {
+        return propertiesComponent.getValue("Evernote.Token") != null;
     }
 }

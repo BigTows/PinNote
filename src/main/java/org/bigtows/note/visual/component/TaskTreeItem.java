@@ -9,10 +9,13 @@ package org.bigtows.note.visual.component;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 import org.bigtows.note.Task;
+import org.bigtows.note.visual.component.action.ActionDelete;
 
 /**
  * The type Task tree item.
@@ -33,6 +36,7 @@ public class TaskTreeItem extends TreeItem<TextField> implements NoteCustomCompo
      * Instance of PinNote Component CheckBox
      */
     private NoteCheckBox checkBox;
+    private ActionDelete actionDelete;
 
     /**
      * Instantiates a new Task tree item.
@@ -45,6 +49,7 @@ public class TaskTreeItem extends TreeItem<TextField> implements NoteCustomCompo
         this.textField = this.getValue();
         this.checkBox = (NoteCheckBox) this.getGraphic();
         this.checkBox.setSelected(task.isCompleted());
+        this.buildContextMenuForTask();
     }
 
 
@@ -61,9 +66,11 @@ public class TaskTreeItem extends TreeItem<TextField> implements NoteCustomCompo
      * Sets on action check box.
      *
      * @param event the event
+     * @return self
      */
-    public void setOnActionCheckBox(EventHandler<ActionEvent> event) {
+    public TaskTreeItem setOnActionCheckBox(EventHandler<ActionEvent> event) {
         checkBox.setOnAction(event);
+        return this;
     }
 
     @Override
@@ -88,6 +95,34 @@ public class TaskTreeItem extends TreeItem<TextField> implements NoteCustomCompo
             beforeCaretPosition = task.getNameTask().length();
         }
         return beforeCaretPosition;
+    }
+
+    /**
+     * Build context menu for task
+     */
+    private void buildContextMenuForTask() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem menuItem = new MenuItem("Remove");
+
+        menuItem.setOnAction((actionEvent) -> {
+            task.remove();
+            this.getParent().getChildren().remove(this);
+            this.actionDelete.onDelete();
+        });
+        contextMenu.getItems().add(menuItem);
+        this.getValue().setContextMenu(contextMenu);
+    }
+
+    /**
+     * Set action on delete
+     *
+     * @param actionDelete action on delete
+     * @return self
+     */
+    public TaskTreeItem setOnActionDelete(ActionDelete actionDelete) {
+        this.actionDelete = actionDelete;
+        return this;
     }
 
     /**

@@ -4,6 +4,9 @@
  *
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
+.root {
+    -fx-accent: #364C8B;
+}
 
 .tree-view {
     -fx-background-color: transparent;
@@ -53,4 +56,48 @@
     -fx-label-padding: 0 0 0 0em;
     -fx-text-fill: #6e6e6e;
     -fx-background-color: transparent;
+}
+
+.context-menu {
+    -fx-min-width: 250px;
+    -fx-font-size: 14px;
+    -fx-font-weight: medium;
+    -fx-background-color: #F7F7F7;
+    -fx-padding: 0;
+}
+
+.menu-item {
+    -fx-background-insets: 5 0 5 0;
+}
+
+.menu-item:hover {
+    -fx-min-width: 250px;
+    -fx-background-color: #C5D0F4;
+}
+
+.menu-item:focused {
+    -fx-background-color: #C5D0F4;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: grey;
+    -fx-opacity: 0.5;
+    -fx-background-radius: 1em;
+    -fx-background-insets: 5, 1, 0;
+    -fx-padding: 10px;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.corner {
+    -fx-background-color: #fff;
 }

@@ -39,7 +39,7 @@ public interface VisualAdapter<NODE, NOTES extends Notes> {
     /**
      * Setup error handler
      *
-     * @param errorHandler error handler callback
+     * @param errorHandler error handler event
      */
     void setErrorHandler(VisualAdapterErrorHandler errorHandler);
 
