@@ -33,7 +33,7 @@
         <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right"
                     factoryClass="org.bigtows.window.RightToolWindow"/>
     </extensions>
-
+    <depends>com.intellij.modules.lang</depends>
     <actions>
     </actions>
     <application-components>
