@@ -1,4 +1,7 @@
 # PinNote
+
+![JetBrains plugin](https://img.shields.io/jetbrains/plugin/v/11224-pinnote.svg)
+
 A PinNote is a way to write notes in IDE by JetBrains.
 
 ## JetBrain repositoty [link](https://plugins.jetbrains.com/plugin/11224-pinnote)
