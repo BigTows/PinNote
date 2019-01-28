@@ -112,6 +112,14 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
         noteStorage.subscribeUpdateNoteProgress(noteProgressEvent);
     }
 
+    /**
+     * Get project
+     *
+     * @return get project of visual adapter
+     */
+    public Project getProject() {
+        return project;
+    }
 
     @Override
     public void setNotes(EvernoteNotes notes) {
@@ -397,7 +405,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
         if (null != focusedTextField) {
             this.setFocusOnTextField(focusedTextField);
         }
-        this.changeNameTask(noteTask, keyEvent, node);
+        //this.changeNameTask(noteTask, keyEvent, node);
     }
 
     private void onKeyPressNoteTask(KeyEvent keyEvent, TreeItem<TextField> node, EvernoteSubTask noteSubTask) {
@@ -414,7 +422,7 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
             logger.debug("TextField status changed");
             noteStatus = NoteStatus.EDITING;
         }
-        this.changeNameTask(noteSubTask, keyEvent, node);
+        //this.changeNameTask(noteSubTask, keyEvent, node);
 
     }
 
@@ -588,12 +596,15 @@ public class EvernoteVisualAdapter implements VisualAdapter<TreeView, EvernoteNo
 
         if (task instanceof EvernoteTask) {
             treeItem.setOnActionTextField(keyEvent -> this.onKeyPressNoteTask(keyEvent, treeItem, (EvernoteTask) task));
-
         }
 
         if (task instanceof EvernoteSubTask) {
             treeItem.setOnActionTextField(keyEvent -> this.onKeyPressNoteTask(keyEvent, treeItem, (EvernoteSubTask) task));
         }
+
+        treeItem.getValue().textProperty().addListener((observableValue, oldValue, newValue) -> {
+            task.editNameTask(newValue);
+        });
         return treeItem;
     }
 
