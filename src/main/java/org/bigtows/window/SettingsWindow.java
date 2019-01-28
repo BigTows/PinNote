@@ -28,7 +28,6 @@ public class SettingsWindow implements SearchableConfigurable {
 
     public SettingsWindow() {
         PinNote.injector.injectMembers(this);
-        return;
     }
 
 
@@ -70,6 +69,7 @@ public class SettingsWindow implements SearchableConfigurable {
         if (toolWindow instanceof RightToolWindow) {
             evernoteCredential.setToken(null);
             ((RightToolWindow) toolWindow).initEvernoteToken(evernoteNoteView.getAdapter().getProject());
+            gui.setAccountName(null);
         }
     }
 

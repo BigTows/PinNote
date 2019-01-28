@@ -19,9 +19,13 @@ public class SettingsWindowForm {
     private JButton logoutButton;
 
     private final String DEFAULT_NAME_LOGOUT_BUTTON = "Logout, %_USER_%.";
+    private final String DEFAULT_NAME_LOGIN_BUTTON = "Please login.";
 
     private SettingsWindowLogoutEvent storageEvent = null;
 
+    /**
+     * Instantiates a new Settings window form.
+     */
     public SettingsWindowForm() {
         logoutButton.addActionListener(listener -> {
             if (storageEvent != null) {
@@ -47,6 +51,7 @@ public class SettingsWindowForm {
     public void setAccountName(String accountName) {
         if (accountName == null) {
             logoutButton.setEnabled(false);
+            logoutButton.setText(DEFAULT_NAME_LOGIN_BUTTON);
         } else {
             logoutButton.setEnabled(true);
             logoutButton.setText(DEFAULT_NAME_LOGOUT_BUTTON.replace("%_USER_%", accountName));
@@ -54,6 +59,11 @@ public class SettingsWindowForm {
     }
 
 
+    /**
+     * Sets on logout.
+     *
+     * @param event the event
+     */
     public void setOnLogout(SettingsWindowLogoutEvent event) {
         this.storageEvent = event;
     }

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '1.3.1'
+version '1.3.2'
 
 sourceCompatibility = 1.8
 
@@ -38,23 +38,21 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 1.3.1</h1><br>
+<h1>Release: 1.3.2</h1><br>
 <ul>
     <li>New features:
         <ul>
-            <li>Added ability to delete: Target, Task and SubTask.</li>
-            <li>Added support all IDE's.</li>
+            <li>Added logout function: Go to Settings -> Tool -> PinNote</li>
         </ul>
     </li>
-    <li>Updates:
+    <li>Fixes:
         <ul>
-            <li>New icon.</li>
-            <li>Updated styles: ScrollBar, MenuItem, Task, SubTask.</li>
+            <li>Don't work ctrl + v #12</li>
         </ul>
     </li>
    
 </ul>     
       """
-    version "1.3.1"
+    version "1.3.2"
     sinceBuild "7000"
 }
