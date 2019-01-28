@@ -32,6 +32,8 @@
         <!-- <applicationConfigurable instance="org.bigtows.window.SettingsWindow"/>-->
         <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right"
                     factoryClass="org.bigtows.window.RightToolWindow"/>
+
+        <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote" instance="org.bigtows.window.SettingsWindow" />
     </extensions>
 
     <actions>

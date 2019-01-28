@@ -41,6 +41,10 @@ public class EvernoteOAuth2Browser {
      */
     private EvernoteOAuth2BrowserErrorEvent errorEvent;
 
+    /**
+     * Controller cache
+     */
+    private WebViewController controllerCache;
 
     @Inject
     public EvernoteOAuth2Browser(Gson gson) {

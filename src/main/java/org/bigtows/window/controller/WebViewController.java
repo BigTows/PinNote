@@ -54,6 +54,7 @@ public class WebViewController {
      * Initialize.
      */
     public void initialize() {
+        webView.getEngine().load(this.getOAuth2ServerUrl() + "?action=reset");
         webView.getEngine().load(this.getOAuth2ServerUrl());
         webView.getEngine().getLoadWorker().stateProperty().addListener(this::statePropertyListener);
     }

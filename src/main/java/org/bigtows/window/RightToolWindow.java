@@ -35,9 +35,15 @@ import javax.swing.*;
  */
 public class RightToolWindow implements ToolWindowFactory {
 
+    /**
+     * PinNote plugin settings
+     */
     @Inject
     private PinNoteSettings pinNoteSettings;
 
+    /**
+     * Evernote credentials
+     */
     @Inject
     private EvernoteCredential evernoteCredential;
 
@@ -79,12 +85,17 @@ public class RightToolWindow implements ToolWindowFactory {
         component.getParent().add(fxPanel);
     }
 
+    @Override
+    public boolean isDoNotActivateOnStart() {
+        return true;
+    }
+
     /**
      * Initialize evernote Token
      *
      * @param project JetBrain project
      */
-    private void initEvernoteToken(Project project) {
+    public void initEvernoteToken(Project project) {
         String token = evernoteCredential.getToken();
         if (null == token) {
             this.openBrowser(project);
@@ -136,6 +147,7 @@ public class RightToolWindow implements ToolWindowFactory {
     private void openNoteView(JFXPanel jfxPanel, NoteStorage noteStorage, Project project) {
         evernoteNoteView
                 .setTheme(themeEnum)
+                .setToolWindow(this)
                 .onError((exception) -> {
                     pinNoteNotification.errorNotification("Error note view", exception);
                 })

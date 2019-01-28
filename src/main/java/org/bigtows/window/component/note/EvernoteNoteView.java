@@ -8,7 +8,9 @@
 package org.bigtows.window.component.note;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindowFactory;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +27,7 @@ import java.io.IOException;
 /**
  * Component of Evernote NoteView
  */
+@Singleton
 public class EvernoteNoteView {
 
     /**
@@ -42,16 +45,51 @@ public class EvernoteNoteView {
      */
     private EvernoteNoteViewErrorEvent noteViewErrorEvent;
 
+    /**
+     * Tool window
+     */
+    private ToolWindowFactory toolWindow;
+
+    /**
+     * Visual adapter
+     */
+    private EvernoteVisualAdapter adapter;
+
+    /**
+     * Instantiates a new Evernote note view.
+     *
+     * @param themeHelper the theme helper
+     */
     @Inject
     public EvernoteNoteView(ThemeHelper themeHelper) {
         this.themeHelper = themeHelper;
     }
 
     /**
+     * Set tool window
+     *
+     * @param toolWindow tool window
+     * @return self tool window
+     */
+    public EvernoteNoteView setToolWindow(ToolWindowFactory toolWindow) {
+        this.toolWindow = toolWindow;
+        return this;
+    }
+
+    /**
+     * Gets tool window.
+     *
+     * @return the tool window
+     */
+    public ToolWindowFactory getToolWindow() {
+        return toolWindow;
+    }
+
+    /**
      * Set theme for component
      *
      * @param theme theme
-     * @return self
+     * @return self theme
      */
     public EvernoteNoteView setTheme(ThemeEnum theme) {
         this.theme = theme;
@@ -62,7 +100,7 @@ public class EvernoteNoteView {
      * Subscribe on error
      *
      * @param noteViewErrorEvent on error handler
-     * @return self
+     * @return self evernote note view
      */
     public EvernoteNoteView onError(EvernoteNoteViewErrorEvent noteViewErrorEvent) {
         this.noteViewErrorEvent = noteViewErrorEvent;
@@ -88,6 +126,15 @@ public class EvernoteNoteView {
     }
 
     /**
+     * Get evernote visual adapter
+     *
+     * @return adapter adapter
+     */
+    public EvernoteVisualAdapter getAdapter() {
+        return adapter;
+    }
+
+    /**
      * Build scene
      *
      * @param noteStorage note storage
@@ -97,7 +144,7 @@ public class EvernoteNoteView {
      */
     private Scene buildScene(EvernoteStorage noteStorage, Project project) throws IOException {
         FXMLLoader fxmlLoader = this.buildFXMLLoader();
-        new EvernoteVisualAdapter(fxmlLoader, noteStorage, project);
+        this.adapter = new EvernoteVisualAdapter(fxmlLoader, noteStorage, project);
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/fxml/style/" + themeHelper.getNameResource(theme)).toString());
