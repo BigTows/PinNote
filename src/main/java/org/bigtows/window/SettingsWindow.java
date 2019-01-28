@@ -64,6 +64,9 @@ public class SettingsWindow implements SearchableConfigurable {
         return gui.getRoot();
     }
 
+    /**
+     * Logout process
+     */
     private void logoutProcess() {
         ToolWindowFactory toolWindow = evernoteNoteView.getToolWindow();
         if (toolWindow instanceof RightToolWindow) {
