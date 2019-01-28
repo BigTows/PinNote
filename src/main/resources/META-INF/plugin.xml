@@ -35,7 +35,7 @@
 
         <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote" instance="org.bigtows.window.SettingsWindow" />
     </extensions>
-
+    <depends>com.intellij.modules.lang</depends>
     <actions>
     </actions>
     <application-components>
