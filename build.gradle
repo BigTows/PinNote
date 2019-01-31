@@ -49,6 +49,7 @@ patchPluginXml {
     <li>Fixes:
         <ul>
             <li>Invalid login page <a href="https://github.com/BigTows/PinNote/issues/13">#13</a></li>
+            <li>Fix parser content from evernote.</li>
         </ul>
     </li>
    
