@@ -57,6 +57,9 @@ public class EvernoteStorage implements NoteStorage<EvernoteNotes, EvernoteTarge
      */
     private final EvernoteStorageParser parser;
 
+    /**
+     * Component for merge notes
+     */
     private MergeNotes mergeNotes = new MergeNotes();
 
     private List<UpdateNoteProgressEvent> progressEvents = new ArrayList<>();

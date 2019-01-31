@@ -17,6 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +133,15 @@ public class EvernoteStorageParserImpl implements EvernoteStorageParser {
                         context.setName(taskNodeChildren.toString().trim());
                     }
                 } else if (taskNodeChildren instanceof Element) {
-                    this.prepareSubTask((Element) taskNodeChildren, context);
+                    Elements elements = ((Element) taskNodeChildren).getElementsByTag("span");
+                    if (elements.size()==1){
+                        //is element with span - text
+                        if (context.getName() == null) {
+                            context.setName(elements.get(0).text().trim());
+                        }
+                    }else {
+                        this.prepareSubTask((Element) taskNodeChildren, context);
+                    }
                 }
             }
             if (taskNode.childNodes().size() != 0) {
