@@ -54,9 +54,8 @@ public class WebViewController {
      * Initialize.
      */
     public void initialize() {
-        webView.getEngine().load(this.getOAuth2ServerUrl() + "?action=reset");
-        webView.getEngine().load(this.getOAuth2ServerUrl());
         webView.getEngine().getLoadWorker().stateProperty().addListener(this::statePropertyListener);
+        webView.getEngine().load(this.getResetSessionServerUrl());
     }
 
     /**
@@ -66,19 +65,46 @@ public class WebViewController {
      * @param oldState   The old value
      * @param newState   The new value
      */
-    private void statePropertyListener(ObservableValue<? extends Worker.State> observable, Worker.State oldState, Worker.State newState) {
+    private void statePropertyListener(ObservableValue<? extends Worker.State> observable,
+                                       Worker.State oldState,
+                                       Worker.State newState
+    ) {
         if (newState == Worker.State.SUCCEEDED) {
-            if (webView.getEngine().getLocation().equalsIgnoreCase(this.getOAuth2ServerUrl() + "index.php?action=accessToken")) {
+            if (webView.getEngine().getLocation().equalsIgnoreCase(this.getAccessTokenServerUrl())) {
                 try {
                     callBackWebViewController.onAuthCompleted(
-                            webView.getEngine().getDocument().getElementsByTagName("body").item(0).getChildNodes().item(0).getNodeValue()
+                            webView.getEngine().getDocument()
+                                    .getElementsByTagName("body")
+                                    .item(0)
+                                    .getChildNodes()
+                                    .item(0).getNodeValue()
                     );
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else if (webView.getEngine().getLocation().equalsIgnoreCase(this.getResetSessionServerUrl())) {
+                webView.getEngine().load(this.getOAuth2ServerUrl());
             }
         }
 
+    }
+
+    /**
+     * Get server url for access token
+     *
+     * @return Access token url
+     */
+    private String getAccessTokenServerUrl() {
+        return this.getOAuth2ServerUrl() + "index.php?action=accessToken";
+    }
+
+    /**
+     * Get reset url for drop session
+     *
+     * @return Reset url
+     */
+    private String getResetSessionServerUrl() {
+        return this.getOAuth2ServerUrl() + "index.php?action=reset";
     }
 
     /**
