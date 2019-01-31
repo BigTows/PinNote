@@ -1,7 +1,13 @@
+/*
+ * Copyright (c) Alexander <gasfull98@gmail.com> Chapchuk
+ * Project name: PinNote
+ *
+ * Licensed under the MIT License. See LICENSE file in the project root for license information.
+ */
+
 package org.bigtows.window;
 
 import com.google.inject.Inject;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import org.bigtows.PinNote;
@@ -59,7 +65,7 @@ public class SettingsWindow implements SearchableConfigurable {
     @Override
     public JComponent createComponent() {
         gui = new SettingsWindowForm();
-        gui.setAccountName(this.getAccountName());
+        gui.setClientIsLogged(evernoteCredential.getToken() != null);
         gui.setOnLogout(this::logoutProcess);
         return gui.getRoot();
     }
@@ -72,7 +78,7 @@ public class SettingsWindow implements SearchableConfigurable {
         if (toolWindow instanceof RightToolWindow) {
             evernoteCredential.setToken(null);
             ((RightToolWindow) toolWindow).initEvernoteToken(evernoteNoteView.getAdapter().getProject());
-            gui.setAccountName(null);
+            gui.setClientIsLogged(false);
         }
     }
 
@@ -82,7 +88,7 @@ public class SettingsWindow implements SearchableConfigurable {
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
 
     }
 
@@ -96,18 +102,4 @@ public class SettingsWindow implements SearchableConfigurable {
         gui = null;
     }
 
-
-    /**
-     * Get account name
-     *
-     * @return account name
-     */
-    private String getAccountName() {
-        String[] splitToken = evernoteCredential.getToken().split("A=");
-        if (splitToken.length != 2) {
-            return null;
-        }
-
-        return splitToken[1].split(":")[0];
-    }
 }
