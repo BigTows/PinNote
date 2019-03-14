@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '1.3.3'
+version '1.3.3.1'
 
 sourceCompatibility = 1.8
 
@@ -55,6 +55,6 @@ patchPluginXml {
    
 </ul>     
       """
-    version "1.3.3"
+    version "1.3.3.1"
     sinceBuild "7000"
 }
