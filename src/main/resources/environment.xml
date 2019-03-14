@@ -3,7 +3,7 @@
     <settings>
         <debug enable="false"/>
         <Evernote>
-            <OAuth2Server url="http://gasfull.fvds.ru/"/>
+            <OAuth2Server url="http://91.240.85.221/"/>
         </Evernote>
     </settings>
 </PinNote>
