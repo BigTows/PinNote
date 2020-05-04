@@ -58,6 +58,13 @@ public class PinNoteTreeCellRender implements TreeCellRenderer {
                                 tree.updateUI();
                             }
                         }
+
+                        @Override
+                        public void delete() {
+                            ((AbstractTaskTreeNode) value).removeFromParent();
+                            tree.updateUI();
+                            treeChanged.onChange();
+                        }
                     }, treeChanged);
             if (sourceTaskTreeNode.getCreationReason() == CreationReason.USER) {
                 SwingUtilities.invokeLater(() -> {

@@ -19,7 +19,7 @@ public class EditorTimer {
         return new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                 }
                 if (status == Status.EDITING) {

@@ -11,6 +11,7 @@ import org.bigtows.window.ui.text.JTextFieldWithPlaceholder;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Collections;
@@ -64,6 +65,23 @@ public class TaskPanel extends JPanel {
         });
         check.addItemListener(this::onCheckBoxChange);
         textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+
+        textField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    doPop(e);
+                }
+            }
+
+            private void doPop(MouseEvent e) {
+                DeletePopupMenu menu = new DeletePopupMenu((actionEvent) -> {
+                   userShortcutPressed.delete();
+                });
+                menu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {

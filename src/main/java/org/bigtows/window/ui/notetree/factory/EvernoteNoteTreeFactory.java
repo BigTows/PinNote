@@ -1,5 +1,9 @@
 package org.bigtows.window.ui.notetree.factory;
 
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
+import lombok.SneakyThrows;
 import org.bigtows.service.note.notebook.evernote.EvernoteNote;
 import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
 import org.bigtows.service.note.notebook.evernote.EvernoteSubTask;
@@ -10,6 +14,7 @@ import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.SubTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.tree.MutableTreeNode;
 import java.util.ArrayList;
@@ -17,17 +22,26 @@ import java.util.List;
 
 public class EvernoteNoteTreeFactory {
 
-    public static NoteTree buildNoteTreeForEvernote(EvernoteNotebook evernoteNotebook) {
+    public static NoteTree buildNoteTreeForEvernote(Project project, EvernoteNotebook evernoteNotebook) {
         var noteTree = new NoteTree(buildTreeNodeByNoteBook(evernoteNotebook.getAllNotes()));
         var timer = new EditorTimer(() -> {
-            var newNotes = evernoteNotebook.updateNotes(
-                    buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
-            );
-            noteTree.updateModel(
-                    buildTreeNodeByNoteBook(
-                            newNotes
-                    )
-            );
+            ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Upload evernote.") {
+                @SneakyThrows
+                @Override
+                public void run(@NotNull ProgressIndicator indicator) {
+                    noteTree.lockTree();
+                    var newNotes = evernoteNotebook.updateNotes(
+                            buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
+                    );
+                    noteTree.updateModel(
+                            buildTreeNodeByNoteBook(
+                                    newNotes
+                            )
+                    );
+                    noteTree.unlockTree();
+                }
+            });
+
         });
         noteTree.registerEvent(timer::editing);
         return noteTree;

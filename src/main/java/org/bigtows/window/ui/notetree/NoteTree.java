@@ -126,4 +126,12 @@ public class NoteTree extends JPanel {
         tree.updateUI();
     }
 
+    public void lockTree() {
+        SwingUtilities.invokeLater(() -> tree.setEditable(false));
+    }
+
+    public void unlockTree() {
+        SwingUtilities.invokeLater(() -> tree.setEditable(true));
+    }
+
 }

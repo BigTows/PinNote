@@ -28,18 +28,18 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         var serviceAccessible = project.getService(EvernoteNotebookAccessible.class);
         //serviceAccessible.setToken(null);
         if (serviceAccessible.hasToken()) {
-            this.initEvernoteToken(toolWindow.getComponent(), serviceAccessible);
+            this.initEvernoteToken(project, toolWindow.getComponent(), serviceAccessible);
         } else {
-            this.initPinNote(toolWindow.getComponent());
+            this.initPinNote(project, toolWindow.getComponent());
         }
     }
 
-    private void initEvernoteToken(JComponent root, EvernoteNotebookAccessible evernoteNotebookAccessible) {
+    private void initEvernoteToken(Project project, JComponent root, EvernoteNotebookAccessible evernoteNotebookAccessible) {
         var server = new TokenServer();
         int port = server.getPort();
         server.setEvernoteToken((token) -> {
             evernoteNotebookAccessible.setToken(token);
-            initPinNote(root);
+            initPinNote(project, root);
             server.stop();
         });
         server.startAsync();
@@ -50,14 +50,14 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         }
     }
 
-    private void initPinNote(JComponent root) {
+    private void initPinNote(Project project, JComponent root) {
         var pinNoteComponent = new PinNoteComponent();
         var result = pinNoteService.getNoteRepository().getAll();
         root.add(pinNoteComponent.getRoot());
 
         pinNoteComponent.addNotebook(
                 result.get(0),
-                EvernoteNoteTreeFactory.buildNoteTreeForEvernote((EvernoteNotebook) result.get(0))
+                EvernoteNoteTreeFactory.buildNoteTreeForEvernote(project, (EvernoteNotebook) result.get(0))
         );
     }
 }

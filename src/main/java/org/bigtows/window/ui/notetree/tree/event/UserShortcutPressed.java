@@ -6,4 +6,6 @@ public interface UserShortcutPressed {
 
 
     void newSubTask();
+
+    void delete();
 }
