@@ -4,9 +4,16 @@ import com.intellij.openapi.ui.JBPopupMenu;
 
 import java.awt.event.MouseEvent;
 
-public class RightClickMouseAdapter extends ClickMouseAdapter {
+/**
+ * Adapter for popup menu, showing only after pressed right key
+ */
+public final class RightClickMouseAdapter extends ClickMouseAdapter {
 
-
+    /**
+     * Constructor
+     *
+     * @param popupMenu instance of popup menu
+     */
     public RightClickMouseAdapter(JBPopupMenu popupMenu) {
         super(popupMenu);
     }
