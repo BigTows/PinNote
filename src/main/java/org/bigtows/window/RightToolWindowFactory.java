@@ -8,6 +8,7 @@ import org.bigtows.service.PinNoteService;
 import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
 import org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessible;
 import org.bigtows.window.ui.notetree.factory.EvernoteNoteTreeFactory;
+import org.bigtows.window.ui.pinnote.PinNoteComponent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -50,7 +51,13 @@ public class RightToolWindowFactory implements ToolWindowFactory {
     }
 
     private void initPinNote(JComponent root) {
+        var pinNoteComponent = new PinNoteComponent();
         var result = pinNoteService.getNoteRepository().getAll();
-        root.add(EvernoteNoteTreeFactory.buildNoteTreeForEvernote((EvernoteNotebook) result.get(0)));
+        root.add(pinNoteComponent.getRoot());
+
+        pinNoteComponent.addNotebook(
+                result.get(0),
+                EvernoteNoteTreeFactory.buildNoteTreeForEvernote((EvernoteNotebook) result.get(0))
+        );
     }
 }

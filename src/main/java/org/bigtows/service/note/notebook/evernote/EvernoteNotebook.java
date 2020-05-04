@@ -154,7 +154,7 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
         for (EvernoteNote target : evernoteNotes) {
             String guid = target.getId();
             Note note;
-            if (null != guid) {
+            if (null != guid && !guid.equals("")) {
                 note = serverNotes.stream().filter(rawNote -> rawNote.getGuid().equals(guid)).findFirst().orElse(null);
             } else {
                 logger.info("{} note created by user, and try upload to server.", target.getName());

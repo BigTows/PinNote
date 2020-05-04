@@ -3,6 +3,8 @@ package org.bigtows.window.ui.notetree;
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.event.OnNoteTreeChange;
 import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
+import org.bigtows.window.ui.notetree.tree.entity.Note;
+import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.render.PinNoteTreeCellRender;
@@ -107,6 +109,21 @@ public class NoteTree extends JPanel {
             treeNodeList.add((MutableTreeNode) element);
         });
         return treeNodeList;
+    }
+
+    public void addNewNote(String name) {
+        var treeNode = ((DefaultMutableTreeNode) tree.getModel().getRoot());
+        var noteTreeNode = new NoteTreeNode(
+                Note.builder()
+                        .name(name)
+                        .build()
+        );
+        treeNode.add(noteTreeNode);
+
+        noteTreeNode.add(new TaskTreeNode(Task.builder()
+                .build())
+        );
+        tree.updateUI();
     }
 
 }

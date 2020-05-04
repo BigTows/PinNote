@@ -11,9 +11,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.Collections;
 
 public class TaskPanel extends JPanel {
@@ -30,8 +28,21 @@ public class TaskPanel extends JPanel {
         setLayout(new BorderLayout());
         add(check, BorderLayout.WEST);
         add(textField, BorderLayout.CENTER);
+        textField.setSize(textField.getWidth(), textField.getHeight() + 4);
         textField.setText(this.source.getUserObject().getText());
+        textField.setOpaque(false);
         check.setSelected(this.source.getUserObject().getChecked());
+        check.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                textField.requestFocus();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+            }
+        });
         textField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 onChange();
@@ -47,13 +58,11 @@ public class TaskPanel extends JPanel {
 
             public void onChange() {
                 source.getUserObject().setText(textField.getText());
-                source.getUserObject().setChecked(check.isSelected());
                 treeChanged.onChange();
             }
         });
         check.addItemListener(this::onCheckBoxChange);
-        textField.setFocusTraversalKeys(
-                KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+        textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -65,10 +74,15 @@ public class TaskPanel extends JPanel {
             }
 
         });
+        this.calculateBorder();
     }
 
     private void onCheckBoxChange(ItemEvent event) {
         source.getUserObject().setChecked(check.isSelected());
         treeChanged.onChange();
+    }
+
+    private void calculateBorder() {
+        textField.setBorder(BorderFactory.createEmptyBorder());
     }
 }

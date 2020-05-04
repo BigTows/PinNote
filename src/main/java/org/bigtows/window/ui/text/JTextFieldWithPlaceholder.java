@@ -34,7 +34,7 @@ public class JTextFieldWithPlaceholder extends JBTextField {
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(getDisabledTextColor());
-        g.drawString(placeholder, getInsets().left + 3, pG.getFontMetrics()
-                .getMaxAscent() + getInsets().top - 1);
+        g.drawString(placeholder, getInsets().left + 5, pG.getFontMetrics()
+                .getMaxAscent() + getInsets().top + 2);
     }
 }
