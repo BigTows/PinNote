@@ -54,8 +54,8 @@ public class PinNoteTreeCellRender implements TreeCellRenderer {
                             if (abstractTaskTreeNode != null) {
                                 abstractTaskTreeNode.setCreationReason(CreationReason.USER);
                                 sourceTaskTreeNode.add(abstractTaskTreeNode);
-                                tree.expandPath(new TreePath(abstractTaskTreeNode.getPath()));
                                 tree.updateUI();
+                                tree.expandPath(new TreePath(((DefaultMutableTreeNode) abstractTaskTreeNode.getParent()).getPath()));
                             }
                         }
 
