@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+//TODO Thread service.
 @Service
 public class EvernoteNotebook implements org.bigtows.service.note.notebook.Notebook<EvernoteNote> {
 
@@ -138,6 +140,9 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
     public List<EvernoteNote> updateNotes(List<EvernoteNote> notes) {
         List<Note> rawNotes = this.tryGetAllRawNotes();
         List<EvernoteNote> syncedNotes = mergeNotes.sync(notes, this.prepareRawNotesToEvernoteNotes(rawNotes));
+        var res = rawNotes.stream().filter(note -> syncedNotes.stream().filter(syncedNote -> syncedNote.getId().equals(note.getGuid())).findFirst().isEmpty())
+                .collect(Collectors.toList());
+        res.forEach(re -> this.deleteNoteByGuid(re.getGuid()));
         this.uploadEvernoteNotes(syncedNotes, rawNotes);
         mergeNotes.setCacheNotes(this.cloneNotes(notes));
         return syncedNotes;
@@ -160,6 +165,7 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
                 logger.info("{} note created by user, and try upload to server.", target.getName());
                 //This NoteTarget created on Client
                 note = this.tryCreateTarget(target);
+                target.setId(note.getGuid());
             }
             if (note == null) {
                 continue;
@@ -176,19 +182,23 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
 
     @Override
     public void deleteNote(EvernoteNote target) {
-        new Thread(() -> {
-            try {
-                noteStore.deleteNote(target.getId());
-            } catch (Exception e) {
-                logger.error("Error delete target {}({})", target.getName(), target.getId(), e);
-                throw new StorageException("Error delete target: " + target.getName(), e);
-            }
-        }).start();
+        this.deleteNoteByGuid(target.getId());
+    }
+
+    private void deleteNoteByGuid(String guid) {
+        try {
+            noteStore.deleteNote(guid);
+        } catch (Exception e) {
+            logger.error("Error delete target {}()", guid, e);
+            throw new StorageException("Error delete target: " + guid, e);
+        }
     }
 
     @Override
     public List<EvernoteNote> getAllNotes() {
-        return this.loadAllNotesFromServer();
+        var notes = this.loadAllNotesFromServer();
+        mergeNotes.setCacheNotes(notes);
+        return notes;
     }
 
 

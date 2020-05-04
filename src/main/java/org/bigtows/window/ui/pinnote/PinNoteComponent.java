@@ -23,7 +23,7 @@ public class PinNoteComponent {
         newTargetButton.addActionListener(e -> {
             //on click
             var noteTree = (NoteTree) notebookTabbedPane.getSelectedComponent();
-            noteTree.addNewNote("Test");
+            noteTree.addNewNote(JOptionPane.showInputDialog("Press name of list"));
         });
     }
 

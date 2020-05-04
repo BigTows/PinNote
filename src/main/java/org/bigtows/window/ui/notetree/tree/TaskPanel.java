@@ -2,6 +2,7 @@ package org.bigtows.window.ui.notetree.tree;
 
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.JBUI;
+import org.bigtows.window.ui.menu.DeletePopupMenu;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
 import org.bigtows.window.ui.notetree.tree.event.UserShortcutPressed;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;

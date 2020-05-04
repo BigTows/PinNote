@@ -1,5 +1,6 @@
 package org.bigtows.window.ui.notetree.tree.render;
 
+import org.bigtows.window.ui.menu.DeletePopupMenu;
 import org.bigtows.window.ui.notetree.tree.TaskPanel;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
@@ -11,6 +12,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PinNoteTreeCellRender implements TreeCellRenderer {
     private final TreeChanged treeChanged;
@@ -68,7 +71,25 @@ public class PinNoteTreeCellRender implements TreeCellRenderer {
 
             return panel;
         } else if (value instanceof NoteTreeNode) {
-            return new JLabel(((NoteTreeNode) value).getUserObject().getName());
+            var currentValue = (NoteTreeNode) value;
+            var label = new JLabel(currentValue.getUserObject().getName());
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    doPop(e);
+                }
+
+                private void doPop(MouseEvent e) {
+                    DeletePopupMenu menu = new DeletePopupMenu((actionEvent) -> {
+                        var treeNode = ((DefaultMutableTreeNode) tree.getModel().getRoot());
+                        treeNode.remove(currentValue);
+                        tree.updateUI();
+                        treeChanged.onChange();
+                    });
+                    menu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            });
+            return label;
         }
         return new JLabel("root");
     }
