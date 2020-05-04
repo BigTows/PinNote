@@ -1,37 +1,14 @@
-/*
- * Copyright (c) Alexander <gasfull98@gmail.com> Chapchuk
- * Project name: PinNote
- *
- * Licensed under the MIT License. See LICENSE file in the project root for license information.
- */
-
 package org.bigtows;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.intellij.openapi.components.BaseComponent;
-import org.bigtows.config.PinNoteConfigurator;
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupActivity;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Base class
- */
-public class PinNote implements BaseComponent {
 
-    /**
-     * Instance of injector
-     */
-    public static Injector injector;
-
-    @NotNull
+public class PinNote implements StartupActivity {
     @Override
-    public String getComponentName() {
-        return "PinNote";
+    public void runActivity(@NotNull Project project) {
+        System.out.println("TEST");
     }
-
-    @Override
-    public void initComponent() {
-        injector = Guice.createInjector(new PinNoteConfigurator());
-    }
-
 }
