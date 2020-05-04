@@ -15,9 +15,15 @@ public class EvernoteTokenHandler extends UriHandlerBased {
     @Override
     public void process(HttpRequest request, StringBuilder buff) {
         String token = request.headers().get("X-Evernote-Access-Token");
+        String url = request.uri();
         if (token != null) {
             event.token(token);
+            buff.append("OK");
+        } else if (url.startsWith("/evernote?token=")) {
+            event.token(url.replaceFirst("/evernote\\?token=", ""));
+            buff.append("Success, goto IDE!");
+        }else{
+            buff.append("Incorrect request");
         }
-        buff.append("OK");
     }
 }

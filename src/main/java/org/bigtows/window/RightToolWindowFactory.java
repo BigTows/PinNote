@@ -26,7 +26,7 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         pinNoteService = project.getService(PinNoteService.class);
 
         var serviceAccessible = project.getService(EvernoteNotebookAccessible.class);
-        //serviceAccessible.setToken(null);
+        serviceAccessible.setToken(null);
         if (serviceAccessible.hasToken()) {
             this.initEvernoteToken(project, toolWindow.getComponent(), serviceAccessible);
         } else {
@@ -40,11 +40,13 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         server.setEvernoteToken((token) -> {
             evernoteNotebookAccessible.setToken(token);
             initPinNote(project, root);
-            server.stop();
+            //TODO is shit
+            //TODO PinNote in new.
+            SwingUtilities.invokeLater(server::stop);
         });
         server.startAsync();
         try {
-            Desktop.getDesktop().browse(new URI("http://194.87.103.208/?port=" + port));
+            Desktop.getDesktop().browse(new URI("https://pinnote.bigtows.org/?port=" + port));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }

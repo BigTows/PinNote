@@ -11,6 +11,8 @@ import io.netty.util.CharsetUtil;
 import org.bigtows.component.server.token.handler.EvernoteTokenHandler;
 import org.bigtows.component.server.token.handler.UriHandlerBased;
 import org.bigtows.component.server.token.handler.event.EvernoteToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,14 +20,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
-import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class TokenServer {
     private final int port;
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private EvernoteToken evernoteToken;
     ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -46,6 +49,7 @@ public class TokenServer {
     }
 
     public void startAsync() {
+        logger.info("Start server at {} port", port);
         executorService.submit(() -> {
             EventLoopGroup bossGroup = new NioEventLoopGroup();
             EventLoopGroup workerGroup = new NioEventLoopGroup();
