@@ -26,7 +26,7 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         pinNoteService = project.getService(PinNoteService.class);
 
         var serviceAccessible = project.getService(EvernoteNotebookAccessible.class);
-        serviceAccessible.setToken(null);
+        //serviceAccessible.setToken(null);
         if (serviceAccessible.hasToken()) {
             this.initEvernoteToken(project, toolWindow.getComponent(), serviceAccessible);
         } else {
@@ -40,9 +40,7 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         server.setEvernoteToken((token) -> {
             evernoteNotebookAccessible.setToken(token);
             initPinNote(project, root);
-            //TODO is shit
-            //TODO PinNote in new.
-            SwingUtilities.invokeLater(server::stop);
+            server.stop();
         });
         server.startAsync();
         try {

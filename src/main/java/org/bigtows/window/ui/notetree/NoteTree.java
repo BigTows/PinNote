@@ -123,6 +123,9 @@ public class NoteTree extends JPanel {
         noteTreeNode.add(new TaskTreeNode(Task.builder()
                 .build())
         );
+        if (noteTreeNode.getChildCount() == 1) {
+            tree.setModel(tree.getModel());
+        }
         tree.updateUI();
     }
 

@@ -70,7 +70,7 @@ public class TokenServer {
     }
 
     public void stop() {
-        executorService.shutdownNow();
+        executorService.shutdown();
     }
 
     private class ServerInitializer extends ChannelInitializer<SocketChannel> {
