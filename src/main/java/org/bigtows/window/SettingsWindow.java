@@ -1,85 +1,52 @@
-/*
- * Copyright (c) Alexander <gasfull98@gmail.com> Chapchuk
- * Project name: PinNote
- *
- * Licensed under the MIT License. See LICENSE file in the project root for license information.
- */
-
 package org.bigtows.window;
 
-import com.google.inject.Inject;
-import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.wm.ToolWindowFactory;
-import org.bigtows.PinNote;
-import org.bigtows.note.storage.credential.EvernoteCredential;
-import org.bigtows.window.component.form.SettingsWindowForm;
-import org.bigtows.window.component.note.EvernoteNoteView;
+import com.intellij.openapi.options.Configurable;
+import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.util.ImageLoader;
+import org.bigtows.window.ui.pinnote.PinNoteSettingsComponent;
+import org.bigtows.window.ui.pinnote.settings.NotebookSource;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SettingsWindow implements SearchableConfigurable {
-
-
-    @Inject
-    private EvernoteCredential evernoteCredential;
-
-    @Inject
-    private EvernoteNoteView evernoteNoteView;
-
-    private SettingsWindowForm gui;
-
-
-    public SettingsWindow() {
-        PinNote.injector.injectMembers(this);
-    }
-
-
-    @Nls
+public class SettingsWindow implements Configurable {
+    @Nls(capitalization = Nls.Capitalization.Title)
     @Override
     public String getDisplayName() {
-        return "PinNote";
-    }
-
-    @Nullable
-    @Override
-    public String getHelpTopic() {
-        return "preference.PinNote";
-    }
-
-    @NotNull
-    @Override
-    public String getId() {
-        return "preference.PinNote";
-    }
-
-    @Nullable
-    @Override
-    public Runnable enableSearch(String s) {
         return null;
     }
 
     @Nullable
     @Override
     public JComponent createComponent() {
-        gui = new SettingsWindowForm();
-        gui.setClientIsLogged(evernoteCredential.getToken() != null);
-        gui.setOnLogout(this::logoutProcess);
-        return gui.getRoot();
+        var panel = new PinNoteSettingsComponent();
+        panel.addedSources(buildSources());
+
+        return panel.getRoot();
     }
 
-    /**
-     * Logout process
-     */
-    private void logoutProcess() {
-        ToolWindowFactory toolWindow = evernoteNoteView.getToolWindow();
-        if (toolWindow instanceof RightToolWindow) {
-            evernoteCredential.setToken(null);
-            ((RightToolWindow) toolWindow).initEvernoteToken(evernoteNoteView.getAdapter().getProject());
-            gui.setClientIsLogged(false);
-        }
+
+    private List<NotebookSource> buildSources() {
+        List<NotebookSource> sources = new ArrayList<>();
+
+
+        sources.add(NotebookSource.builder()
+                .image(ImageLoader.loadFromResource("/icons/evernote50x50.png"))
+                .name("Evernote")
+                .description("<html>Evernote is an app designed for note taking, organizing, task management, and archiving.<br> It is developed by the Evernote Corporation, headquartered in Redwood City, California.<br> The app allows users to create notes, which can be text, drawings, photographs, or saved web content. Notes are stored in notebooks and can be tagged, annotated, edited, searched, given attachments, and exported.")
+                .status(true)
+                .build());
+
+        sources.add(NotebookSource.builder()
+                .image(ImageLoader.loadFromResource("/icons/evernote50x50.png"))
+                .name("Local storage")
+                .description("Locally storage for your notes")
+                .status(true)
+                .build());
+        return sources;
     }
 
     @Override
@@ -91,15 +58,4 @@ public class SettingsWindow implements SearchableConfigurable {
     public void apply() {
 
     }
-
-    @Override
-    public void reset() {
-
-    }
-
-    @Override
-    public void disposeUIResources() {
-        gui = null;
-    }
-
 }

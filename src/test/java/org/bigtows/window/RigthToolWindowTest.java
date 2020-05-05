@@ -25,7 +25,7 @@ public class RigthToolWindowTest {
     @Mock
     private PropertiesComponent component;
 
-    private RightToolWindow rightToolWindow;
+    private RightToolWindowFactory rightToolWindowFactory;
 
     @Before
     public void setup() {

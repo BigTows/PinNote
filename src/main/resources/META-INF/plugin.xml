@@ -31,19 +31,39 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- <applicationConfigurable instance="org.bigtows.window.SettingsWindow"/>-->
         <toolWindow id="PinNote" icon="/icons/toolWindowRight.png" anchor="right"
-                    factoryClass="org.bigtows.window.RightToolWindow"/>
+                    factoryClass="org.bigtows.window.RightToolWindowFactory" doNotActivateOnStart="true"/>
+        <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote"
+                                 instance="org.bigtows.window.SettingsWindow"/>
+        <projectService serviceImplementation="org.bigtows.component.json.GoonBasedJsonParser"
+                        serviceInterface="org.bigtows.component.json.JsonParser">
+        </projectService>
+        <projectService serviceImplementation="org.bigtows.service.PinNoteService">
+        </projectService>
 
-        <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote" instance="org.bigtows.window.SettingsWindow" />
+
+        <projectService serviceImplementation="org.bigtows.service.note.repository.SimpleNotebookRepository"
+                        serviceInterface="org.bigtows.service.note.repository.NotebookRepository"/>
+
+        <projectService
+                serviceImplementation="org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessibleImpl"
+                serviceInterface="org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessible"/>
+
+        <projectService serviceImplementation="org.bigtows.service.note.notebook.evernote.EvernoteNotebook"/>
+
+
+
+
+        <applicationService serviceImplementation="org.bigtows.component.property.PropertyStorage"/>
     </extensions>
     <depends>com.intellij.modules.lang</depends>
     <actions>
     </actions>
+    <applicationListeners>
+
+    </applicationListeners>
     <application-components>
-        <component>
-            <implementation-class>org.bigtows.PinNote</implementation-class>
-        </component>
-        <component>
-            <implementation-class>org.bigtows.components.PinNoteNotification</implementation-class>
-        </component>
+        <!--  <component>
+           &lt;!&ndash;   <implementation-class>org.bigtows.components.PinNoteNotification</implementation-class>&ndash;&gt;
+          </component>-->
     </application-components>
 </idea-plugin>
