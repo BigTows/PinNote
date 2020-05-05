@@ -78,9 +78,9 @@ public class TaskPanel extends JPanel {
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getExtendedKeyCode() == KeyEvent.VK_ENTER) {
                     userShortcutPressed.newTask();
-                } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                } else if (e.getExtendedKeyCode() == KeyEvent.VK_TAB) {
                     userShortcutPressed.newSubTask();
                 }
             }
