@@ -19,10 +19,8 @@ Features
 
 ## Demo.
 ### General view
-![Demo](http://images.vfl.ru/ii/1539356680/aba811a4/23764138_m.png)
+![Demo](https://pinnote.bigtows.org/example/demo.gif)
 
-### Remove ability.
-> Press right button mouse on task.
-
-![Demo](http://images.vfl.ru/ii/1543709552/66517457/24434457_m.jpg)
+### Sync demo.
+![Sync demo](https://pinnote.bigtows.org/example/demo_sync.gif)
 
