@@ -27,7 +27,7 @@ public class PinNoteComponent {
         });
     }
 
-    public void addNotebook(Notebook<?> notebook, NoteTree noteTree) {
-        notebookTabbedPane.add(notebook.getName(), noteTree);
+    public void addNotebook(Notebook<?> notebook, Icon icon, NoteTree noteTree) {
+        notebookTabbedPane.addTab(notebook.getName(), icon, noteTree);
     }
 }

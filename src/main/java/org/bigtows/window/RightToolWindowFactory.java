@@ -3,6 +3,8 @@ package org.bigtows.window;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.util.ImageLoader;
+import com.intellij.util.ui.JBImageIcon;
 import org.bigtows.component.server.token.TokenServer;
 import org.bigtows.service.PinNoteService;
 import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
@@ -26,11 +28,14 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         pinNoteService = project.getService(PinNoteService.class);
 
         var serviceAccessible = project.getService(EvernoteNotebookAccessible.class);
-        //serviceAccessible.setToken(null);
         if (serviceAccessible.hasToken()) {
             this.initEvernoteToken(project, toolWindow.getComponent(), serviceAccessible);
         } else {
-            this.initPinNote(project, toolWindow.getComponent());
+            try {
+                this.initPinNote(project, toolWindow.getComponent());
+            } catch (Throwable e) {
+                this.initEvernoteToken(project, toolWindow.getComponent(), serviceAccessible);
+            }
         }
     }
 
@@ -46,17 +51,27 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         try {
             Desktop.getDesktop().browse(new URI("https://pinnote.bigtows.org/?port=" + port));
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            JOptionPane.showInputDialog(null,
+                    "<html>Follow this link manually: <a href='https://pinnote.bigtows.org/?port=" + port + "'>Link</a>",
+                    "Can't open link in your browser!",
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    null,
+                    "https://pinnote.bigtows.org/?port=" + port
+            );
         }
     }
 
     private void initPinNote(Project project, JComponent root) {
+        root.removeAll();
         var pinNoteComponent = new PinNoteComponent();
+
         var result = pinNoteService.getNoteRepository().getAll();
         root.add(pinNoteComponent.getRoot());
 
         pinNoteComponent.addNotebook(
                 result.get(0),
+                new JBImageIcon(ImageLoader.loadFromResource("/icons/evernote20x20.png")),
                 EvernoteNoteTreeFactory.buildNoteTreeForEvernote(project, (EvernoteNotebook) result.get(0))
         );
     }
