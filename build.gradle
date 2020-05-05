@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0-beta-1'
+version '2.0-beta-2'
 
 sourceCompatibility = 11
 
@@ -44,15 +44,18 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0-beta-1</h1><br>
+<h1>Release: 2.0-beta-2</h1><br>
 <ul>
     <li>Updates:
         <ul>
-            <li>Added supporting IDEA 2020.1</li>
-            <li>Move to swing UI</li>
+            <li>GUI tool window</li>
+            <li>Fix bug <a href="https://github.com/BigTows/PinNote/issues/17">#17</a></li>
         </ul>
     </li> 
 </ul>     
       """
-    version "2.0-beta-1"
+    version "2.0-beta-2"
+    //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
+    sinceBuild "193.2252"
+    untilBuild "201.*"
 }
