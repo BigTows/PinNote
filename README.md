@@ -12,8 +12,6 @@ Features
  * Sync notes between many instance IDE.
  * The opportunity to share notes on target.
     * Support for SubTasks.
- * JavaFX element's
- * 2 theme dark and white
  
 
 
