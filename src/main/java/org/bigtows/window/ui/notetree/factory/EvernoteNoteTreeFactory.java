@@ -43,7 +43,7 @@ public class EvernoteNoteTreeFactory {
             });
 
         });
-        noteTree.registerEvent(timer::editing);
+        noteTree.addTreeChangeListener(timer::editing);
         return noteTree;
     }
 
