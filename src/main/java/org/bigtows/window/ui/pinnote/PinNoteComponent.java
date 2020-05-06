@@ -11,6 +11,7 @@ import org.bigtows.service.note.notebook.Notebook;
 import org.bigtows.window.ui.border.BottomBorder;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.bigtows.window.ui.pinnote.action.AddNote;
+import org.bigtows.window.ui.pinnote.action.RemoveNote;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +36,7 @@ public class PinNoteComponent {
     private BorderLayoutPanel createActionToolBar() {
         final DefaultActionGroup group = new DefaultActionGroup();
         group.add(new AddNote(notebookTabbedPane));
+        group.add(new RemoveNote(notebookTabbedPane));
         //group.add(new ForceRefreshNoteAction(notebookTabbedPane));
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());

@@ -149,4 +149,24 @@ public class NoteTree extends JPanel {
         SwingUtilities.invokeLater(() -> tree.setEditable(true));
     }
 
+    public boolean hasSelectedElement() {
+        return tree.getLastSelectedPathComponent() != null;
+    }
+
+    public void removeSelectedElement() {
+        var selectedPath = tree.getLastSelectedPathComponent();
+        if (selectedPath instanceof DefaultMutableTreeNode) {
+            var mutableTreeNode = ((DefaultMutableTreeNode) selectedPath);
+            var parentMutableTreeNote = mutableTreeNode.getParent();
+            mutableTreeNode.removeFromParent();
+            if (parentMutableTreeNote instanceof NoteTreeNode && parentMutableTreeNote.getChildCount() == 0) {
+                ((NoteTreeNode) parentMutableTreeNote).add(
+                        new TaskTreeNode(Task.builder().build())
+                );
+            }
+            this.processChangeEvent();
+            tree.updateUI();
+        }
+    }
+
 }
