@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.tree.MutableTreeNode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EvernoteNoteTreeFactory {
 
@@ -34,9 +35,7 @@ public class EvernoteNoteTreeFactory {
                             buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
                     );
                     noteTree.updateModel(
-                            buildTreeNodeByNoteBook(
-                                    newNotes
-                            )
+                            buildTreeNodeByNoteBook(newNotes)
                     );
                     noteTree.unlockTree();
                 }
@@ -48,35 +47,29 @@ public class EvernoteNoteTreeFactory {
     }
 
     private static List<MutableTreeNode> buildTreeNodeByNoteBook(List<EvernoteNote> evernoteNotes) {
-        List<MutableTreeNode> treeNodes = new ArrayList<>();
-        evernoteNotes.forEach(note -> {
-            var noteTreeNode = new NoteTreeNode(Note.builder()
-                    .identity(note.getId())
-                    .name(note.getName())
-                    .build()
-            );
 
-            note.getTasks().forEach(evernoteTask -> {
+       return evernoteNotes.stream().map(evernoteNote -> {
+            var noteTree = new NoteTreeNode(Note.builder()
+                    .identity(evernoteNote.getId())
+                    .name(evernoteNote.getName())
+                    .build());
+            evernoteNote.getTasks().stream().map(evernoteTask -> {
                 var taskTreeNode = new TaskTreeNode(Task.builder()
                         .identity(evernoteTask.getId())
                         .text(evernoteTask.getName())
                         .checked(evernoteTask.isChecked())
                         .build());
-
-                evernoteTask.getSubTask().forEach(evernoteSubTask -> {
-                    var subTaskTreeNode = new SubTaskTreeNode(Task.builder()
-                            .identity(evernoteSubTask.getId())
-                            .text(evernoteSubTask.getName())
-                            .checked(evernoteSubTask.isChecked())
-                            .build()
-                    );
-                    taskTreeNode.add(subTaskTreeNode);
-                });
-                noteTreeNode.add(taskTreeNode);
-            });
-            treeNodes.add(noteTreeNode);
-        });
-        return treeNodes;
+                evernoteTask.getSubTask().stream().map(evernoteSubTask ->
+                        new SubTaskTreeNode(Task.builder()
+                                .identity(evernoteSubTask.getId())
+                                .text(evernoteSubTask.getName())
+                                .checked(evernoteSubTask.isChecked())
+                                .build()
+                        )).forEach(taskTreeNode::add);
+                return taskTreeNode;
+            }).forEach(noteTree::add);
+            return noteTree;
+        }).collect(Collectors.toList());
     }
 
     private static List<EvernoteNote> buildListEvernoteNoteByMutableTreeNote(List<MutableTreeNode> nodes) {
