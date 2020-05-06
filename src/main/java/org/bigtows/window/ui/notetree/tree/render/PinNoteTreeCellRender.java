@@ -10,11 +10,11 @@ import org.bigtows.window.ui.notetree.tree.node.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 
-public class PinNoteTreeCellRender implements TreeCellRenderer {
+public class PinNoteTreeCellRender extends DefaultTreeCellRenderer {
     private final TreeChanged treeChanged;
 
     public PinNoteTreeCellRender(TreeChanged treeChanged) {
