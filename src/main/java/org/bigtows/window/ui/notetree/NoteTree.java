@@ -28,7 +28,7 @@ public class NoteTree extends JPanel {
     public NoteTree(List<MutableTreeNode> data) {
         tree = new Tree(this.buildTreeModelByListTreeNode(data));
         tree.setCellRenderer(new PinNoteTreeCellRender(this::processChangeEvent));
-        tree.setCellEditor(new PinNoteTreeCellEditor());
+        tree.setCellEditor(new PinNoteTreeCellEditor(this::processChangeEvent));
         tree.setEditable(true);
         tree.setRootVisible(false);
         setLayout(new BorderLayout());

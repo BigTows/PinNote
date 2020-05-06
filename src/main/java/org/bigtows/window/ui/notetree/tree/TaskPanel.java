@@ -30,7 +30,7 @@ public class TaskPanel extends JPanel {
         setLayout(new BorderLayout());
         add(check, BorderLayout.WEST);
         add(textField, BorderLayout.CENTER);
-        textField.setSize(textField.getWidth(), textField.getHeight() + 4);
+        textField.setSize(textField.getWidth() + 100, textField.getHeight() + 4);
         textField.setText(this.source.getUserObject().getText());
         textField.setOpaque(false);
         check.setSelected(this.source.getUserObject().getChecked());
@@ -45,6 +45,7 @@ public class TaskPanel extends JPanel {
 
             }
         });
+        var panel = this;
         textField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 onChange();
@@ -60,6 +61,9 @@ public class TaskPanel extends JPanel {
 
             public void onChange() {
                 source.getUserObject().setText(textField.getText());
+                var width = textField.getText().length() * 7 + 1000;
+                textField.setSize(new Dimension(width, textField.getHeight()));
+                panel.setSize(new Dimension(width, panel.getHeight()));
                 treeChanged.onChange();
             }
         });
