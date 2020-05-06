@@ -67,12 +67,15 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         var pinNoteComponent = new PinNoteComponent();
 
         var result = pinNoteService.getNoteRepository().getAll();
-        root.add(pinNoteComponent.getRoot());
 
-        pinNoteComponent.addNotebook(
-                result.get(0),
-                new JBImageIcon(ImageLoader.loadFromResource("/icons/evernote20x20.png")),
-                EvernoteNoteTreeFactory.buildNoteTreeForEvernote(project, (EvernoteNotebook) result.get(0))
-        );
+        SwingUtilities.invokeLater(()->{
+            root.add(pinNoteComponent.getRoot());
+
+            pinNoteComponent.addNotebook(
+                    result.get(0),
+                    new JBImageIcon(ImageLoader.loadFromResource("/icons/evernote20x20.png")),
+                    EvernoteNoteTreeFactory.buildNoteTreeForEvernote(project, (EvernoteNotebook) result.get(0))
+            );
+        });
     }
 }

@@ -91,6 +91,13 @@ public class TaskPanel extends JPanel {
 
     private void onCheckBoxChange(ItemEvent event) {
         source.getUserObject().setChecked(check.isSelected());
+        for (int i = 0; i < source.getChildCount(); i++) {
+            var children = source.getChildAt(i);
+            if (children instanceof AbstractTaskTreeNode) {
+                //TODO if need recursion
+                ((AbstractTaskTreeNode) children).getUserObject().setChecked(check.isSelected());
+            }
+        }
         treeChanged.onChange();
     }
 

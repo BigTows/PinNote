@@ -1,7 +1,7 @@
 package org.bigtows.window.ui.notetree;
 
 import com.intellij.ui.treeStructure.Tree;
-import org.bigtows.window.ui.notetree.event.OnNoteTreeChange;
+import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
 import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
@@ -20,7 +20,10 @@ public class NoteTree extends JPanel {
 
     private final Tree tree;
 
-    private List<OnNoteTreeChange> events = new ArrayList<>();
+    /**
+     * Collection of listeners about tree changes
+     */
+    private final List<NoteTreeChangeListener> treeChangeListeners = new ArrayList<>();
 
     public NoteTree(List<MutableTreeNode> data) {
         tree = new Tree(this.buildTreeModelByListTreeNode(data));
@@ -32,8 +35,13 @@ public class NoteTree extends JPanel {
         add(tree, BorderLayout.CENTER);
     }
 
-    public void registerEvent(OnNoteTreeChange onNoteTreeChange) {
-        events.add(onNoteTreeChange);
+    /**
+     * Subscribe for tree change event
+     *
+     * @param noteTreeChangeListener instance of listener
+     */
+    public void addTreeChangeListener(NoteTreeChangeListener noteTreeChangeListener) {
+        treeChangeListeners.add(noteTreeChangeListener);
     }
 
     public void updateModel(List<MutableTreeNode> data) {
@@ -99,7 +107,7 @@ public class NoteTree extends JPanel {
     }
 
     private void processChangeEvent() {
-        events.forEach(OnNoteTreeChange::event);
+        treeChangeListeners.forEach(NoteTreeChangeListener::treeChanged);
     }
 
     public List<MutableTreeNode> getMutableTreeNodeList() {
@@ -131,6 +139,10 @@ public class NoteTree extends JPanel {
 
     public void lockTree() {
         SwingUtilities.invokeLater(() -> tree.setEditable(false));
+    }
+
+    public boolean isLocked() {
+        return !tree.isEditable();
     }
 
     public void unlockTree() {
