@@ -1,7 +1,5 @@
 package org.bigtows.window.ui.notetree.tree.editor;
 
-import org.bigtows.window.ui.menu.DeletePopupMenu;
-import org.bigtows.window.ui.menu.adapter.ClickMouseAdapter;
 import org.bigtows.window.ui.notetree.tree.TaskPanel;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
@@ -14,6 +12,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.EventObject;
 
 public class PinNoteTreeCellEditor implements TreeCellEditor {
@@ -23,6 +23,7 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
     public PinNoteTreeCellEditor(TreeChanged treeChanged) {
         this.treeChanged = treeChanged;
     }
+
     @Override
     public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
         if (value instanceof AbstractTaskTreeNode) {
@@ -82,16 +83,13 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
             var currentValue = (NoteTreeNode) value;
             var label = new JLabel(currentValue.getUserObject().getName());
             label.addMouseListener(
-                    new ClickMouseAdapter(
-                            new DeletePopupMenu(
-                                    actionEvent -> {
-                                        var treeNode = ((DefaultMutableTreeNode) tree.getModel().getRoot());
-                                        treeNode.remove(currentValue);
-                                        tree.updateUI();
-                                        treeChanged.onChange();
-                                    }
-                            )
-                    )
+                    new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            tree.getSelectionModel().clearSelection();
+                            tree.setSelectionPath(new TreePath(((NoteTreeNode) value).getPath()));
+                        }
+                    }
             );
             return label;
         }

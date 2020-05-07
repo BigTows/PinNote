@@ -14,7 +14,6 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 public class NoteTree extends JPanel {
@@ -37,6 +36,13 @@ public class NoteTree extends JPanel {
     }
 
     /**
+     * Call all subscribers about changed tree
+     */
+    private void processChangeEvent() {
+        treeChangeListeners.forEach(NoteTreeChangeListener::treeChanged);
+    }
+
+    /**
      * Subscribe for tree change event
      *
      * @param noteTreeChangeListener instance of listener
@@ -46,28 +52,38 @@ public class NoteTree extends JPanel {
     }
 
     public void updateModel(List<MutableTreeNode> data) {
-
-        var iterator = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot())).asIterator();
-        List<TreePath> listOfLeaf = new ArrayList<>();
-
-        iterator.forEachRemaining(listOfLeaf::add);
+        List<TreePath> listOfLeaf = this.getExpandedNodeTree();
         SwingUtilities.invokeLater(() -> {
             tree.setModel(this.buildTreeModelByListTreeNode(data));
             ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
         });
     }
 
+    /**
+     * Get collection of expanded node tree
+     *
+     * @return collection of expanded node tree
+     */
+    private List<TreePath> getExpandedNodeTree() {
+        var iterator = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot())).asIterator();
+        List<TreePath> listOfLeaf = new ArrayList<>();
 
+        iterator.forEachRemaining(listOfLeaf::add);
+        return listOfLeaf;
+    }
 
+    /**
+     * Build model and fill mutable tree nodes
+     *
+     * @param mutableTreeNodes data for model
+     * @return Tree model
+     */
     private TreeModel buildTreeModelByListTreeNode(List<MutableTreeNode> mutableTreeNodes) {
         var root = new DefaultMutableTreeNode("OPA");
         mutableTreeNodes.forEach(root::add);
         return new DefaultTreeModel(root, false);
     }
 
-    private void processChangeEvent() {
-        treeChangeListeners.forEach(NoteTreeChangeListener::treeChanged);
-    }
 
     public List<MutableTreeNode> getMutableTreeNodeList() {
         var treeNodeList = new ArrayList<MutableTreeNode>();

@@ -3,7 +3,7 @@ package org.bigtows.window.ui.notetree.tree;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.JBUI;
 import org.bigtows.window.ui.menu.DeletePopupMenu;
-import org.bigtows.window.ui.menu.adapter.RightClickMouseAdapter;
+import org.bigtows.window.ui.menu.adapter.RightClickPopupMenuMouseAdapter;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
 import org.bigtows.window.ui.notetree.tree.event.UserShortcutPressed;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
@@ -30,7 +30,7 @@ public class TaskPanel extends JPanel {
         setLayout(new BorderLayout());
         add(check, BorderLayout.WEST);
         add(textField, BorderLayout.CENTER);
-        textField.setSize(textField.getWidth() + 100, textField.getHeight() + 4);
+        textField.setSize(textField.getWidth() + 500, textField.getHeight() + 4);
         textField.setText(this.source.getUserObject().getText());
         textField.setOpaque(false);
         check.setSelected(this.source.getUserObject().getChecked());
@@ -70,7 +70,7 @@ public class TaskPanel extends JPanel {
         check.addItemListener(this::onCheckBoxChange);
         textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
 
-        textField.addMouseListener(new RightClickMouseAdapter(
+        textField.addMouseListener(new RightClickPopupMenuMouseAdapter(
                 new DeletePopupMenu(
                         actionEvent -> {
                             userShortcutPressed.delete();
