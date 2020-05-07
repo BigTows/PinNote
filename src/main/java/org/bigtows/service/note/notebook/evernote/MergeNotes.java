@@ -191,7 +191,7 @@ public class MergeNotes {
             return null;
         }
         for (EvernoteTask task : storage.getTasks()) {
-            if (task.getId().equals(searched.getId()) || task.getName().equals(searched.getName())) {
+            if (task.getId().equals(searched.getId())) {
                 return task;
             }
         }
@@ -203,7 +203,7 @@ public class MergeNotes {
             return null;
         }
         for (EvernoteSubTask subTask : storage.getSubTask()) {
-            if (subTask.getId().equals(searched.getId()) || subTask.getName().equals(searched.getName())) {
+            if (subTask.getId().equals(searched.getId())) {
                 return subTask;
             }
         }

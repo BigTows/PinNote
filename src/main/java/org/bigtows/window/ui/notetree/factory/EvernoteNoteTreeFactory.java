@@ -27,7 +27,10 @@ public class EvernoteNoteTreeFactory {
         var noteTree = new NoteTree(buildTreeNodeByNoteBook(evernoteNotebook.getAllNotes()));
         var timer = new EditorTimer(() -> runSync(project, evernoteNotebook, noteTree));
         noteTree.addTreeChangeListener(timer::editing);
-        noteTree.addNeedUpdateModelListener(() -> runSync(project, evernoteNotebook, noteTree));
+        noteTree.addNeedUpdateModelListener(() -> {
+            timer.end();
+            runSync(project, evernoteNotebook, noteTree);
+        });
         return noteTree;
     }
 

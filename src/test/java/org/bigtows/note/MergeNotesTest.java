@@ -205,6 +205,15 @@ public class MergeNotesTest {
         );
     }
 
+    @Test
+    public void test(){
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        var notes = EvernoteNote.builder()
+                 .name("test")
+                .build();
+        //defaultClientNotes.add(n)
+    }
+
     /**
      * Build default notes
      *

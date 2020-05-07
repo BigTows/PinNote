@@ -14,6 +14,9 @@ public class EditorTimer {
         this.status = Status.EDITING;
     }
 
+    public void end() {
+        this.status = Status.END;
+    }
 
     private Thread initTimer() {
         return new Thread(() -> {
