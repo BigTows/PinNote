@@ -2,18 +2,19 @@ package org.bigtows.window.ui.notetree;
 
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
+import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
 import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.render.PinNoteTreeCellRender;
+import org.bigtows.window.ui.notetree.utils.ExpandTreeUtils;
 
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 public class NoteTree extends JPanel {
@@ -24,15 +25,23 @@ public class NoteTree extends JPanel {
      * Collection of listeners about tree changes
      */
     private final List<NoteTreeChangeListener> treeChangeListeners = new ArrayList<>();
+    private final List<NoteTreeNeedRefreshModelListener> needUpdateModelListeners = new ArrayList<>();
 
     public NoteTree(List<MutableTreeNode> data) {
         tree = new Tree(this.buildTreeModelByListTreeNode(data));
         tree.setCellRenderer(new PinNoteTreeCellRender(this::processChangeEvent));
-        tree.setCellEditor(new PinNoteTreeCellEditor());
+        tree.setCellEditor(new PinNoteTreeCellEditor(this::processChangeEvent));
         tree.setEditable(true);
         tree.setRootVisible(false);
         setLayout(new BorderLayout());
         add(tree, BorderLayout.CENTER);
+    }
+
+    /**
+     * Call all subscribers about changed tree
+     */
+    private void processChangeEvent() {
+        treeChangeListeners.forEach(NoteTreeChangeListener::treeChanged);
     }
 
     /**
@@ -44,71 +53,43 @@ public class NoteTree extends JPanel {
         treeChangeListeners.add(noteTreeChangeListener);
     }
 
+    public void addNeedUpdateModelListener(NoteTreeNeedRefreshModelListener noteTreeNeedRefreshModelListener) {
+        needUpdateModelListeners.add(noteTreeNeedRefreshModelListener);
+    }
+
     public void updateModel(List<MutableTreeNode> data) {
-
-        var iterator = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot())).asIterator();
-        List<TreePath> context = new ArrayList<>();
-
-        iterator.forEachRemaining(context::add);
+        List<TreePath> listOfLeaf = this.getExpandedNodeTree();
         SwingUtilities.invokeLater(() -> {
             tree.setModel(this.buildTreeModelByListTreeNode(data));
-            expandTree(tree, context);
+            ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
         });
     }
 
-    private void expandTree(JTree tree, List<TreePath> context) {
-        TreeNode root = (TreeNode) tree.getModel().getRoot();
-        expandAll(tree, new TreePath(root), context);
+    /**
+     * Get collection of expanded node tree
+     *
+     * @return collection of expanded node tree
+     */
+    private List<TreePath> getExpandedNodeTree() {
+        var iterator = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot())).asIterator();
+        List<TreePath> listOfLeaf = new ArrayList<>();
+
+        iterator.forEachRemaining(listOfLeaf::add);
+        return listOfLeaf;
     }
 
-    private void expandAll(JTree tree, TreePath path, List<TreePath> context) {
-        TreeNode node = (TreeNode) path.getLastPathComponent();
-
-        if (node.getChildCount() >= 0) {
-            Enumeration enumeration = node.children();
-            while (enumeration.hasMoreElements()) {
-                TreeNode n = (TreeNode) enumeration.nextElement();
-                TreePath p = path.pathByAddingChild(n);
-
-                expandAll(tree, p, context);
-            }
-        }
-
-        if (this.findContext(context, path)) {
-            tree.expandPath(path);
-        }
-    }
-
-    private boolean findContext(List<TreePath> context, TreePath currentPath) {
-        var lastElementPath = currentPath.getLastPathComponent();
-        for (TreePath treePath : context) {
-            var treePathLast = treePath.getLastPathComponent();
-
-            if (lastElementPath instanceof NoteTreeNode && treePathLast instanceof NoteTreeNode) {
-                if (((NoteTreeNode) lastElementPath).getUserObject().getIdentity().equals(
-                        ((NoteTreeNode) treePathLast).getUserObject().getIdentity())) {
-                    return true;
-                }
-            } else if (lastElementPath instanceof TaskTreeNode && treePathLast instanceof TaskTreeNode) {
-                if (((TaskTreeNode) lastElementPath).getUserObject().getIdentity().equals(
-                        ((TaskTreeNode) treePathLast).getUserObject().getIdentity())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
+    /**
+     * Build model and fill mutable tree nodes
+     *
+     * @param mutableTreeNodes data for model
+     * @return Tree model
+     */
     private TreeModel buildTreeModelByListTreeNode(List<MutableTreeNode> mutableTreeNodes) {
         var root = new DefaultMutableTreeNode("OPA");
         mutableTreeNodes.forEach(root::add);
         return new DefaultTreeModel(root, false);
     }
 
-    private void processChangeEvent() {
-        treeChangeListeners.forEach(NoteTreeChangeListener::treeChanged);
-    }
 
     public List<MutableTreeNode> getMutableTreeNodeList() {
         var treeNodeList = new ArrayList<MutableTreeNode>();
@@ -137,16 +118,51 @@ public class NoteTree extends JPanel {
         tree.updateUI();
     }
 
+    /**
+     * Block the tree for editing
+     */
     public void lockTree() {
         SwingUtilities.invokeLater(() -> tree.setEditable(false));
     }
 
+    /**
+     * Check tree is locked
+     *
+     * @return {@code true} if tree locked for editing else {@code false}
+     */
     public boolean isLocked() {
         return !tree.isEditable();
     }
 
+    /**
+     * Unblock the tree for editing
+     */
     public void unlockTree() {
         SwingUtilities.invokeLater(() -> tree.setEditable(true));
+    }
+
+    public boolean hasSelectedElement() {
+        return tree.getLastSelectedPathComponent() != null;
+    }
+
+    public void removeSelectedElement() {
+        var selectedPath = tree.getLastSelectedPathComponent();
+        if (selectedPath instanceof DefaultMutableTreeNode) {
+            var mutableTreeNode = ((DefaultMutableTreeNode) selectedPath);
+            var parentMutableTreeNote = mutableTreeNode.getParent();
+            mutableTreeNode.removeFromParent();
+            if (parentMutableTreeNote instanceof NoteTreeNode && parentMutableTreeNote.getChildCount() == 0) {
+                ((NoteTreeNode) parentMutableTreeNote).add(
+                        new TaskTreeNode(Task.builder().build())
+                );
+            }
+            this.processChangeEvent();
+            tree.updateUI();
+        }
+    }
+
+    public void needUpdateModel() {
+        this.needUpdateModelListeners.forEach(NoteTreeNeedRefreshModelListener::refresh);
     }
 
 }

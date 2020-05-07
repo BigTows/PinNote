@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 /**
  * Adapter for popup menu, showing only after pressed any mouse key
  */
-public class ClickMouseAdapter extends MouseAdapter {
+public class ClickPopupMenuMouseAdapter extends MouseAdapter {
 
     /**
      * Instance of popup menu
@@ -20,7 +20,7 @@ public class ClickMouseAdapter extends MouseAdapter {
      *
      * @param popupMenu popup menu
      */
-    public ClickMouseAdapter(JBPopupMenu popupMenu) {
+    public ClickPopupMenuMouseAdapter(JBPopupMenu popupMenu) {
         this.popupMenu = popupMenu;
     }
 

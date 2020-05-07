@@ -32,8 +32,14 @@ public class AddNote extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        var noteTree = (NoteTree) tabbedPane.getSelectedComponent();
-        var nameTab = ((JLabel) tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())).getText();
-        noteTree.addNewNote(JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target"));
+        var selectedComponent = tabbedPane.getSelectedComponent();
+        if (selectedComponent instanceof JScrollPane) {
+            selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
+        }
+        if (selectedComponent instanceof NoteTree) {
+            var noteTree = (NoteTree) selectedComponent;
+            var nameTab = ((JLabel) tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())).getText();
+            noteTree.addNewNote(JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target"));
+        }
     }
 }

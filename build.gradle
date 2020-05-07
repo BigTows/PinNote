@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0-beta-2'
+version '2.0-beta-3'
 
 sourceCompatibility = 11
 
@@ -44,19 +44,22 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0-beta-2</h1><br>
+<h1>Release: 2.0-beta-3</h1><br>
 <ul>
-    <li>Updates:
+    <li>Added:
         <ul>
-            <li>GUI tool window</li>
-            <li>Fix bug <a href="https://github.com/BigTows/PinNote/issues/17">#17</a></li>
-            <li>Added auto checking</li>
+            <li>GUI tool window actions: Delete, Refresh</li>
+            <li>Scroll for large notes :)</li>
+        </ul>
+    </li> 
+     <li>Fix GUI:
+        <ul>
+            <li>TextField on editing don't resizable</li>
         </ul>
     </li> 
 </ul>     
       """
-    version "2.0-beta-2"
+    version "2.0-beta-3"
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
-    //untilBuild "201.*"
 }

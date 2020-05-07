@@ -2,10 +2,12 @@ package org.bigtows.service.note.notebook.evernote;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import org.bigtows.service.note.notebook.Task;
 
 @Data
 @Builder
+@ToString
 public class EvernoteSubTask implements Task {
 
     private String id;

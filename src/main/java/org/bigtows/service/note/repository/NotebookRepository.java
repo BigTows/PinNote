@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface NotebookRepository {
 
-    List<Notebook> getAll();
+    List<Notebook<?>> getAll();
 }

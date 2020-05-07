@@ -1,40 +1,42 @@
 package org.bigtows.window.ui.pinnote.action;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.util.IconUtil;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ForceRefreshNoteAction extends AnAction {
-
+public class RemoveNote extends AnAction {
 
     private final JTabbedPane tabbedPane;
 
-    public ForceRefreshNoteAction(JTabbedPane notebookTabbedPane) {
-        super(AllIcons.Actions.Refresh);
-        this.tabbedPane = notebookTabbedPane;
+    public RemoveNote(JTabbedPane tabbedPane) {
+        super(IconUtil.getRemoveIcon());
+        this.tabbedPane = tabbedPane;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(this.tabbedPane);
-        assert noteTree != null;
-        e.getPresentation().setEnabled(false);
-        noteTree.needUpdateModel();
+        var noteTree = this.getNoteTreeFromTabbedPane();
+        if (noteTree != null) {
+            noteTree.removeSelectedElement();
+        }
     }
 
     @Override
     public void update(@NotNull AnActionEvent e) {
-        var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(this.tabbedPane);
-        e.getPresentation().setEnabled(noteTree != null && !noteTree.isLocked());
+        var noteTree = this.getNoteTreeFromTabbedPane();
+        if (noteTree != null) {
+            e.getPresentation().setEnabled(noteTree.hasSelectedElement());
+        }
     }
 
+
     @Nullable
-    private NoteTree tryGetCurrentNoteTreeFromTabbedPane(JTabbedPane tabbedPane) {
+    private NoteTree getNoteTreeFromTabbedPane() {
         var selectedComponent = tabbedPane.getSelectedComponent();
         if (selectedComponent instanceof JScrollPane) {
             selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();

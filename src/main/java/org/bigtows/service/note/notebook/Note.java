@@ -2,6 +2,10 @@ package org.bigtows.service.note.notebook;
 
 import java.util.List;
 
+/**
+ * Note of
+ * @param <T>
+ */
 public interface Note<T extends Task> {
 
 
@@ -12,8 +16,6 @@ public interface Note<T extends Task> {
     void setName(String name);
 
     List<T> getTasks();
-
-    Notebook getNotebook();
 
     void setId(String id);
 

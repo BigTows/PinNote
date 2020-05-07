@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO Thread service.
 @Service
 public class EvernoteNotebook implements org.bigtows.service.note.notebook.Notebook<EvernoteNote> {
 
@@ -35,12 +34,12 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
     /**
      * Note client for evernote services
      */
-    private NoteStoreClient noteStore;
+    private final NoteStoreClient noteStore;
 
     /**
      * Evernote notebook
      */
-    private com.evernote.edam.type.Notebook notebook;
+    private final com.evernote.edam.type.Notebook notebook;
 
     /**
      * Parser

@@ -1,1 +1,1 @@
-{"targets":[{"nameTarget":"Target","guid":"TargetGuid","tasks":[{"nameTask":"1","isComplete":false,"uniqueId":"Target1","subTasks":[{"nameTask":"1.1","isComplete":false,"uniqueId":"11.1"},{"nameTask":"1.2","isComplete":true,"uniqueId":"11.2"}]}]},{"nameTarget":"Target 2!","tasks":[]}]}
+{"id":"TargetGuid","name":"Target","allTask":[{"id":"task-1","name":"1","checked":false,"subTasks":[{"id":"sub-task-1.1","name":"1.1","checked":false},{"id":"sub-task-1.2","name":"1.2","checked":true}]}]}{"id":"Target 2!","name":"Target 2!","allTask":[]}

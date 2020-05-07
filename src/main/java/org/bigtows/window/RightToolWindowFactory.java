@@ -5,7 +5,8 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.util.ImageLoader;
 import com.intellij.util.ui.JBImageIcon;
-import org.bigtows.component.server.token.TokenServer;
+import org.bigtows.component.http.PortUtility;
+import org.bigtows.component.http.SimpleHttpServer;
 import org.bigtows.service.PinNoteService;
 import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
 import org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessible;
@@ -26,7 +27,6 @@ public class RightToolWindowFactory implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         pinNoteService = project.getService(PinNoteService.class);
-
         var serviceAccessible = project.getService(EvernoteNotebookAccessible.class);
         if (serviceAccessible.hasToken()) {
             this.initEvernoteToken(project, toolWindow.getComponent(), serviceAccessible);
@@ -40,24 +40,29 @@ public class RightToolWindowFactory implements ToolWindowFactory {
     }
 
     private void initEvernoteToken(Project project, JComponent root, EvernoteNotebookAccessible evernoteNotebookAccessible) {
-        var server = new TokenServer();
-        int port = server.getPort();
-        server.setEvernoteToken((token) -> {
-            evernoteNotebookAccessible.setToken(token);
-            initPinNote(project, root);
-            server.stop();
+        var httpServer = project.getService(SimpleHttpServer.class);
+        int port = PortUtility.getFreePort();
+        httpServer.registerHandler("/evernote", httpRequest -> {
+            var params = httpRequest.getParams();
+            if (params.get("token") != null) {
+                evernoteNotebookAccessible.setToken(params.get("token"));
+                initPinNote(project, root);
+                httpRequest.sendResponse(200, "Success, goto IDE");
+                httpServer.stopAsync();
+            }
         });
-        server.startAsync();
+        httpServer.startAsync(port);
+        final var urlEvernoteOAuth = pinNoteService.getSettings().getStorage().getEvernote().getOAuth().getUrl() + "?port=" + port;
         try {
-            Desktop.getDesktop().browse(new URI("https://pinnote.bigtows.org/?port=" + port));
+            Desktop.getDesktop().browse(new URI(urlEvernoteOAuth));
         } catch (IOException | URISyntaxException e) {
             JOptionPane.showInputDialog(null,
-                    "<html>Follow this link manually: <a href='https://pinnote.bigtows.org/?port=" + port + "'>Link</a>",
+                    "<html>Follow this link manually: <a href='" + urlEvernoteOAuth + "'>Link</a>",
                     "Can't open link in your browser!",
                     JOptionPane.WARNING_MESSAGE,
                     null,
                     null,
-                    "https://pinnote.bigtows.org/?port=" + port
+                    urlEvernoteOAuth
             );
         }
     }
@@ -68,7 +73,7 @@ public class RightToolWindowFactory implements ToolWindowFactory {
 
         var result = pinNoteService.getNoteRepository().getAll();
 
-        SwingUtilities.invokeLater(()->{
+        SwingUtilities.invokeLater(() -> {
             root.add(pinNoteComponent.getRoot());
 
             pinNoteComponent.addNotebook(

@@ -4,7 +4,10 @@ import javax.swing.border.AbstractBorder;
 import java.awt.*;
 
 /**
- * http://www.java2s.com/Code/Java/Swing-JFC/BottomBorder.htm
+ * Bottom border
+ * Thx for code (link bellow)
+ *
+ * @link http://www.java2s.com/Code/Java/Swing-JFC/BottomBorder.htm
  */
 public class BottomBorder extends AbstractBorder {
     protected int thickness;
