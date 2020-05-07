@@ -2,8 +2,8 @@ package org.bigtows.service.note.repository;
 
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
-import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
 import org.bigtows.service.note.notebook.Notebook;
+import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public class SimpleNotebookRepository implements NotebookRepository {
 
 
-    private final List<Notebook> defaultNotebooks = new ArrayList<>();
+    private final List<Notebook<?>> defaultNotebooks = new ArrayList<>();
 
     private SimpleNotebookRepository(Project project) {
         defaultNotebooks.add(
@@ -21,7 +21,7 @@ public class SimpleNotebookRepository implements NotebookRepository {
     }
 
     @Override
-    public List<Notebook> getAll() {
+    public List<Notebook<?>> getAll() {
         return defaultNotebooks;
     }
 }
