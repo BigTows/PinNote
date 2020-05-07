@@ -1,4 +1,4 @@
-package org.bigtows.component.server.token;
+package org.bigtows.component.http;
 
 import java.io.IOException;
 import java.net.ServerSocket;

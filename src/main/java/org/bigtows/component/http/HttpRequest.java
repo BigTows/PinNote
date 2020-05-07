@@ -10,4 +10,6 @@ public interface HttpRequest {
     Map<String, List<String>> getHeaders();
 
     void sendResponse(int httpCode, String message);
+
+    Map<String,String> getParams();
 }
