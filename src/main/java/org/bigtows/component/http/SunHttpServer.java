@@ -5,8 +5,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public class SunHttpServer implements SimpleHttpServer {
 
-
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final HttpServer server;
 
     @SneakyThrows
@@ -67,7 +68,8 @@ public class SunHttpServer implements SimpleHttpServer {
 
     @SneakyThrows
     @Override
-    public void startAsync(int port)  {
+    public void startAsync(int port) {
+        logger.warn("Start server at {} port", port);
         server.bind(new InetSocketAddress(port), 0);
         server.start();
     }
@@ -78,6 +80,7 @@ public class SunHttpServer implements SimpleHttpServer {
             try {
                 Thread.sleep(5000);
                 server.stop(1);
+                logger.info("Server shutdown");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
