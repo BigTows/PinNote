@@ -49,9 +49,10 @@ patchPluginXml {
             <li>Scroll for large notes :)</li>
         </ul>
     </li> 
-     <li>Fix GUI:
+     <li>Fix:
         <ul>
-            <li>TextField on editing don't resizable</li>
+            <li>GUI TextField on editing don't resizable</li>
+            <li>Windows user can't create new tasks and sub tasks</li>
         </ul>
     </li> 
 </ul>     
