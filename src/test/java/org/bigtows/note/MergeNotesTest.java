@@ -8,165 +8,253 @@
 package org.bigtows.note;
 
 import com.google.gson.Gson;
-import org.bigtows.note.evernote.EvernoteNotes;
-import org.bigtows.note.evernote.EvernoteTarget;
-import org.bigtows.note.evernote.UniqueIdGenerator;
-import org.bigtows.note.storage.util.MergeNotes;
+import org.bigtows.service.note.notebook.evernote.EvernoteNote;
+import org.bigtows.service.note.notebook.evernote.EvernoteSubTask;
+import org.bigtows.service.note.notebook.evernote.EvernoteTask;
+import org.bigtows.service.note.notebook.evernote.MergeNotes;
 import org.bigtows.util.Resource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MergeNotesTest {
 
     private MergeNotes mergeNotes;
 
-    private UniqueIdGenerator uniqueIdGeneratorStatic;
 
-    private EvernoteNotes defaultClientNotes;
+    private List<EvernoteNote> defaultClientNotes;
 
 
-    private EvernoteNotes defaultServerNotes;
+    private List<EvernoteNote> defaultServerNotes;
 
     @Before
     public void before() {
         mergeNotes = new MergeNotes();
-        uniqueIdGeneratorStatic = data -> data[0] + data[1];
 
-        this.defaultClientNotes = this.buildDefaultNotes(uniqueIdGeneratorStatic);
-        this.defaultServerNotes = this.buildDefaultNotes(uniqueIdGeneratorStatic);
+        this.defaultClientNotes = this.buildDefaultNotes();
+        this.defaultServerNotes = this.buildDefaultNotes();
     }
 
 
     @Test
     public void testSimpleMerge() {
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
 
-
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testSimpleMerge"), synchronizedNotes.toString());
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testSimpleMerge"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
     @Test
     public void testMergeRemoveTaskAtClient() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultClientNotes.getAllTarget().get(0).getAllTask().get(0).remove();
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultClientNotes.get(0).getTasks().remove(0);
 
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTaskAtClient"), synchronizedNotes.toString());
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTaskAtClient"),
+                this.listNotesToString(synchronizedNotes)
+        );
 
     }
 
     @Test
     public void testMergeRemoveSubTaskAtClient() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultClientNotes.getAllTarget().get(0).getAllTask().get(0).getSubTask().get(0).remove();
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultClientNotes.get(0).getTasks().get(0).getSubTask().remove(0);
 
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveSubTaskAtClient"), synchronizedNotes.toString());
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveSubTaskAtClient"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
 
     @Test
     public void testMergeRemoveTaskAtServer() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultServerNotes.getAllTarget().get(0).getAllTask().get(0).remove();
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultServerNotes.get(0).getTasks().remove(0);
 
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTaskAtServer"), synchronizedNotes.toString());
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTaskAtServer"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
     @Test
     public void testMergeRemoveSubTaskAtServer() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultServerNotes.getAllTarget().get(0).getAllTask().get(0).getSubTask().get(0).remove();
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultServerNotes.get(0).getTasks().get(0).getSubTask().remove(0);
 
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveSubTaskAtServer"), synchronizedNotes.toString());
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveSubTaskAtServer"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
 
     @Test
     public void testMergeChangeNameTask() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
 
-        defaultServerNotes.getAllTarget().get(0).getAllTask().get(0).getSubTask().get(0).editNameTask("new 1.1");
-        defaultClientNotes.getAllTarget().get(0).getAllTask().get(0).editNameTask("new 1");
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeChangeNameTask"), synchronizedNotes.toString());
+        defaultServerNotes.get(0).getTasks().get(0).getSubTask().get(0).setName("new 1.1");
+        defaultClientNotes.get(0).getTasks().get(0).setName("new 1");
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeChangeNameTask"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
     @Test
     public void testMergeNewTasksOnServer() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        EvernoteTarget target = defaultServerNotes.getAllTarget().get(0);
-        target.addTask(true, "2").addSubTask("2.1");
-        target.getAllTask().get(0).addSubTask(true, "1.3");
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeNewTasksOnServer"), synchronizedNotes.toString());
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        EvernoteNote target = defaultServerNotes.get(0);
+
+        var task = EvernoteTask.builder()
+                .name("2")
+                .checked(true)
+                .id("task-2")
+                .build();
+        target.getTasks().add(task);
+        task.getSubTask().add(EvernoteSubTask.builder()
+                .checked(false)
+                .name("2.1")
+                .id("sub-task-2.1")
+                .build()
+        );
+
+        target.getTasks().get(0).getSubTask().add(
+                EvernoteSubTask.builder()
+                        .checked(true)
+                        .name("1.3")
+                        .id("sub-task-1.3")
+                        .build()
+        );
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeNewTasksOnServer"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
 
     @Test
     public void testMergeNewTasksOnClient() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
 
-        EvernoteTarget target = defaultClientNotes.getAllTarget().get(0);
-        target.addTask(true, "2").addSubTask("2.1");
-        target.getAllTask().get(0).addSubTask(true, "1.3");
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeNewTasksOnClient"), synchronizedNotes.toString());
+        EvernoteNote target = defaultClientNotes.get(0);
+        target.getTasks().add(
+                EvernoteTask.builder()
+                        .checked(true)
+                        .name("2")
+                        .id("task-2")
+                        .subTasks(List.of(
+                                EvernoteSubTask.builder()
+                                        .name("2.1")
+                                        .id("sub-task-2.1")
+                                        .build()
+                        ))
+                        .build()
+        );
+        target.getTasks().get(0).getSubTask().add(
+                EvernoteSubTask.builder()
+                        .name("1.3")
+                        .id("sub-task-1.3")
+                        .checked(true)
+                        .build()
+        );
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeNewTasksOnClient"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
     @Test
     public void testMergeNewTargetOnServer() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultServerNotes.addTarget("Target 2!");
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeNewTargetOnServer"), synchronizedNotes.toString());
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultServerNotes.add(
+                EvernoteNote.builder()
+                        .name("Target 2!")
+                        .id("Target 2!")
+                        .build()
+        );
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeNewTargetOnServer"),
+                this.listNotesToString(synchronizedNotes)
+        );
     }
 
     @Test
     public void testMergeRemoveTargetOnClient() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultClientNotes.getAllTarget().get(0).remove();
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTargetOnClient"), synchronizedNotes.toString());
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultClientNotes.remove(0);
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTargetOnClient"),
+                synchronizedNotes.toString()
+        );
     }
 
     @Test
     public void testMergeRemoveTargetOnServer() {
-        mergeNotes.setCacheNotes(this.cloneNotes(defaultClientNotes));
-        defaultServerNotes.getAllTarget().get(0).remove();
-        EvernoteNotes synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
-        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTargetOnServer"), synchronizedNotes.toString());
+        mergeNotes.setCacheNotes(this.buildDefaultNotes());
+        defaultServerNotes.remove(0);
+        List<EvernoteNote> synchronizedNotes = mergeNotes.sync(defaultClientNotes, defaultServerNotes);
+        Assert.assertEquals(Resource.getJsonFile("notes/merge/testMergeRemoveTargetOnServer"),
+                synchronizedNotes.toString()
+        );
     }
 
     /**
      * Build default notes
      *
-     * @param uniqueIdGenerator generator unique id generator
      * @return Notes
      */
-    private EvernoteNotes buildDefaultNotes(UniqueIdGenerator uniqueIdGenerator) {
-        EvernoteNotes notes = new EvernoteNotes(uniqueIdGenerator);
-        EvernoteTarget clientTarget = notes.addTarget("Target");
-        clientTarget.setGuid("TargetGuid");
-        clientTarget.addTask(false, "1").addSubTask("1.1").getTask().addSubTask(true, "1.2");
+    private List<EvernoteNote> buildDefaultNotes() {
+        List<EvernoteNote> notes = new ArrayList<>();
+        List<EvernoteTask> task = new ArrayList<>();
+        List<EvernoteSubTask> subTasks = new ArrayList<>();
+        subTasks.add(EvernoteSubTask.builder()
+                .name("1.1")
+                .id("sub-task-1.1")
+                .checked(false)
+                .build()
+        );
+        subTasks.add(EvernoteSubTask.builder()
+                .name("1.2")
+                .id("sub-task-1.2")
+                .checked(true)
+                .build()
+        );
+        task.add(
+                EvernoteTask.builder()
+                        .name("1")
+                        .id("task-1")
+                        .checked(false)
+                        .subTasks(subTasks)
+                        .build()
+        );
+        notes.add(EvernoteNote.builder()
+                .name("Target")
+                .id("TargetGuid")
+                .allTask(task)
+                .build()
+        );
         return notes;
     }
 
-
     /**
-     * Clone notes
+     * List to string Json
      *
-     * @param notes notes
-     * @return Evernote notes
+     * @param evernoteNotes source
+     * @return string Json
      */
-    private EvernoteNotes cloneNotes(EvernoteNotes notes) {
-        //TODO This Best clone EVER xD
-        //Save cache
-        Gson gson = new Gson();
-        return gson.fromJson(notes.toString(), EvernoteNotes.class);
+    private String listNotesToString(List<EvernoteNote> evernoteNotes) {
+        var gson = new Gson();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        evernoteNotes.forEach(evernoteNote -> stringBuilder.append(gson.toJson(evernoteNote)));
+        return stringBuilder.toString();
     }
 
 }

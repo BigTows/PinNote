@@ -17,8 +17,6 @@ public interface Note<T extends Task> {
 
     List<T> getTasks();
 
-    Notebook getNotebook();
-
     void setId(String id);
 
 }

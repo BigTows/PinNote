@@ -3,6 +3,7 @@ package org.bigtows.service.note.notebook.evernote;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import org.bigtows.service.note.notebook.Note;
 import org.bigtows.service.note.notebook.Notebook;
 import org.bigtows.service.note.notebook.Task;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Builder
 @AllArgsConstructor
+@ToString
 public class EvernoteNote implements Note<EvernoteTask>,Cloneable {
 
 
@@ -40,11 +42,6 @@ public class EvernoteNote implements Note<EvernoteTask>,Cloneable {
     @Override
     public List<EvernoteTask> getTasks() {
         return allTask;
-    }
-
-    @Override
-    public Notebook getNotebook() {
-        return null;
     }
 
     @Override
