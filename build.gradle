@@ -49,6 +49,7 @@ patchPluginXml {
     <li>Added:
         <ul>
             <li>GUI tool window actions: Delete, Refresh</li>
+            <li>Scroll for large notes :)</li>
         </ul>
     </li> 
      <li>Fix GUI:
