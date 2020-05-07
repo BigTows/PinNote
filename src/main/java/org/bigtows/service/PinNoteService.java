@@ -4,13 +4,13 @@ import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ResourceUtil;
 import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
 import org.bigtows.component.json.JsonParser;
 import org.bigtows.service.note.repository.NotebookRepository;
 import org.bigtows.service.settings.PinNoteSettings;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 @Service
 public class PinNoteService {
@@ -35,8 +35,10 @@ public class PinNoteService {
     @SneakyThrows
     public PinNoteSettings getSettings() {
         if (settings == null) {
-            var jsonContent = IOUtils.toString(
-                    ResourceUtil.getResourceAsStream(getClass().getClassLoader(), "", "settings.json"), StandardCharsets.UTF_8);
+            var jsonContent = new BufferedReader(new InputStreamReader(
+                    ResourceUtil.getResourceAsStream(getClass().getClassLoader(), "", "settings.json")
+            )).lines().collect(Collectors.joining("\n"));
+
             settings = this.jsonParser.parse(jsonContent, PinNoteSettings.class);
         }
         return settings;
