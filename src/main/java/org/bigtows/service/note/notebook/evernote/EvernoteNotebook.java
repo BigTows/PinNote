@@ -56,6 +56,8 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
 
     public EvernoteNotebook(Project project) {
         this.project = project;
+        var service = project.getService(EvernoteNotebookAccessible.class);
+
         noteStore = this.initializeNoteStore(project.getService(EvernoteNotebookAccessible.class));
         this.notebook = this.initializeNotebook();
     }
