@@ -22,9 +22,6 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.5.Final'
-    compile group: 'io.netty', name: 'netty-transport-rxtx', version: '4.1.5.Final'
 }
 
 intellij {
@@ -62,4 +59,5 @@ patchPluginXml {
     version "2.0-beta-3"
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
+    untilBuild "201.*"
 }
