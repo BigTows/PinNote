@@ -59,7 +59,7 @@ patchPluginXml {
     </li> 
 </ul>     
       """
-    version "2.0-beta-2"
+    version "2.0-beta-3"
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
 }
