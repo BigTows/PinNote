@@ -2,6 +2,7 @@ package org.bigtows.window.ui.notetree;
 
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
+import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
 import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
@@ -24,6 +25,7 @@ public class NoteTree extends JPanel {
      * Collection of listeners about tree changes
      */
     private final List<NoteTreeChangeListener> treeChangeListeners = new ArrayList<>();
+    private final List<NoteTreeNeedRefreshModelListener> needUpdateModelListeners = new ArrayList<>();
 
     public NoteTree(List<MutableTreeNode> data) {
         tree = new Tree(this.buildTreeModelByListTreeNode(data));
@@ -49,6 +51,10 @@ public class NoteTree extends JPanel {
      */
     public void addTreeChangeListener(NoteTreeChangeListener noteTreeChangeListener) {
         treeChangeListeners.add(noteTreeChangeListener);
+    }
+
+    public void addNeedUpdateModelListener(NoteTreeNeedRefreshModelListener noteTreeNeedRefreshModelListener) {
+        needUpdateModelListeners.add(noteTreeNeedRefreshModelListener);
     }
 
     public void updateModel(List<MutableTreeNode> data) {
@@ -112,14 +118,25 @@ public class NoteTree extends JPanel {
         tree.updateUI();
     }
 
+    /**
+     * Block the tree for editing
+     */
     public void lockTree() {
         SwingUtilities.invokeLater(() -> tree.setEditable(false));
     }
 
+    /**
+     * Check tree is locked
+     *
+     * @return {@code true} if tree locked for editing else {@code false}
+     */
     public boolean isLocked() {
         return !tree.isEditable();
     }
 
+    /**
+     * Unblock the tree for editing
+     */
     public void unlockTree() {
         SwingUtilities.invokeLater(() -> tree.setEditable(true));
     }
@@ -142,6 +159,10 @@ public class NoteTree extends JPanel {
             this.processChangeEvent();
             tree.updateUI();
         }
+    }
+
+    public void needUpdateModel() {
+        this.needUpdateModelListeners.forEach(NoteTreeNeedRefreshModelListener::refresh);
     }
 
 }

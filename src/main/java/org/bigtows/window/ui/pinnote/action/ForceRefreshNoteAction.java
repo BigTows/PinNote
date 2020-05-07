@@ -21,7 +21,10 @@ public class ForceRefreshNoteAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-
+        var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(this.tabbedPane);
+        assert noteTree != null;
+        e.getPresentation().setEnabled(false);
+        noteTree.needUpdateModel();
     }
 
     @Override
@@ -32,9 +35,12 @@ public class ForceRefreshNoteAction extends AnAction {
 
     @Nullable
     private NoteTree tryGetCurrentNoteTreeFromTabbedPane(JTabbedPane tabbedPane) {
-        var selected = tabbedPane.getSelectedComponent();
-        if (selected instanceof NoteTree) {
-            return (NoteTree) selected;
+        var selectedComponent = tabbedPane.getSelectedComponent();
+        if (selectedComponent instanceof JScrollPane) {
+            selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
+        }
+        if (selectedComponent instanceof NoteTree) {
+            return (NoteTree) selectedComponent;
         }
         return null;
     }

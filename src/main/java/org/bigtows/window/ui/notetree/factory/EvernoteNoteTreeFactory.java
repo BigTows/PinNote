@@ -25,30 +25,32 @@ public class EvernoteNoteTreeFactory {
 
     public static NoteTree buildNoteTreeForEvernote(Project project, EvernoteNotebook evernoteNotebook) {
         var noteTree = new NoteTree(buildTreeNodeByNoteBook(evernoteNotebook.getAllNotes()));
-        var timer = new EditorTimer(() -> {
-            ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Upload evernote.") {
-                @SneakyThrows
-                @Override
-                public void run(@NotNull ProgressIndicator indicator) {
-                    noteTree.lockTree();
-                    var newNotes = evernoteNotebook.updateNotes(
-                            buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
-                    );
-                    noteTree.updateModel(
-                            buildTreeNodeByNoteBook(newNotes)
-                    );
-                    noteTree.unlockTree();
-                }
-            });
-
-        });
+        var timer = new EditorTimer(() -> runSync(project, evernoteNotebook, noteTree));
         noteTree.addTreeChangeListener(timer::editing);
+        noteTree.addNeedUpdateModelListener(() -> runSync(project, evernoteNotebook, noteTree));
         return noteTree;
+    }
+
+    private static void runSync(Project project, EvernoteNotebook evernoteNotebook, NoteTree noteTree) {
+        ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Upload evernote.") {
+            @SneakyThrows
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                noteTree.lockTree();
+                var newNotes = evernoteNotebook.updateNotes(
+                        buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
+                );
+                noteTree.updateModel(
+                        buildTreeNodeByNoteBook(newNotes)
+                );
+                noteTree.unlockTree();
+            }
+        });
     }
 
     private static List<MutableTreeNode> buildTreeNodeByNoteBook(List<EvernoteNote> evernoteNotes) {
 
-       return evernoteNotes.stream().map(evernoteNote -> {
+        return evernoteNotes.stream().map(evernoteNote -> {
             var noteTree = new NoteTreeNode(Note.builder()
                     .identity(evernoteNote.getId())
                     .name(evernoteNote.getName())
