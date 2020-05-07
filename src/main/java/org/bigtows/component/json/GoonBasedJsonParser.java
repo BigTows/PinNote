@@ -1,7 +1,6 @@
 package org.bigtows.component.json;
 
 import com.google.gson.Gson;
-import com.intellij.openapi.components.Service;
 
 public class GoonBasedJsonParser implements JsonParser {
 
