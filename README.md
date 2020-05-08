@@ -14,7 +14,6 @@ Features
     * Support for SubTasks.
  
 
-
 ## Demo.
 ### General view
 ![Demo](https://pinnote.bigtows.org/example/demo.gif)
