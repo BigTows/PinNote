@@ -13,6 +13,7 @@ Features
  * The opportunity to share notes on target.
     * Support for SubTasks.
  
+## [Guide](https://github.com/BigTows/PinNote/wiki/Instruction)
 
 ## Demo.
 ### General view
