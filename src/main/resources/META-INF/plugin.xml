@@ -29,7 +29,6 @@
     ]]></description>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- <applicationConfigurable instance="org.bigtows.window.SettingsWindow"/>-->
         <toolWindow id="PinNote" icon="/icons/toolWindowRight.svg" anchor="right"
                     factoryClass="org.bigtows.window.RightToolWindowFactory" doNotActivateOnStart="true"/>
         <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote"
@@ -40,8 +39,8 @@
         <projectService serviceImplementation="org.bigtows.service.PinNoteService">
         </projectService>
         <!-- HTTP Server !-->
-        <projectService serviceImplementation="org.bigtows.component.http.SunHttpServer"
-                        serviceInterface="org.bigtows.component.http.SimpleHttpServer"/>
+        <applicationService serviceImplementation="org.bigtows.component.http.SunHttpServer"
+                            serviceInterface="org.bigtows.component.http.SimpleHttpServer"/>
 
         <projectService serviceImplementation="org.bigtows.service.note.repository.SimpleNotebookRepository"
                         serviceInterface="org.bigtows.service.note.repository.NotebookRepository"/>
@@ -50,10 +49,11 @@
                 serviceImplementation="org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessibleImpl"
                 serviceInterface="org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessible"/>
 
-        <projectService serviceImplementation="org.bigtows.service.note.notebook.evernote.EvernoteNotebook"/>
-
 
         <applicationService serviceImplementation="org.bigtows.component.property.PropertyStorage"/>
+        <applicationService serviceImplementation="org.bigtows.service.PinNoteState"/>
+        <applicationService serviceImplementation="org.bigtows.service.PinNoteEventManagerImpl"
+                            serviceInterface="org.bigtows.service.PinNoteEventManager"/>
     </extensions>
     <depends>com.intellij.modules.lang</depends>
     <actions>

@@ -9,13 +9,11 @@ import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.project.Project;
-import org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessible;
-import org.bigtows.service.note.notebook.evernote.creadential.ServiceType;
 import org.bigtows.service.note.notebook.evernote.exception.LoadNotesException;
 import org.bigtows.service.note.notebook.evernote.exception.SaveNotesException;
 import org.bigtows.service.note.notebook.evernote.exception.StorageException;
 import org.bigtows.service.note.notebook.evernote.parser.EvernoteStorageParser;
+import org.bigtows.service.state.EvernoteState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+//TODO remove from service
 public class EvernoteNotebook implements org.bigtows.service.note.notebook.Notebook<EvernoteNote> {
 
     /**
@@ -46,17 +44,13 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
      */
     private final EvernoteStorageParser parser = new EvernoteStorageParser();
 
-    private final Project project;
-
-
     /**
      * Component for merge notes
      */
     private final MergeNotes mergeNotes = new MergeNotes();
 
-    public EvernoteNotebook(Project project) {
-        this.project = project;
-        noteStore = this.initializeNoteStore(project.getService(EvernoteNotebookAccessible.class));
+    public EvernoteNotebook(EvernoteState evernoteState) {
+        noteStore = this.initializeNoteStore(evernoteState.getToken(), EvernoteService.PRODUCTION);
         this.notebook = this.initializeNotebook();
     }
 
@@ -66,12 +60,12 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
      *
      * @return note storage
      */
-    private NoteStoreClient initializeNoteStore(EvernoteNotebookAccessible credential) {
+    private NoteStoreClient initializeNoteStore(String token, EvernoteService evernoteService) {
         try {
             ClientFactory factory = new ClientFactory(
                     new EvernoteAuth(
-                            credential.getServiceType() == ServiceType.PRODUCTION ? EvernoteService.PRODUCTION : EvernoteService.SANDBOX,
-                            credential.getToken()
+                            evernoteService,
+                            token
                     )
             );
             return factory.createNoteStoreClient();

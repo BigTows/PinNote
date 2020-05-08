@@ -1,6 +1,7 @@
 package org.bigtows.service;
 
 import com.intellij.openapi.components.Service;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ResourceUtil;
 import lombok.SneakyThrows;
@@ -18,6 +19,7 @@ public class PinNoteService {
     private final Project project;
 
     private final JsonParser jsonParser;
+    private final PinNoteState state;
 
     private PinNoteSettings settings;
 
@@ -25,10 +27,11 @@ public class PinNoteService {
     public PinNoteService(Project project) {
         this.project = project;
         this.jsonParser = project.getService(JsonParser.class);
+        this.state = ServiceManager.getService(PinNoteState.class);
     }
 
 
-    public NotebookRepository getNoteRepository() {
+    public NotebookRepository getNotebookRepository() {
         return project.getService(NotebookRepository.class);
     }
 
@@ -42,5 +45,9 @@ public class PinNoteService {
             settings = this.jsonParser.parse(jsonContent, PinNoteSettings.class);
         }
         return settings;
+    }
+
+    public PinNoteState getState() {
+        return state;
     }
 }

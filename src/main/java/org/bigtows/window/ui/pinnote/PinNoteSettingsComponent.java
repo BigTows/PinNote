@@ -26,7 +26,15 @@ public class PinNoteSettingsComponent {
     }
 
     private void createUIComponents() {
-        contentPanel = new JBScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        contentPanel2 = new JPanel();
+        contentPanel = new JBScrollPane(
+                contentPanel2,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        contentPanel.setBorder(BorderFactory.createEmptyBorder());
+        var layout = new GridLayout(0, 1);
+        contentPanel2.setLayout(layout);
 
     }
 }

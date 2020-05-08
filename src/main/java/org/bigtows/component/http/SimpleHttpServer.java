@@ -1,14 +1,14 @@
 package org.bigtows.component.http;
 
-import java.io.IOException;
-
 public interface SimpleHttpServer {
 
+
+    int getPort();
 
     void registerHandler(String path, RequestHandler requestHandler);
 
 
-    void startAsync(int port) ;
+    void startAsync();
 
     void stopAsync();
 
