@@ -15,7 +15,7 @@ public class ForceRefreshNoteAction extends AnAction {
     private final JTabbedPane tabbedPane;
 
     public ForceRefreshNoteAction(JTabbedPane notebookTabbedPane) {
-        super(AllIcons.Actions.Refresh);
+        super("Force update notes","",AllIcons.Actions.Refresh);
         this.tabbedPane = notebookTabbedPane;
     }
 

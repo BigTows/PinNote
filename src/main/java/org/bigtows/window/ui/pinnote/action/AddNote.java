@@ -26,7 +26,7 @@ public class AddNote extends AnAction {
      * @param tabbedPane instance of tabbed pane
      */
     public AddNote(@NotNull JTabbedPane tabbedPane) {
-        super(IconUtil.getAddIcon());
+        super("Create new note", "", IconUtil.getAddIcon());
         this.tabbedPane = tabbedPane;
     }
 

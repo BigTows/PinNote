@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class OpenSettings extends AnAction {
     public OpenSettings() {
-        super(AllIcons.General.GearPlain);
+        super("Open plugin settings", "", AllIcons.General.GearPlain);
     }
 
     @Override

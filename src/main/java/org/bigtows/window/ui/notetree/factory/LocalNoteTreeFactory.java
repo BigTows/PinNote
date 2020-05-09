@@ -39,10 +39,10 @@ public class LocalNoteTreeFactory {
             @SneakyThrows
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                var newNotes = localNotebook.updateNotes(
+                localNotebook.updateNotes(
                         buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
                 );
-                noteTree.updateModel(buildTreeNodeByNoteBook(newNotes));
+                //noteTree.updateModel(buildTreeNodeByNoteBook(newNotes));
             }
         });
     }

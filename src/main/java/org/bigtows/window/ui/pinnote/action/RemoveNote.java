@@ -14,7 +14,7 @@ public class RemoveNote extends AnAction {
     private final JTabbedPane tabbedPane;
 
     public RemoveNote(JTabbedPane tabbedPane) {
-        super(IconUtil.getRemoveIcon());
+        super("Remove selected note or task", "", IconUtil.getRemoveIcon());
         this.tabbedPane = tabbedPane;
     }
 
