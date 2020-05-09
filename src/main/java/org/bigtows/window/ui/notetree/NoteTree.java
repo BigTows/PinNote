@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class NoteTree extends JPanel {
@@ -72,10 +73,12 @@ public class NoteTree extends JPanel {
      * @return collection of expanded node tree
      */
     private List<TreePath> getExpandedNodeTree() {
-        var iterator = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot())).asIterator();
+        Enumeration<TreePath> enumeration = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot()));
         List<TreePath> listOfLeaf = new ArrayList<>();
-
-        iterator.forEachRemaining(listOfLeaf::add);
+        if (enumeration != null) {
+            var iterator = enumeration.asIterator();
+            iterator.forEachRemaining(listOfLeaf::add);
+        }
         return listOfLeaf;
     }
 

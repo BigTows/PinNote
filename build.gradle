@@ -48,7 +48,12 @@ patchPluginXml {
             <li>New storage: LocalStorage (Notes are stored on your computer, the fastest and easiest way to store notes)</li>
             <li>GUI tool window actions: Settings</li>
         </ul>
-    </li> 
+    </li>
+    <li>Notice:
+        <ul>
+            <li>Location of token Evernote has been changed, need to log in for enable Evernote notes</li>
+        </ul>
+    </li>
 </ul>     
       """
     version "2.0-beta-4"
