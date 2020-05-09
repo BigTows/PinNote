@@ -29,9 +29,7 @@ public class RemoveNote extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         var noteTree = this.getNoteTreeFromTabbedPane();
-        if (noteTree != null) {
-            e.getPresentation().setEnabled(noteTree.hasSelectedElement());
-        }
+        e.getPresentation().setEnabled(noteTree != null && noteTree.hasSelectedElement());
     }
 
 

@@ -23,9 +23,8 @@ public class OAuthPanel extends JPanel {
 
     public OAuthPanel(NotebookSource source) {
         statusSource = source.getStatus();
-        setMaximumSize(new Dimension(100, 200));
-        setPreferredSize(new Dimension(100, 200));
-        //  setBorder(BorderFactory.createLineBorder(JBColor.RED));
+        setMaximumSize(new Dimension(200, 100));
+        setPreferredSize(new Dimension(200, 100));
         setBorder(new BottomBorder(JBUI.CurrentTheme.ToolWindow.borderColor()));
         setLayout(new GridBagLayout());
 
@@ -44,11 +43,10 @@ public class OAuthPanel extends JPanel {
         descriptionSourceContains.gridx = 1;
         descriptionSourceContains.gridy = 1;
         descriptionSourceContains.fill = GridBagConstraints.HORIZONTAL;
-        descriptionSourceContains.weightx = 1.0f;
+        descriptionSourceContains.weightx = 0.8f;
         descriptionSourceContains.weighty = 1f;
 
         descriptionSource.setText(source.getDescription());
-        descriptionSource.setBorder(BorderFactory.createLineBorder(JBColor.RED));
 
         add(descriptionSource, descriptionSourceContains);
 
@@ -57,7 +55,7 @@ public class OAuthPanel extends JPanel {
         iconSourceContains.gridx = 0;
         iconSourceContains.gridy = 0;
         iconSourceContains.fill = GridBagConstraints.HORIZONTAL;
-        iconSourceContains.weightx = 0.1f;
+        iconSourceContains.weightx = 0.4f;
         iconSourceContains.weighty = 0.1f;
 
         iconSource.setOpaque(false);

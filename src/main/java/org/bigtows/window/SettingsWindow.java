@@ -1,6 +1,5 @@
 package org.bigtows.window;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import lombok.SneakyThrows;
@@ -49,7 +48,7 @@ public class SettingsWindow implements Configurable {
         sources.add(NotebookSource.builder()
                 .icon(PinNoteIcon.SETTINGS_EVERNOTE_ICON)
                 .name("Evernote®")
-                .description("<html>Evernote is an app designed for note taking, organizing, task management, and archiving.<br> It is developed by the Evernote Corporation, headquartered in Redwood City, California.<br> The app allows users to create notes, which can be text, drawings, photographs, or saved web content. Notes are stored in notebooks and can be tagged, annotated, edited, searched, given attachments, and exported.")
+                .description("<html>Saving your notes in the Evernote® service, there is a possibility of synchronization. This type of storage requires an Internet connection.")
                 .status(
                         state.getEvernoteState().isEnable() ?
                                 state.getEvernoteState().getStatusConnection() == StatusConnection.CONNECTED ?
@@ -71,6 +70,7 @@ public class SettingsWindow implements Configurable {
                                 state.getEvernoteState().setToken(params.get("token"));
                                 state.getEvernoteState().setEnable(true);
                                 state.getEvernoteState().setStatusConnection(StatusConnection.CONNECTED);
+                                state.loadState(state);
                                 panel.updateSourceStatus(StatusSource.ENABLED);
                                 eventManager.callSourceUpdate();
                                 httpRequest.sendResponse(200, "Success, goto IDE");
@@ -95,13 +95,20 @@ public class SettingsWindow implements Configurable {
                 .build());
 
         sources.add(NotebookSource.builder()
-                .icon(PinNoteIcon.getSvgIconFromResource("/icons/evernote.svg", 1.2f).orElse(AllIcons.Ide.FatalError))
+                .icon(PinNoteIcon.SETTINGS_LOCAL_NOTE_ICON)
                 .name("Local storage")
-                .description("Simply...")
-                .status(state.getEvernoteState().isEnable() ?
-                        state.getEvernoteState().getStatusConnection() == StatusConnection.CONNECTED ?
-                                StatusSource.ENABLED : state.getEvernoteState().getStatusConnection() == StatusConnection.HAS_PROBLEM
-                                ? StatusSource.HAS_PROBLEM : StatusSource.DISABLED : StatusSource.DISABLED)
+                .description("<html>Notes are stored on your computer, the fastest and easiest way to store notes")
+                .status(state.getLocalNotebookState().isEnable() ? StatusSource.ENABLED : StatusSource.DISABLED)
+                .action(((panel, currentSource) -> {
+                    if (currentSource == StatusSource.ENABLED) {
+                        state.getLocalNotebookState().setEnable(false);
+                        panel.updateSourceStatus(StatusSource.DISABLED);
+                    } else {
+                        state.getLocalNotebookState().setEnable(true);
+                        panel.updateSourceStatus(StatusSource.ENABLED);
+                    }
+                    eventManager.callSourceUpdate();
+                }))
                 .build());
         return sources;
     }

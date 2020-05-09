@@ -6,7 +6,7 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import lombok.Data;
 import org.bigtows.service.state.EvernoteState;
-import org.bigtows.service.state.LocalStorageState;
+import org.bigtows.service.state.LocalNotebookState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class PinNoteState implements PersistentStateComponent<PinNoteState> {
 
     private EvernoteState evernoteState = new EvernoteState();
 
-    private LocalStorageState localStorageState = new LocalStorageState();
+    private LocalNotebookState localNotebookState = new LocalNotebookState();
 
     @Nullable
     @Override

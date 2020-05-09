@@ -4,10 +4,10 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import lombok.SneakyThrows;
-import org.bigtows.notebook.evernote.EvernoteNote;
-import org.bigtows.notebook.evernote.EvernoteNotebook;
-import org.bigtows.notebook.evernote.EvernoteSubTask;
-import org.bigtows.notebook.evernote.EvernoteTask;
+import org.bigtows.notebook.local.LocalNote;
+import org.bigtows.notebook.local.LocalNotebook;
+import org.bigtows.notebook.local.LocalSubTask;
+import org.bigtows.notebook.local.LocalTask;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
@@ -21,54 +21,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EvernoteNoteTreeFactory {
+public class LocalNoteTreeFactory {
 
-    public static NoteTree buildNoteTreeForEvernote(Project project, EvernoteNotebook evernoteNotebook) {
-        var noteTree = new NoteTree(buildTreeNodeByNoteBook(evernoteNotebook.getAllNotes()));
-        var timer = new EditorTimer(() -> runSync(project, evernoteNotebook, noteTree));
+    public static NoteTree buildNoteTreeByLocalNotebook(Project project, LocalNotebook localNotebook) {
+        var noteTree = new NoteTree(buildTreeNodeByNoteBook(localNotebook.getAllNotes()));
+        var timer = new EditorTimer(() -> runSync(project, localNotebook, noteTree));
         noteTree.addTreeChangeListener(timer::editing);
         noteTree.addNeedUpdateModelListener(() -> {
             timer.end();
-            runSync(project, evernoteNotebook, noteTree);
+            runSync(project, localNotebook, noteTree);
         });
         return noteTree;
     }
 
-    private static void runSync(Project project, EvernoteNotebook evernoteNotebook, NoteTree noteTree) {
-        ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Sync evernote.") {
+    private static void runSync(Project project, LocalNotebook localNotebook, NoteTree noteTree) {
+        ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Update local notes.") {
             @SneakyThrows
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                noteTree.lockTree();
-                var newNotes = evernoteNotebook.updateNotes(
+                var newNotes = localNotebook.updateNotes(
                         buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
                 );
-                noteTree.updateModel(
-                        buildTreeNodeByNoteBook(newNotes)
-                );
-                noteTree.unlockTree();
+                noteTree.updateModel(buildTreeNodeByNoteBook(newNotes));
             }
         });
     }
 
-    private static List<MutableTreeNode> buildTreeNodeByNoteBook(List<EvernoteNote> evernoteNotes) {
 
-        return evernoteNotes.stream().map(evernoteNote -> {
+    private static List<MutableTreeNode> buildTreeNodeByNoteBook(List<LocalNote> localNotes) {
+
+        return localNotes.stream().map(localNote -> {
             var noteTree = new NoteTreeNode(Note.builder()
-                    .identity(evernoteNote.getId())
-                    .name(evernoteNote.getName())
+                    .name(localNote.getName())
                     .build());
-            evernoteNote.getTasks().stream().map(evernoteTask -> {
+            localNote.getTasks().stream().map(localTask -> {
                 var taskTreeNode = new TaskTreeNode(Task.builder()
-                        .identity(evernoteTask.getId())
-                        .text(evernoteTask.getName())
-                        .checked(evernoteTask.isChecked())
+                        .text(localTask.getName())
+                        .checked(localTask.isChecked())
                         .build());
-                evernoteTask.getSubTask().stream().map(evernoteSubTask ->
+                localTask.getSubTask().stream().map(localSubTask ->
                         new SubTaskTreeNode(Task.builder()
-                                .identity(evernoteSubTask.getId())
-                                .text(evernoteSubTask.getName())
-                                .checked(evernoteSubTask.isChecked())
+                                .text(localSubTask.getName())
+                                .checked(localSubTask.isChecked())
                                 .build()
                         )).forEach(taskTreeNode::add);
                 return taskTreeNode;
@@ -77,30 +71,27 @@ public class EvernoteNoteTreeFactory {
         }).collect(Collectors.toList());
     }
 
-    private static List<EvernoteNote> buildListEvernoteNoteByMutableTreeNote(List<MutableTreeNode> nodes) {
+    private static List<LocalNote> buildListEvernoteNoteByMutableTreeNote(List<MutableTreeNode> nodes) {
 
-        List<EvernoteNote> result = new ArrayList<>();
+        List<LocalNote> result = new ArrayList<>();
 
         nodes.forEach(node -> {
             if (node instanceof NoteTreeNode) {
                 var userObject = ((NoteTreeNode) node).getUserObject();
-                var note = EvernoteNote.builder()
+                var note = LocalNote.builder()
                         .name(userObject.getName())
-                        .id(userObject.getIdentity())
                         .build();
                 node.children().asIterator().forEachRemaining(nodeChild -> {
                     if (nodeChild instanceof TaskTreeNode) {
                         var taskUserObject = ((TaskTreeNode) nodeChild).getUserObject();
-                        var task = EvernoteTask.builder()
-                                .id(taskUserObject.getIdentity())
+                        var task = LocalTask.builder()
                                 .name(taskUserObject.getText())
                                 .checked(taskUserObject.getChecked())
                                 .build();
                         ((TaskTreeNode) nodeChild).children().asIterator().forEachRemaining(subTaskNode -> {
                             if (subTaskNode instanceof SubTaskTreeNode) {
                                 var subTaskUserObject = ((SubTaskTreeNode) subTaskNode).getUserObject();
-                                var subTask = EvernoteSubTask.builder()
-                                        .id(subTaskUserObject.getIdentity())
+                                var subTask = LocalSubTask.builder()
                                         .name(subTaskUserObject.getText())
                                         .checked(subTaskUserObject.getChecked())
                                         .build();

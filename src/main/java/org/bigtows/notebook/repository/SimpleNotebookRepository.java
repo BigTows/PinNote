@@ -9,9 +9,11 @@ import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import org.bigtows.notebook.Notebook;
 import org.bigtows.notebook.evernote.EvernoteNotebook;
+import org.bigtows.notebook.local.LocalNotebook;
 import org.bigtows.service.PinNoteService;
 import org.bigtows.service.PinNoteState;
 import org.bigtows.service.state.EvernoteState;
+import org.bigtows.service.state.LocalNotebookState;
 import org.bigtows.service.state.StatusConnection;
 import org.bigtows.utils.PinNoteIcon;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +68,13 @@ public class SimpleNotebookRepository implements NotebookRepository {
         return Optional.empty();
     }
 
+    private Optional<LocalNotebook> buildLocalNotebook(LocalNotebookState localNotebookState) {
+        if (localNotebookState.isEnable()) {
+            return Optional.of(new LocalNotebook());
+        }
+        return Optional.empty();
+    }
+
 
     @Override
     public List<Notebook<?>> getAll() {
@@ -73,6 +82,9 @@ public class SimpleNotebookRepository implements NotebookRepository {
         this.buildEvernoteNotebook(
                 this.pinNoteState.getEvernoteState()
         ).ifPresent(defaultNotebooks::add);
+
+        this.buildLocalNotebook(this.pinNoteState.getLocalNotebookState())
+                .ifPresent(defaultNotebooks::add);
 
         return defaultNotebooks;
     }

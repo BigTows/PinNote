@@ -42,4 +42,13 @@ public class AddNote extends AnAction {
             noteTree.addNewNote(JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target"));
         }
     }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        var selectedComponent = tabbedPane.getSelectedComponent();
+        if (selectedComponent instanceof JScrollPane) {
+            selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
+        }
+        e.getPresentation().setEnabled(selectedComponent instanceof NoteTree);
+    }
 }

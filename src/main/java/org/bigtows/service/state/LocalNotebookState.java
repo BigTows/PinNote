@@ -3,7 +3,7 @@ package org.bigtows.service.state;
 import lombok.Data;
 
 @Data
-public class LocalStorageState {
+public class LocalNotebookState {
 
     private boolean enable = false;
 }

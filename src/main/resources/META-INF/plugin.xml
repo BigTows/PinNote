@@ -54,6 +54,9 @@
         <applicationService serviceImplementation="org.bigtows.service.PinNoteState"/>
         <applicationService serviceImplementation="org.bigtows.service.PinNoteEventManagerImpl"
                             serviceInterface="org.bigtows.service.PinNoteEventManager"/>
+
+
+        <applicationService serviceImplementation="org.bigtows.notebook.local.LocalNotebookStorageState"/>
     </extensions>
     <depends>com.intellij.modules.lang</depends>
     <actions>

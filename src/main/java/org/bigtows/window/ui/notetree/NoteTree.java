@@ -62,6 +62,7 @@ public class NoteTree extends JPanel {
         SwingUtilities.invokeLater(() -> {
             tree.setModel(this.buildTreeModelByListTreeNode(data));
             ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
+            tree.updateUI();
         });
     }
 

@@ -1,9 +1,7 @@
 package org.bigtows.window.ui.pinnote;
 
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.Constraints;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
@@ -37,7 +35,8 @@ public class PinNoteComponent {
         toolBarPanel = new JPanel();
         toolBarPanel.setLayout(new BorderLayout());
         toolBarPanel.add(this.createActionToolBar());
-        setupStorage = new JButton("Open settings for setup.");
+        setupStorage = new JButton("Welcome, set source, for start using.");
+        setupStorage.setIcon(AllIcons.General.Settings);
         setupStorage.addActionListener(this::openSettings);
     }
 
@@ -51,6 +50,7 @@ public class PinNoteComponent {
         group.add(new RemoveNote(notebookTabbedPane));
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
+        group.addSeparator();
         group.add(new OpenSettings(), Constraints.LAST);
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());
@@ -67,7 +67,7 @@ public class PinNoteComponent {
         root.remove(setupStorage);
     }
 
-    public void removeAllNotebook(){
+    public void removeAllNotebook() {
         notebookTabbedPane.removeAll();
     }
 
