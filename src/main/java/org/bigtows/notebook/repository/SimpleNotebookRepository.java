@@ -52,11 +52,11 @@ public class SimpleNotebookRepository implements NotebookRepository {
                 Notification notification = new Notification(
                         "Repository.cannotLoad.Evernote",
                         "Can't load Evernote notes.",
-                        "This probabplsls.",
+                        "Your session may be outdated",
                         NotificationType.ERROR
                 );
                 notification.setIcon(PinNoteIcon.NOTIFICATION_PIN_NOTE);
-                notification.addAction(new NotificationAction("Fix") {
+                notification.addAction(new NotificationAction("Update a session") {
                     @Override
                     public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
                         ShowSettingsUtil.getInstance().showSettingsDialog(null, "PinNote");
