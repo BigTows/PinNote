@@ -2,13 +2,14 @@ package org.bigtows.window.ui.pinnote;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.Constraints;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.components.BorderLayoutPanel;
-import org.bigtows.service.note.notebook.Notebook;
+import org.bigtows.notebook.Notebook;
 import org.bigtows.window.ui.border.BottomBorder;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.bigtows.window.ui.pinnote.action.AddNote;
@@ -48,9 +49,9 @@ public class PinNoteComponent {
         final DefaultActionGroup group = new DefaultActionGroup();
         group.add(new AddNote(notebookTabbedPane));
         group.add(new RemoveNote(notebookTabbedPane));
-        group.add(new OpenSettings());
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
+        group.add(new OpenSettings(), Constraints.LAST);
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());
         panel.setBorder(new BottomBorder(JBUI.CurrentTheme.ToolWindow.borderColor()));

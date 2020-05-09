@@ -1,4 +1,4 @@
-package org.bigtows.service.note.notebook.evernote;
+package org.bigtows.notebook.evernote;
 
 import com.evernote.auth.EvernoteAuth;
 import com.evernote.auth.EvernoteService;
@@ -8,11 +8,10 @@ import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
-import com.intellij.openapi.components.Service;
-import org.bigtows.service.note.notebook.evernote.exception.LoadNotesException;
-import org.bigtows.service.note.notebook.evernote.exception.SaveNotesException;
-import org.bigtows.service.note.notebook.evernote.exception.StorageException;
-import org.bigtows.service.note.notebook.evernote.parser.EvernoteStorageParser;
+import org.bigtows.notebook.evernote.exception.LoadNotesException;
+import org.bigtows.notebook.evernote.exception.SaveNotesException;
+import org.bigtows.notebook.evernote.exception.StorageException;
+import org.bigtows.notebook.evernote.parser.EvernoteStorageParser;
 import org.bigtows.service.state.EvernoteState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 //TODO remove from service
-public class EvernoteNotebook implements org.bigtows.service.note.notebook.Notebook<EvernoteNote> {
+public class EvernoteNotebook implements org.bigtows.notebook.Notebook<EvernoteNote> {
 
     /**
      * Logger of storage
@@ -70,7 +69,6 @@ public class EvernoteNotebook implements org.bigtows.service.note.notebook.Noteb
             );
             return factory.createNoteStoreClient();
         } catch (Exception e) {
-            logger.error("Error initialize Evernote note storage.", e);
             throw new StorageException("Error initialize Evernote note storage.", e);
         }
     }

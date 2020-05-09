@@ -1,12 +1,9 @@
-package org.bigtows.service.note.notebook.evernote;
+package org.bigtows.notebook.evernote;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.ToString;
-import org.bigtows.service.note.notebook.Note;
-import org.bigtows.service.note.notebook.Notebook;
-import org.bigtows.service.note.notebook.Task;
+import org.bigtows.notebook.Note;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.bigtows.service.note.notebook;
+package org.bigtows.notebook;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package org.bigtows.service.note.notebook.evernote;
+package org.bigtows.notebook.evernote;
 
-import org.bigtows.service.note.notebook.Task;
+import org.bigtows.notebook.Task;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

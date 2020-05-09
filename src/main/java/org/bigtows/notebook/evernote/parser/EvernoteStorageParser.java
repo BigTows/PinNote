@@ -1,10 +1,10 @@
-package org.bigtows.service.note.notebook.evernote.parser;
+package org.bigtows.notebook.evernote.parser;
 
 import com.google.common.hash.Hashing;
-import org.bigtows.service.note.notebook.evernote.EvernoteNote;
-import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
-import org.bigtows.service.note.notebook.evernote.EvernoteSubTask;
-import org.bigtows.service.note.notebook.evernote.EvernoteTask;
+import org.bigtows.notebook.evernote.EvernoteNote;
+import org.bigtows.notebook.evernote.EvernoteNotebook;
+import org.bigtows.notebook.evernote.EvernoteSubTask;
+import org.bigtows.notebook.evernote.EvernoteTask;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

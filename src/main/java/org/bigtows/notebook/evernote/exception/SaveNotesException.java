@@ -1,4 +1,4 @@
-package org.bigtows.service.note.notebook.evernote.exception;
+package org.bigtows.notebook.evernote.exception;
 
 public class SaveNotesException extends RuntimeException {
 

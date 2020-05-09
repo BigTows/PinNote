@@ -5,9 +5,9 @@
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
 
-package org.bigtows.service.note.notebook.evernote.creadential;
+package org.bigtows.notebook.evernote.creadential;
 
-import org.bigtows.service.note.notebook.NotebookAccessible;
+import org.bigtows.notebook.NotebookAccessible;
 
 public interface EvernoteNotebookAccessible extends NotebookAccessible {
 

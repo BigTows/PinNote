@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.ResourceUtil;
 import lombok.SneakyThrows;
 import org.bigtows.component.json.JsonParser;
-import org.bigtows.service.note.repository.NotebookRepository;
+import org.bigtows.notebook.repository.NotebookRepository;
 import org.bigtows.service.settings.PinNoteSettings;
 
 import java.io.BufferedReader;

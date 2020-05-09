@@ -55,7 +55,7 @@ public class OAuthPanel extends JPanel {
 
         var iconSourceContains = new GridBagConstraints();
         iconSourceContains.gridx = 0;
-        iconSourceContains.gridy = 1;
+        iconSourceContains.gridy = 0;
         iconSourceContains.fill = GridBagConstraints.HORIZONTAL;
         iconSourceContains.weightx = 0.1f;
         iconSourceContains.weighty = 0.1f;

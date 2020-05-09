@@ -56,10 +56,11 @@ public class SettingsWindow implements Configurable {
                                         StatusSource.ENABLED : state.getEvernoteState().getStatusConnection() == StatusConnection.HAS_PROBLEM
                                         ? StatusSource.HAS_PROBLEM : StatusSource.DISABLED : StatusSource.DISABLED
                 )
-                .action((panel, status) -> {
-                    if (status == StatusSource.ENABLED) {
+                .action((panel, currentStatus) -> {
+                    if (currentStatus == StatusSource.ENABLED) {
                         state.getEvernoteState().setToken(null);
                         state.getEvernoteState().setStatusConnection(StatusConnection.DISABLED);
+                        state.getEvernoteState().setEnable(false);
                         panel.updateSourceStatus(StatusSource.DISABLED);
                         eventManager.callSourceUpdate();
                     } else {

@@ -1,8 +1,8 @@
-package org.bigtows.service.note.notebook.evernote;
+package org.bigtows.notebook.evernote;
 
 import lombok.Builder;
 import lombok.ToString;
-import org.bigtows.service.note.notebook.TaskWithSubTask;
+import org.bigtows.notebook.TaskWithSubTask;
 
 import java.util.ArrayList;
 import java.util.List;

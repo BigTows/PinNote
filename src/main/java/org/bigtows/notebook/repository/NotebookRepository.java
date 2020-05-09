@@ -1,6 +1,6 @@
-package org.bigtows.service.note.repository;
+package org.bigtows.notebook.repository;
 
-import org.bigtows.service.note.notebook.Notebook;
+import org.bigtows.notebook.Notebook;
 
 import java.util.List;
 

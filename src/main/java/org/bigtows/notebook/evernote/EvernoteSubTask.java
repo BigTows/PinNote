@@ -1,9 +1,9 @@
-package org.bigtows.service.note.notebook.evernote;
+package org.bigtows.notebook.evernote;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import org.bigtows.service.note.notebook.Task;
+import org.bigtows.notebook.Task;
 
 @Data
 @Builder

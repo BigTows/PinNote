@@ -1,16 +1,24 @@
-package org.bigtows.service.note.repository;
+package org.bigtows.notebook.repository;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationAction;
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.components.Service;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
+import org.bigtows.notebook.Notebook;
+import org.bigtows.notebook.evernote.EvernoteNotebook;
 import org.bigtows.service.PinNoteService;
 import org.bigtows.service.PinNoteState;
-import org.bigtows.service.note.notebook.Notebook;
-import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
 import org.bigtows.service.state.EvernoteState;
 import org.bigtows.service.state.StatusConnection;
+import org.bigtows.utils.PinNoteIcon;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +47,20 @@ public class SimpleNotebookRepository implements NotebookRepository {
             } catch (Throwable e) {
                 logger.warn("Can't connect {}", EvernoteNotebook.class);
                 evernoteState.setStatusConnection(StatusConnection.HAS_PROBLEM);
+                Notification notification = new Notification(
+                        "Repository.cannotLoad.Evernote",
+                        "Can't load Evernote notes.",
+                        "This probabplsls.",
+                        NotificationType.ERROR
+                );
+                notification.setIcon(PinNoteIcon.NOTIFICATION_PIN_NOTE);
+                notification.addAction(new NotificationAction("Fix") {
+                    @Override
+                    public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
+                        ShowSettingsUtil.getInstance().showSettingsDialog(null, "PinNote");
+                    }
+                });
+                SwingUtilities.invokeLater(() -> notification.notify(project));
             }
         }
         return Optional.empty();

@@ -1,13 +1,12 @@
 package org.bigtows.window;
 
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import org.bigtows.service.PinNoteEventManager;
 import org.bigtows.service.PinNoteService;
-import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
+import org.bigtows.notebook.evernote.EvernoteNotebook;
 import org.bigtows.utils.PinNoteIcon;
 import org.bigtows.window.ui.notetree.factory.EvernoteNoteTreeFactory;
 import org.bigtows.window.ui.pinnote.PinNoteComponent;

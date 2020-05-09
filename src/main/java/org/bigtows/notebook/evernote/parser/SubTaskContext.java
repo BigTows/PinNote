@@ -5,16 +5,12 @@
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
 
-package org.bigtows.service.note.notebook.evernote.parser;
-
-
-import java.util.ArrayList;
-import java.util.List;
+package org.bigtows.notebook.evernote.parser;
 
 /**
  * Context for parsing XML Evernote note vision
  */
-public class TaskContext {
+public class SubTaskContext {
 
     /**
      * Unique identification
@@ -30,12 +26,6 @@ public class TaskContext {
      * Task name
      */
     private String name;
-
-    /**
-     * List sub task
-     */
-    private List<SubTaskContext> subTaskContexts = new ArrayList<>();
-
 
     /**
      * This task completed
@@ -73,25 +63,6 @@ public class TaskContext {
     public void setName(String name) {
         this.name = name;
     }
-
-    /**
-     * Gets sub task contexts.
-     *
-     * @return the sub task contexts
-     */
-    public List<SubTaskContext> getSubTaskContexts() {
-        return subTaskContexts;
-    }
-
-    /**
-     * Add sub task contexts.
-     *
-     * @param subTaskContexts the sub task contexts
-     */
-    public void addSubTaskContexts(SubTaskContext subTaskContexts) {
-        this.subTaskContexts.add(subTaskContexts);
-    }
-
 
     /**
      * Get Unique identification

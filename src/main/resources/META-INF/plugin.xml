@@ -42,12 +42,12 @@
         <applicationService serviceImplementation="org.bigtows.component.http.SunHttpServer"
                             serviceInterface="org.bigtows.component.http.SimpleHttpServer"/>
 
-        <projectService serviceImplementation="org.bigtows.service.note.repository.SimpleNotebookRepository"
-                        serviceInterface="org.bigtows.service.note.repository.NotebookRepository"/>
+        <projectService serviceImplementation="org.bigtows.notebook.repository.SimpleNotebookRepository"
+                        serviceInterface="org.bigtows.notebook.repository.NotebookRepository"/>
 
         <projectService
-                serviceImplementation="org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessibleImpl"
-                serviceInterface="org.bigtows.service.note.notebook.evernote.creadential.EvernoteNotebookAccessible"/>
+                serviceImplementation="org.bigtows.notebook.evernote.creadential.EvernoteNotebookAccessibleImpl"
+                serviceInterface="org.bigtows.notebook.evernote.creadential.EvernoteNotebookAccessible"/>
 
 
         <applicationService serviceImplementation="org.bigtows.component.property.PropertyStorage"/>
@@ -61,9 +61,4 @@
     <applicationListeners>
 
     </applicationListeners>
-    <application-components>
-        <!--  <component>
-           &lt;!&ndash;   <implementation-class>org.bigtows.components.PinNoteNotification</implementation-class>&ndash;&gt;
-          </component>-->
-    </application-components>
 </idea-plugin>

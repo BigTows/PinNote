@@ -5,7 +5,7 @@
  * Licensed under the MIT License. See LICENSE file in the project root for license information.
  */
 
-package org.bigtows.service.note.notebook.evernote.creadential;
+package org.bigtows.notebook.evernote.creadential;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
