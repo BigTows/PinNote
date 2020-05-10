@@ -1,13 +1,24 @@
 package org.bigtows.service.settings;
 
-import lombok.AllArgsConstructor;
+import com.intellij.serviceContainer.NonInjectable;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PinNoteSettings {
 
-    private Storage storage;
+    private final Storage storage = Storage.builder()
+            .evernote(
+                    EvernoteStorage.builder()
+                            .oAuth(
+                                    OAuthSettings.builder()
+                                            .url("https://pinnote.bigtows.org/")
+                                            .build()
+                            )
+                            .build()
+            )
+            .build();
+
+    @NonInjectable
+    public PinNoteSettings() {
+    }
 }

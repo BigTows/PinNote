@@ -8,10 +8,10 @@
 package org.bigtows.note;
 
 import com.google.gson.Gson;
-import org.bigtows.service.note.notebook.evernote.EvernoteNote;
-import org.bigtows.service.note.notebook.evernote.EvernoteSubTask;
-import org.bigtows.service.note.notebook.evernote.EvernoteTask;
-import org.bigtows.service.note.notebook.evernote.MergeNotes;
+import org.bigtows.notebook.evernote.EvernoteNote;
+import org.bigtows.notebook.evernote.EvernoteSubTask;
+import org.bigtows.notebook.evernote.EvernoteTask;
+import org.bigtows.notebook.evernote.MergeNotes;
 import org.bigtows.util.Resource;
 import org.junit.Assert;
 import org.junit.Before;

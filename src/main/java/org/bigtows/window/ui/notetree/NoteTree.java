@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 public class NoteTree extends JPanel {
@@ -62,6 +63,7 @@ public class NoteTree extends JPanel {
         SwingUtilities.invokeLater(() -> {
             tree.setModel(this.buildTreeModelByListTreeNode(data));
             ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
+            tree.updateUI();
         });
     }
 
@@ -71,10 +73,12 @@ public class NoteTree extends JPanel {
      * @return collection of expanded node tree
      */
     private List<TreePath> getExpandedNodeTree() {
-        var iterator = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot())).asIterator();
+        Enumeration<TreePath> enumeration = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot()));
         List<TreePath> listOfLeaf = new ArrayList<>();
-
-        iterator.forEachRemaining(listOfLeaf::add);
+        if (enumeration != null) {
+            var iterator = enumeration.asIterator();
+            iterator.forEachRemaining(listOfLeaf::add);
+        }
         return listOfLeaf;
     }
 
@@ -86,7 +90,12 @@ public class NoteTree extends JPanel {
      */
     private TreeModel buildTreeModelByListTreeNode(List<MutableTreeNode> mutableTreeNodes) {
         var root = new DefaultMutableTreeNode("OPA");
-        mutableTreeNodes.forEach(root::add);
+        mutableTreeNodes.forEach(mutableTreeNode -> {
+            if (mutableTreeNode.getChildCount() == 0) {
+                mutableTreeNode.insert(new TaskTreeNode(Task.builder().build()), 0);
+            }
+            root.add(mutableTreeNode);
+        });
         return new DefaultTreeModel(root, false);
     }
 
@@ -107,7 +116,8 @@ public class NoteTree extends JPanel {
                         .name(name)
                         .build()
         );
-        treeNode.add(noteTreeNode);
+        List<TreePath> listOfLeaf = this.getExpandedNodeTree();
+        treeNode.insert(noteTreeNode, 0);
 
         noteTreeNode.add(new TaskTreeNode(Task.builder()
                 .build())
@@ -115,7 +125,11 @@ public class NoteTree extends JPanel {
         if (noteTreeNode.getChildCount() == 1) {
             tree.setModel(tree.getModel());
         }
-        tree.updateUI();
+        this.processChangeEvent();
+        SwingUtilities.invokeLater(() -> {
+            ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
+            tree.updateUI();
+        });
     }
 
     /**

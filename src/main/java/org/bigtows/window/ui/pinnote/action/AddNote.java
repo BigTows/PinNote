@@ -26,7 +26,7 @@ public class AddNote extends AnAction {
      * @param tabbedPane instance of tabbed pane
      */
     public AddNote(@NotNull JTabbedPane tabbedPane) {
-        super(IconUtil.getAddIcon());
+        super("Create new note", "", IconUtil.getAddIcon());
         this.tabbedPane = tabbedPane;
     }
 
@@ -39,7 +39,22 @@ public class AddNote extends AnAction {
         if (selectedComponent instanceof NoteTree) {
             var noteTree = (NoteTree) selectedComponent;
             var nameTab = ((JLabel) tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())).getText();
-            noteTree.addNewNote(JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target"));
+            String nameOfTarget;
+            do {
+                nameOfTarget = JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target");
+            } while (nameOfTarget != null && (nameOfTarget.length() == 0 || nameOfTarget.length() > 100));
+            if (nameOfTarget != null) {
+                noteTree.addNewNote(nameOfTarget);
+            }
         }
+    }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        var selectedComponent = tabbedPane.getSelectedComponent();
+        if (selectedComponent instanceof JScrollPane) {
+            selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
+        }
+        e.getPresentation().setEnabled(selectedComponent instanceof NoteTree);
     }
 }

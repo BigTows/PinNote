@@ -4,10 +4,10 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import lombok.SneakyThrows;
-import org.bigtows.service.note.notebook.evernote.EvernoteNote;
-import org.bigtows.service.note.notebook.evernote.EvernoteNotebook;
-import org.bigtows.service.note.notebook.evernote.EvernoteSubTask;
-import org.bigtows.service.note.notebook.evernote.EvernoteTask;
+import org.bigtows.notebook.evernote.EvernoteNote;
+import org.bigtows.notebook.evernote.EvernoteNotebook;
+import org.bigtows.notebook.evernote.EvernoteSubTask;
+import org.bigtows.notebook.evernote.EvernoteTask;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
@@ -35,18 +35,21 @@ public class EvernoteNoteTreeFactory {
     }
 
     private static void runSync(Project project, EvernoteNotebook evernoteNotebook, NoteTree noteTree) {
-        ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Upload evernote.") {
+        ProgressManager.getInstance().run(new com.intellij.openapi.progress.Task.Backgroundable(project, "Sync evernote.") {
             @SneakyThrows
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                noteTree.lockTree();
-                var newNotes = evernoteNotebook.updateNotes(
-                        buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
-                );
-                noteTree.updateModel(
-                        buildTreeNodeByNoteBook(newNotes)
-                );
-                noteTree.unlockTree();
+                try {
+                    noteTree.lockTree();
+                    var newNotes = evernoteNotebook.updateNotes(
+                            buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
+                    );
+                    noteTree.updateModel(
+                            buildTreeNodeByNoteBook(newNotes)
+                    );
+                } finally {
+                    noteTree.unlockTree();
+                }
             }
         });
     }

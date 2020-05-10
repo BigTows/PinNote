@@ -48,7 +48,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="e48a8" binding="contentPanel2" layout-manager="CardLayout" hgap="0" vgap="0">
+          <grid id="e48a8" binding="contentPanel2" custom-create="true" layout-manager="CardLayout" hgap="0" vgap="0">
             <constraints/>
             <properties/>
             <border type="none"/>

@@ -1,6 +1,5 @@
 package org.bigtows.component.http;
 
-import com.intellij.openapi.project.Project;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -19,9 +18,16 @@ public class SunHttpServer implements SimpleHttpServer {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final HttpServer server;
 
+    private boolean status = false;
+
     @SneakyThrows
-    public SunHttpServer(Project project) {
-        this.server = HttpServer.create();
+    public SunHttpServer() {
+        this.server = HttpServer.create(new InetSocketAddress(PortUtility.getFreePort()), 0);
+    }
+
+    @Override
+    public int getPort() {
+        return server.getAddress().getPort();
     }
 
     @Override
@@ -68,22 +74,24 @@ public class SunHttpServer implements SimpleHttpServer {
 
     @SneakyThrows
     @Override
-    public void startAsync(int port) {
-        logger.warn("Start server at {} port", port);
-        server.bind(new InetSocketAddress(port), 0);
-        server.start();
+    public void startAsync() {
+        if (!status) {
+            logger.debug("Server start at {} port", server.getAddress().getPort());
+            this.server.start();
+            this.status = true;
+        }
     }
 
     @Override
     public void stopAsync() {
         new Thread(() -> {
             try {
-                Thread.sleep(5000);
-                server.stop(1);
-                logger.info("Server shutdown");
+                Thread.sleep(250);
+                server.stop(0);
+                status = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        });
+        }).start();
     }
 }

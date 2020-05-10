@@ -7,9 +7,9 @@
 
 package org.bigtows.note;
 
-import org.bigtows.service.note.notebook.evernote.EvernoteNote;
-import org.bigtows.service.note.notebook.evernote.EvernoteSubTask;
-import org.bigtows.service.note.notebook.evernote.EvernoteTask;
+import org.bigtows.notebook.evernote.EvernoteNote;
+import org.bigtows.notebook.evernote.EvernoteSubTask;
+import org.bigtows.notebook.evernote.EvernoteTask;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,26 +1,29 @@
 package org.bigtows.window.ui.pinnote;
 
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.components.BorderLayoutPanel;
-import org.bigtows.service.note.notebook.Notebook;
+import org.bigtows.notebook.Notebook;
 import org.bigtows.window.ui.border.BottomBorder;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.bigtows.window.ui.pinnote.action.AddNote;
 import org.bigtows.window.ui.pinnote.action.ForceRefreshNoteAction;
+import org.bigtows.window.ui.pinnote.action.OpenSettings;
 import org.bigtows.window.ui.pinnote.action.RemoveNote;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class PinNoteComponent {
     private JPanel root;
     private JTabbedPane notebookTabbedPane;
     private JPanel toolBarPanel;
+    private JButton setupStorage;
 
 
     public JPanel getRoot() {
@@ -32,6 +35,13 @@ public class PinNoteComponent {
         toolBarPanel = new JPanel();
         toolBarPanel.setLayout(new BorderLayout());
         toolBarPanel.add(this.createActionToolBar());
+        setupStorage = new JButton("Welcome, set source, for start using.");
+        setupStorage.setIcon(AllIcons.General.Settings);
+        setupStorage.addActionListener(this::openSettings);
+    }
+
+    private void openSettings(ActionEvent actionEvent) {
+        ShowSettingsUtil.getInstance().showSettingsDialog(null, "PinNote");
     }
 
     private BorderLayoutPanel createActionToolBar() {
@@ -40,6 +50,8 @@ public class PinNoteComponent {
         group.add(new RemoveNote(notebookTabbedPane));
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
+        group.addSeparator();
+        group.add(new OpenSettings(), Constraints.LAST);
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());
         panel.setBorder(new BottomBorder(JBUI.CurrentTheme.ToolWindow.borderColor()));
@@ -52,6 +64,11 @@ public class PinNoteComponent {
                 icon,
                 this.createScrollPaneWithNoteTree(noteTree)
         );
+        root.remove(setupStorage);
+    }
+
+    public void removeAllNotebook() {
+        notebookTabbedPane.removeAll();
     }
 
     /**
