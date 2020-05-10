@@ -52,6 +52,8 @@ patchPluginXml {
     <li>Fix:
         <ul>
             <li>Can't create note on evernote side.</li>
+            <li>When creating a new record, the remaining records are collapsed.</li>
+            <li>Invalid name of Target.</li>
         </ul>
     </li>
     <li>Notice:

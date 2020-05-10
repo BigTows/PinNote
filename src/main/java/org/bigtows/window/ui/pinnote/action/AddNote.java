@@ -39,7 +39,14 @@ public class AddNote extends AnAction {
         if (selectedComponent instanceof NoteTree) {
             var noteTree = (NoteTree) selectedComponent;
             var nameTab = ((JLabel) tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())).getText();
-            noteTree.addNewNote(JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target"));
+            String nameOfTarget;
+            do {
+                nameOfTarget = JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target");
+                System.out.println(nameOfTarget);
+            } while (nameOfTarget != null && (nameOfTarget.length() == 0 || nameOfTarget.length() > 100));
+            if (nameOfTarget != null) {
+                noteTree.addNewNote(nameOfTarget);
+            }
         }
     }
 
