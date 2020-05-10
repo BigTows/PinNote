@@ -42,7 +42,6 @@ public class AddNote extends AnAction {
             String nameOfTarget;
             do {
                 nameOfTarget = JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target");
-                System.out.println(nameOfTarget);
             } while (nameOfTarget != null && (nameOfTarget.length() == 0 || nameOfTarget.length() > 100));
             if (nameOfTarget != null) {
                 noteTree.addNewNote(nameOfTarget);
