@@ -49,6 +49,11 @@ patchPluginXml {
             <li>GUI tool window actions: Settings</li>
         </ul>
     </li>
+    <li>Fix:
+        <ul>
+            <li>Can't create note on evernote side.</li>
+        </ul>
+    </li>
     <li>Notice:
         <ul>
             <li>Location of token Evernote has been changed, need to log in for enable Evernote notes</li>
