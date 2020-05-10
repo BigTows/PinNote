@@ -18,7 +18,8 @@ Features
 ## Demo.
 ### General view
 ![Demo](https://pinnote.bigtows.org/example/demo_new.gif)
-
+### Setup.
+![Demo](https://pinnote.bigtows.org/example/demo_setup.gif)
 ### Sync demo (GUI from old version).
 ![Sync demo](https://pinnote.bigtows.org/example/demo_sync.gif)
 
