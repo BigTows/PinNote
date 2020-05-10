@@ -13,13 +13,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements of simple http server based on sun http server
+ */
 public class SunHttpServer implements SimpleHttpServer {
 
+    /**
+     * Logger
+     */
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     * Instance of http server
+     */
     private final HttpServer server;
 
+    /**
+     * Current status.
+     * {@code true} server is started else disabled
+     */
     private boolean status = false;
 
+    /**
+     * Create http server with random port
+     */
     @SneakyThrows
     public SunHttpServer() {
         this.server = HttpServer.create(new InetSocketAddress(PortUtility.getFreePort()), 0);
@@ -84,11 +101,11 @@ public class SunHttpServer implements SimpleHttpServer {
 
     @Override
     public void stopAsync() {
+        status = false;
         new Thread(() -> {
             try {
                 Thread.sleep(250);
                 server.stop(0);
-                status = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
