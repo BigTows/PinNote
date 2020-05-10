@@ -90,7 +90,12 @@ public class NoteTree extends JPanel {
      */
     private TreeModel buildTreeModelByListTreeNode(List<MutableTreeNode> mutableTreeNodes) {
         var root = new DefaultMutableTreeNode("OPA");
-        mutableTreeNodes.forEach(root::add);
+        mutableTreeNodes.forEach(mutableTreeNode -> {
+            if (mutableTreeNode.getChildCount() == 0) {
+                mutableTreeNode.insert(new TaskTreeNode(Task.builder().build()), 0);
+            }
+            root.add(mutableTreeNode);
+        });
         return new DefaultTreeModel(root, false);
     }
 

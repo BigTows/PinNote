@@ -46,7 +46,7 @@ public class MergeNotes {
             //Client remove this target
             return;
         }
-        if (cacheTarget == null && clientTarget == null) {
+        if (cacheTarget == null && clientTarget == null && serverTarget != null) {
             clientNotes.add(serverTarget);
             return;
         }
@@ -179,7 +179,7 @@ public class MergeNotes {
 
     private EvernoteNote searchTarget(List<EvernoteNote> storage, EvernoteNote searched) {
         for (EvernoteNote target : storage) {
-            if (target.getId() != null && target.getId().equals(searched.getId())) {
+            if (searched != null && target != null && target.getId() != null && target.getId().equals(searched.getId())) {
                 return target;
             }
         }

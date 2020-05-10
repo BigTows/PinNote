@@ -39,14 +39,17 @@ public class EvernoteNoteTreeFactory {
             @SneakyThrows
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                noteTree.lockTree();
-                var newNotes = evernoteNotebook.updateNotes(
-                        buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
-                );
-                noteTree.updateModel(
-                        buildTreeNodeByNoteBook(newNotes)
-                );
-                noteTree.unlockTree();
+                try {
+                    noteTree.lockTree();
+                    var newNotes = evernoteNotebook.updateNotes(
+                            buildListEvernoteNoteByMutableTreeNote(noteTree.getMutableTreeNodeList())
+                    );
+                    noteTree.updateModel(
+                            buildTreeNodeByNoteBook(newNotes)
+                    );
+                } finally {
+                    noteTree.unlockTree();
+                }
             }
         });
     }
