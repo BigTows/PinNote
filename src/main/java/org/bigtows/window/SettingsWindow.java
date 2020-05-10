@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.bigtows.component.http.SimpleHttpServer;
 import org.bigtows.service.PinNoteEventManager;
 import org.bigtows.service.PinNoteState;
+import org.bigtows.service.settings.PinNoteSettings;
 import org.bigtows.service.state.StatusConnection;
 import org.bigtows.utils.PinNoteIcon;
 import org.bigtows.window.ui.pinnote.PinNoteSettingsComponent;
@@ -42,6 +43,7 @@ public class SettingsWindow implements Configurable {
 
     @SneakyThrows
     private List<NotebookSource> buildSources() {
+        var pinNoteSettings = ServiceManager.getService(PinNoteSettings.class);
         var state = ServiceManager.getService(PinNoteState.class);
         var eventManager = ServiceManager.getService(PinNoteEventManager.class);
         List<NotebookSource> sources = new ArrayList<>();
@@ -77,7 +79,7 @@ public class SettingsWindow implements Configurable {
                             }
                         });
                         httpServer.startAsync();
-                        final var urlEvernoteOAuth = "https://pinnote.bigtows.org/" + "?port=" + httpServer.getPort();
+                        final var urlEvernoteOAuth = pinNoteSettings.getStorage().getEvernote().getOAuth().getUrl() + "?port=" + httpServer.getPort();
                         try {
                             Desktop.getDesktop().browse(new URI(urlEvernoteOAuth));
                         } catch (IOException | URISyntaxException e) {

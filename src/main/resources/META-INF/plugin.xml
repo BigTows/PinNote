@@ -52,6 +52,7 @@
 
         <applicationService serviceImplementation="org.bigtows.component.property.PropertyStorage"/>
         <applicationService serviceImplementation="org.bigtows.service.PinNoteState"/>
+        <applicationService serviceImplementation="org.bigtows.service.settings.PinNoteSettings"/>
         <applicationService serviceImplementation="org.bigtows.service.PinNoteEventManagerImpl"
                             serviceInterface="org.bigtows.service.PinNoteEventManager"/>
 

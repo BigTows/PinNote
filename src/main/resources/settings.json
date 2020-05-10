@@ -1,9 +1,0 @@
-{
-  "storage": {
-    "evernote": {
-      "oAuth": {
-        "url": "https://pinnote.bigtows.org/"
-      }
-    }
-  }
-}
