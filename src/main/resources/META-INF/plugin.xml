@@ -14,7 +14,12 @@
         A PinNote is a way to write notes in IDE by JetBrains.<br>
         Now supported:
           <ul>
-             <li>Store your notes in <a href="https://evernote.com">Evernote</a>.</li>
+             <li>Store your notes in
+                 <ul>
+                    <li><a href="https://evernote.com">Evernote</a></li>
+                    <li>Locally on your computer</li>
+                 </ul>
+             </li>
              <li>Sync notes between many instance IDE.</li>
              <li>The opportunity to share notes on target.
                 <ul>
