@@ -38,7 +38,7 @@
                     factoryClass="org.bigtows.window.RightToolWindowFactory" doNotActivateOnStart="true"/>
         <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote"
                                  instance="org.bigtows.window.SettingsWindow"/>
-        <projectService serviceImplementation="org.bigtows.component.json.GoonBasedJsonParser"
+        <projectService serviceImplementation="org.bigtows.component.json.GsonBasedJsonParser"
                         serviceInterface="org.bigtows.component.json.JsonParser">
         </projectService>
         <projectService serviceImplementation="org.bigtows.service.PinNoteService">
