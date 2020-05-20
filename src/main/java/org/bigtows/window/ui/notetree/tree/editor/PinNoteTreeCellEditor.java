@@ -41,7 +41,11 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
 
                             if (abstractTaskTreeNode != null) {
                                 abstractTaskTreeNode.setCreationReason(CreationReason.USER);
-                                ((DefaultMutableTreeNode) (sourceTaskTreeNode).getParent()).add(abstractTaskTreeNode);
+                                var parent = ((DefaultMutableTreeNode) (sourceTaskTreeNode).getParent());
+                                parent.add(abstractTaskTreeNode);
+                                if (parent instanceof AbstractTaskTreeNode) {
+                                    ((Task) parent.getUserObject()).setChecked(false);
+                                }
                                 tree.updateUI();
                             }
                         }
@@ -50,6 +54,7 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
                         public void newSubTask() {
                             AbstractTaskTreeNode abstractTaskTreeNode = null;
                             if (value instanceof TaskTreeNode) {
+                                ((TaskTreeNode) value).getUserObject().setChecked(false);
                                 abstractTaskTreeNode = new SubTaskTreeNode(Task.builder().build());
                             }
 
@@ -63,7 +68,11 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
 
                         @Override
                         public void delete() {
+                            var parent = ((AbstractTaskTreeNode) value).getParent();
                             ((AbstractTaskTreeNode) value).removeFromParent();
+                            if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
+                                ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
+                            }
                             tree.updateUI();
                             treeChanged.onChange();
                         }
