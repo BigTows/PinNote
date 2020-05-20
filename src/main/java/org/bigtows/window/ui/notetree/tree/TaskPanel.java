@@ -19,7 +19,10 @@ import java.util.Collections;
 public class TaskPanel extends JPanel {
     private final AbstractTaskTreeNode source;
 
-    public final JTextFieldWithPlaceholder textField = new JTextFieldWithPlaceholder("New value.");
+    /**
+     * Text filed instance with placeholder
+     */
+    public final JTextFieldWithPlaceholder textField = new JTextFieldWithPlaceholder("...");
     public final JBCheckBox check = new JBCheckBox();
     private final TreeChanged treeChanged;
 
@@ -72,10 +75,7 @@ public class TaskPanel extends JPanel {
 
         textField.addMouseListener(new RightClickPopupMenuMouseAdapter(
                 new DeletePopupMenu(
-                        actionEvent -> {
-                            userShortcutPressed.delete();
-                            treeChanged.onChange();
-                        }
+                        actionEvent -> userShortcutPressed.delete()
                 ))
         );
 
@@ -99,16 +99,48 @@ public class TaskPanel extends JPanel {
         this.calculateBorder();
     }
 
+    /**
+     * Mechanic "Mechanic automatic task completion" calling after check box select changed
+     *
+     * @param event event
+     */
     private void onCheckBoxChange(ItemEvent event) {
         source.getUserObject().setChecked(check.isSelected());
-        for (int i = 0; i < source.getChildCount(); i++) {
-            var children = source.getChildAt(i);
-            if (children instanceof AbstractTaskTreeNode) {
-                //TODO if need recursion
-                ((AbstractTaskTreeNode) children).getUserObject().setChecked(check.isSelected());
+
+        if (source.getParent() instanceof AbstractTaskTreeNode) {
+            var parent = (AbstractTaskTreeNode) source.getParent();
+            parent.getUserObject().setChecked(checkAllSubTaskSelected(parent));
+        } else {
+            for (int i = 0; i < source.getChildCount(); i++) {
+                var children = source.getChildAt(i);
+                if (children instanceof AbstractTaskTreeNode) {
+                    //TODO if need recursion
+                    ((AbstractTaskTreeNode) children).getUserObject().setChecked(check.isSelected());
+                }
             }
         }
         treeChanged.onChange();
+    }
+
+    /**
+     * Check all subTask for selected
+     *
+     * @param parent root of task
+     * @return {@code true} if all subTask of root(parent) selected else {@code false}
+     */
+    private boolean checkAllSubTaskSelected(AbstractTaskTreeNode parent) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            var children = parent.getChildAt(i);
+            //TODO if need recursion
+            if (children instanceof AbstractTaskTreeNode) {
+                if (!((AbstractTaskTreeNode) children).getUserObject().getChecked()) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void calculateBorder() {

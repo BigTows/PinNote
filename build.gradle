@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0-beta-4'
+version '2.0-beta-5'
 
 sourceCompatibility = 11
 
@@ -41,29 +41,21 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0-beta-4</h1><br>
+<h1>Release: 2.0-beta-5</h1><br>
 <ul>
-    <li>Added:
-        <ul>
-            <li>New storage: LocalStorage (Notes are stored on your computer, the fastest and easiest way to store notes)</li>
-            <li>GUI tool window actions: Settings</li>
-        </ul>
-    </li>
     <li>Fix:
         <ul>
-            <li>Can't create note on evernote side.</li>
-            <li>When creating a new record, the remaining records are collapsed.</li>
-            <li>Invalid name of Target.</li>
+            <li>If delete task though popup menu, empty task not created.</li>
+            <li>Improve mechanic automatic task completion.</li>
         </ul>
     </li>
-    <li>Notice:
+    <li>UI update:
         <ul>
-            <li>Location of token Evernote has been changed, need to log in for enable Evernote notes</li>
+            <li>Placeholder for empty task/subTask value replaced from "New value." to "..."</li>
         </ul>
     </li>
 </ul>     
       """
-    version "2.0-beta-4"
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
     untilBuild "201.*"
