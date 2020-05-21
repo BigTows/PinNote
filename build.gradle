@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0-beta-5'
+version '2.0'
 
 sourceCompatibility = 11
 
@@ -41,17 +41,16 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0-beta-5</h1><br>
+<h1>Release: 2.0</h1><br>
 <ul>
     <li>Fix:
         <ul>
-            <li>If delete task though popup menu, empty task not created.</li>
-            <li>Improve mechanic automatic task completion.</li>
+            <li></li>
         </ul>
     </li>
     <li>UI update:
         <ul>
-            <li>Placeholder for empty task/subTask value replaced from "New value." to "..."</li>
+            <li>Button "Welcome, set source, for start using." was hidden when user remove all sources, now visible on this situation.</li>
         </ul>
     </li>
 </ul>     

@@ -4,7 +4,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import org.bigtows.notebook.Notebook;
 import org.bigtows.notebook.evernote.EvernoteNotebook;
 import org.bigtows.notebook.local.LocalNotebook;
 import org.bigtows.service.PinNoteEventManager;
@@ -20,10 +19,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
-public class RightToolWindowFactory implements ToolWindowFactory {
+/**
+ * Factory of ToolWindow for plugin PinNote.
+ */
+final public class RightToolWindowFactory implements ToolWindowFactory {
 
+    /**
+     * Logger.
+     */
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * Service of PinNote plugin.
+     */
     private PinNoteService pinNoteService;
 
 
@@ -32,12 +40,12 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         pinNoteService = project.getService(PinNoteService.class);
         var pinNoteComponent = new PinNoteComponent();
         ServiceManager.getService(PinNoteEventManager.class)
-                .registerSourceUpdateEvent(() -> this.initNotebook(project, pinNoteComponent));
+                .registerSourceUpdateEvent(() -> this.renderNotebookLater(project, pinNoteComponent));
         toolWindow.getComponent().add(pinNoteComponent.getRoot());
-        this.initNotebook(project, pinNoteComponent);
+        this.renderNotebookLater(project, pinNoteComponent);
     }
 
-    private void initNotebook(Project project, PinNoteComponent pinNoteComponent) {
+    private void renderNotebookLater(Project project, PinNoteComponent pinNoteComponent) {
         var allNotebook = pinNoteService.getNotebookRepository().getAll();
         pinNoteComponent.removeAllNotebook();
         allNotebook.forEach(notebook -> {
@@ -53,7 +61,7 @@ public class RightToolWindowFactory implements ToolWindowFactory {
             }
 
             if (icon != null && noteTree != null) {
-                initNotebook(pinNoteComponent, notebook, icon, noteTree);
+                renderNotebookLater(pinNoteComponent, notebook.getName(), icon, noteTree);
             } else {
                 logger.warn("Not found builder for notebook: {} type", notebook.getClass());
             }
@@ -61,8 +69,17 @@ public class RightToolWindowFactory implements ToolWindowFactory {
         });
     }
 
-    private void initNotebook(PinNoteComponent pinNoteComponent, Notebook<?> notebook, Icon icon, NoteTree noteTree) {
-        SwingUtilities.invokeLater(() -> pinNoteComponent.addNotebook(notebook, icon, noteTree));
+    /**
+     * Add notebook into PinNote component, later
+     *
+     * @param pinNoteComponent component
+     * @param name             of notebook
+     * @param icon             icon for Tab
+     * @param noteTree         data (notes)
+     * @see PinNoteComponent
+     */
+    private void renderNotebookLater(PinNoteComponent pinNoteComponent, String name, Icon icon, NoteTree noteTree) {
+        SwingUtilities.invokeLater(() -> pinNoteComponent.addNotebook(name, icon, noteTree));
     }
 
 }
