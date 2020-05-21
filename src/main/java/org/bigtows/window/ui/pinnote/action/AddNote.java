@@ -13,7 +13,7 @@ import javax.swing.*;
  *
  * @see NoteTree
  */
-public class AddNote extends AnAction {
+final public class AddNote extends AnAction {
 
     /**
      * Instance of tabbed pane

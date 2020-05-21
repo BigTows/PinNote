@@ -6,7 +6,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class OpenSettings extends AnAction {
+/**
+ * UI - component-action for open PinNote settings
+ */
+final public class OpenSettings extends AnAction {
+    /**
+     * Constructor
+     */
     public OpenSettings() {
         super("Open plugin settings", "", AllIcons.General.GearPlain);
     }

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ForceRefreshNoteAction extends AnAction {
+final public class ForceRefreshNoteAction extends AnAction {
 
 
     private final JTabbedPane tabbedPane;
