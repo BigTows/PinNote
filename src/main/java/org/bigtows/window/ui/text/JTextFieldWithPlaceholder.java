@@ -5,16 +5,35 @@ import com.intellij.ui.components.JBTextField;
 import java.awt.*;
 
 /**
+ * UI - component, JTextField (swing) with placeholder
+ * <p>
+ * Thx for placeholder, link bellow
+ * </p>
+ *
  * @link https://stackoverflow.com/questions/16213836/java-swing-jtextfield-set-placeholder
  */
 public class JTextFieldWithPlaceholder extends JBTextField {
 
+    /**
+     * Placeholder
+     */
     private final String placeholder;
 
+    /**
+     * Constructor
+     *
+     * @param placeholder placeholder for text field
+     */
     public JTextFieldWithPlaceholder(String placeholder) {
         this.placeholder = placeholder;
     }
 
+    /**
+     * Constructor
+     *
+     * @param text        of text filed
+     * @param placeholder placeholder for text field
+     */
     public JTextFieldWithPlaceholder(String text, String placeholder) {
         super(text);
         this.placeholder = placeholder;
