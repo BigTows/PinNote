@@ -10,12 +10,16 @@ import java.awt.event.ActionListener;
  * Popup menu with "Delete" item
  */
 public class DeletePopupMenu extends JBPopupMenu {
-    private final JBMenuItem delete;
 
-    public DeletePopupMenu(ActionListener actionListener) {
-        this.delete = new JBMenuItem("Delete", AllIcons.Vcs.Remove);
-        super.add(this.delete);
+    /**
+     * Constructor
+     *
+     * @param deleteActionListener action when user pressed "Delete" button
+     */
+    public DeletePopupMenu(ActionListener deleteActionListener) {
+        JBMenuItem delete = new JBMenuItem("Delete", AllIcons.Vcs.Remove);
+        super.add(delete);
 
-        this.delete.addActionListener(actionListener);
+        delete.addActionListener(deleteActionListener);
     }
 }

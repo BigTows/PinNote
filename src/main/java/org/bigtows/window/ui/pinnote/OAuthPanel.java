@@ -1,7 +1,6 @@
 package org.bigtows.window.ui.pinnote;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBUI;
 import org.bigtows.window.ui.border.BottomBorder;
@@ -90,22 +89,21 @@ public class OAuthPanel extends JPanel {
         return button;
     }
 
+
+    public void updateSourceStatus(StatusSource statusSource) {
+        fillButtonStatus(this.button, statusSource);
+        this.statusSource = statusSource;
+    }
+
     private void fillButtonStatus(JButton button, StatusSource statusSource) {
+        button.setIcon(null);
         if (statusSource == StatusSource.ENABLED) {
             button.setText("<html><font color='red'>Deactivate</font></html>");
-            button.setIcon(null);
         } else if (statusSource == StatusSource.HAS_PROBLEM) {
             button.setText("Fix");
             button.setIcon(AllIcons.Actions.QuickfixBulb);
         } else {
             button.setText("Activate");
-            button.setIcon(null);
         }
-    }
-
-
-    public void updateSourceStatus(StatusSource statusSource) {
-        fillButtonStatus(this.button, statusSource);
-        this.statusSource = statusSource;
     }
 }
