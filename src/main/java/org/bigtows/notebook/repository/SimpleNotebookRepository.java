@@ -51,8 +51,8 @@ public class SimpleNotebookRepository implements NotebookRepository {
                 evernoteState.setStatusConnection(StatusConnection.HAS_PROBLEM);
                 Notification notification = new Notification(
                         "Repository.cannotLoad.Evernote",
-                        "Can't load Evernote notes.",
-                        "Your session may be outdated",
+                        "Can't load Evernote notes",
+                        "Your session may be outdated or you got problem with internet connection.",
                         NotificationType.ERROR
                 );
                 notification.setIcon(PinNoteIcon.NOTIFICATION_PIN_NOTE);

@@ -45,12 +45,13 @@ patchPluginXml {
 <ul>
     <li>Fix:
         <ul>
-            <li></li>
+            <li>Button "Welcome, set source, for start using." was hidden when user remove all sources, now visible on this situation.</li>
+            <li>PinNote was disable while IDE run index.</li>
         </ul>
     </li>
-    <li>UI update:
+    <li>New:
         <ul>
-            <li>Button "Welcome, set source, for start using." was hidden when user remove all sources, now visible on this situation.</li>
+            <li>Added/Edited notification when you got problem with internet connection, while using Evernote notes.</li>
         </ul>
     </li>
 </ul>     

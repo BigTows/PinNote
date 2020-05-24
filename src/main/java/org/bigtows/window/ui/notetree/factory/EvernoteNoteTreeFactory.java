@@ -1,5 +1,8 @@
 package org.bigtows.window.ui.notetree.factory;
 
+import com.evernote.thrift.transport.TTransportException;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -8,6 +11,8 @@ import org.bigtows.notebook.evernote.EvernoteNote;
 import org.bigtows.notebook.evernote.EvernoteNotebook;
 import org.bigtows.notebook.evernote.EvernoteSubTask;
 import org.bigtows.notebook.evernote.EvernoteTask;
+import org.bigtows.notebook.evernote.exception.LoadNotesException;
+import org.bigtows.utils.PinNoteIcon;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
@@ -16,6 +21,7 @@ import org.bigtows.window.ui.notetree.tree.node.SubTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import javax.swing.tree.MutableTreeNode;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +53,15 @@ public class EvernoteNoteTreeFactory {
                     noteTree.updateModel(
                             buildTreeNodeByNoteBook(newNotes)
                     );
+                }catch (LoadNotesException e){
+                    Notification notification = new Notification(
+                            "Can't sync Evernote notes",
+                            "Can't sync Evernote notes",
+                            "This may have happened due to the lack of Internet or your session outdated.",
+                            NotificationType.ERROR
+                    );
+                    notification.setIcon(PinNoteIcon.NOTIFICATION_PIN_NOTE);
+                    SwingUtilities.invokeLater(() -> notification.notify(project));
                 } finally {
                     noteTree.unlockTree();
                 }
