@@ -9,10 +9,20 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class RemoveNote extends AnAction {
+/**
+ * UI - component-action for remove note from NoteTree
+ *
+ * @see NoteTree
+ */
+final public class RemoveNote extends AnAction {
 
     private final JTabbedPane tabbedPane;
 
+    /**
+     * Constructor
+     *
+     * @param tabbedPane pane
+     */
     public RemoveNote(JTabbedPane tabbedPane) {
         super("Remove selected note or task", "", IconUtil.getRemoveIcon());
         this.tabbedPane = tabbedPane;
@@ -32,7 +42,11 @@ public class RemoveNote extends AnAction {
         e.getPresentation().setEnabled(noteTree != null && noteTree.hasSelectedElement());
     }
 
-
+    /**
+     * Try get NoteTree component from tabbed pane
+     *
+     * @return noteTree component or null
+     */
     @Nullable
     private NoteTree getNoteTreeFromTabbedPane() {
         var selectedComponent = tabbedPane.getSelectedComponent();

@@ -5,8 +5,14 @@ import org.bigtows.service.event.SourceUpdateEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PinNoteEventManagerImpl implements PinNoteEventManager {
+/**
+ * Simple implementation of PinNote event manager.
+ */
+final public class PinNoteEventManagerImpl implements PinNoteEventManager {
 
+    /**
+     * Storage of events
+     */
     private final List<SourceUpdateEvent> sourceUpdateEventList = new ArrayList<>();
 
     @Override
