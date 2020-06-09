@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.20'
+    id 'org.jetbrains.intellij' version '0.4.21'
 }
 
 group 'org.bigtows'
@@ -13,19 +13,19 @@ repositories {
 }
 
 dependencies {
+    compile 'com.evernote:evernote-api:1.25.1'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'org.mockito:mockito-core:2.7.22'
-    compile 'com.evernote:evernote-api:1.25.1'
 
-    compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-
     testCompileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 }
 
 intellij {
-    version '2020.1.1'
+    version 'LATEST-EAP-SNAPSHOT'
     pluginName 'PinNote'
 }
 
@@ -41,22 +41,16 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0</h1><br>
+<h1>Release: 2.0.1</h1><br>
 <ul>
-    <li>Fix:
+    <li>Update:
         <ul>
-            <li>Button "Welcome, set source, for start using." was hidden when user remove all sources, now visible on this situation.</li>
-            <li>PinNote was disable while IDE run index.</li>
-        </ul>
-    </li>
-    <li>New:
-        <ul>
-            <li>Added/Edited notification when you got problem with internet connection, while using Evernote notes.</li>
+            <li>Support 2020.2 IDE</li>
         </ul>
     </li>
 </ul>     
       """
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
-    untilBuild "201.*"
+    untilBuild "203.*"
 }
