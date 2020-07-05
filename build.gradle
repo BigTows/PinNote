@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0.1'
+version '2.0.2'
 
 sourceCompatibility = 11
 
@@ -41,11 +41,11 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0.1</h1><br>
+<h1>Release: 2.0.2</h1><br>
 <ul>
-    <li>Update:
+    <li>Fix:
         <ul>
-            <li>Support 2020.2 IDE</li>
+            <li>NullPointerException on Ubuntu, 18.04 thanks <a href="https://github.com/devilj">devilj</a> </li>
         </ul>
     </li>
 </ul>     
