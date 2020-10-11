@@ -14,18 +14,13 @@
         A PinNote is a way to write notes in IDE by JetBrains.<br>
         Now supported:
           <ul>
-             <li>Store your notes in
+             <li>Store your notes in different places
                  <ul>
                     <li><a href="https://evernote.com">Evernote</a></li>
                     <li>Locally on your computer</li>
                  </ul>
              </li>
-             <li>Sync notes between many instance IDE.</li>
-             <li>The opportunity to share notes on target.
-                <ul>
-                    <li>Support for SubTasks.</li>
-                </ul>
-             </li>
+             <li>Sync notes between many instance IDE (Only Evernote).</li>
           </ul>
           <br>
           <a href="https://github.com/BigTows/PinNote">GitHub</a>
@@ -60,9 +55,4 @@
         <applicationService serviceImplementation="org.bigtows.notebook.local.LocalNotebookStorageState"/>
     </extensions>
     <depends>com.intellij.modules.lang</depends>
-    <actions>
-    </actions>
-    <applicationListeners>
-
-    </applicationListeners>
 </idea-plugin>
