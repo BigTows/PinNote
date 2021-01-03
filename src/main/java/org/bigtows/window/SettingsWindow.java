@@ -82,7 +82,7 @@ public class SettingsWindow implements Configurable {
                         final var urlEvernoteOAuth = pinNoteSettings.getStorage().getEvernote().getOAuth().getUrl() + "?port=" + httpServer.getPort();
                         try {
                             Desktop.getDesktop().browse(new URI(urlEvernoteOAuth));
-                        } catch (IOException | URISyntaxException e) {
+                        } catch (Exception e) {
                             JOptionPane.showInputDialog(null,
                                     "<html>Follow this link manually: <a href='" + urlEvernoteOAuth + "'>Link</a>",
                                     "Can't open link in your browser!",
