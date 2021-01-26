@@ -30,7 +30,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="PinNote" icon="/icons/toolWindowRight.svg" anchor="right"
-                    factoryClass="org.bigtows.window.RightToolWindowFactory" doNotActivateOnStart="true"/>
+                    factoryClass="org.bigtows.window.RightToolWindowFactory" doNotActivateOnStart="false"/>
         <applicationConfigurable groupId="tools" displayName="PinNote" id="preferences.PinNote"
                                  instance="org.bigtows.window.SettingsWindow"/>
         <projectService serviceImplementation="org.bigtows.component.json.GsonBasedJsonParser"
@@ -53,6 +53,14 @@
 
 
         <applicationService serviceImplementation="org.bigtows.notebook.local.LocalNotebookStorageState"/>
+
+        <applicationService serviceImplementation="org.bigtows.window.ui.pinnote.api.ExternalCallerPinNoteAction"/>
     </extensions>
+    <actions>
+        <action id="org.bigtows.pinnote.CreateNewTarget" class="org.bigtows.action.AddNewTargetForCurrentStorageAction"
+                text="Create New Target for Current Storage">
+            <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
+        </action>
+    </actions>
     <depends>com.intellij.modules.lang</depends>
 </idea-plugin>

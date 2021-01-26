@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.util.IconUtil;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -31,7 +32,7 @@ final public class AddNote extends AnAction {
     }
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
+    public void actionPerformed(@Nullable AnActionEvent e) {
         var selectedComponent = tabbedPane.getSelectedComponent();
         if (selectedComponent instanceof JScrollPane) {
             selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
