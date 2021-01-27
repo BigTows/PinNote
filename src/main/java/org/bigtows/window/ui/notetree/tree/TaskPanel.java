@@ -4,6 +4,7 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.JBUI;
 import org.bigtows.window.ui.menu.DeletePopupMenu;
 import org.bigtows.window.ui.menu.adapter.RightClickPopupMenuMouseAdapter;
+import org.bigtows.window.ui.notetree.tree.event.MultiKeyAdapter;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
 import org.bigtows.window.ui.notetree.tree.event.UserShortcutPressed;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
@@ -13,7 +14,10 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.util.Collections;
 
 public class TaskPanel extends JPanel {
@@ -79,22 +83,20 @@ public class TaskPanel extends JPanel {
                 ))
         );
 
-        textField.addKeyListener(new KeyAdapter() {
+        textField.addKeyListener(new MultiKeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getExtendedKeyCode() == KeyEvent.VK_ENTER
-                        || e.getKeyCode() == KeyEvent.VK_ENTER
-                        || e.getKeyChar() == KeyEvent.VK_ENTER
-                ) {
-                    userShortcutPressed.newTask();
-                } else if (e.getExtendedKeyCode() == KeyEvent.VK_TAB
-                        || e.getKeyCode() == KeyEvent.VK_TAB
-                        || e.getKeyChar() == KeyEvent.VK_TAB
-                ) {
+            public void keyPressed() {
+                if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_ENTER)) {
+                    userShortcutPressed.newTask(true);
+                } else if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_DELETE)) {
+                    //a.k.a cmd + shift + del
+                    userShortcutPressed.delete();
+                } else if (super.hasKeys(KeyEvent.VK_ENTER)) {
+                    userShortcutPressed.newTask(false);
+                } else if (super.hasKeys(KeyEvent.VK_TAB)) {
                     userShortcutPressed.newSubTask();
                 }
             }
-
         });
         this.calculateBorder();
     }

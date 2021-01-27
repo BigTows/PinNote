@@ -47,6 +47,8 @@ patchPluginXml {
         New feature: Shortcuts idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
            <ul>
            Create new target, default shortcut: ctrl/⌘ ⇧ P
+           Create new root task: Shift + enter
+           Delete current task: ctrl/⌘ ⇧ Del
            </ul>
     </li>
     

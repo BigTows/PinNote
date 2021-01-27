@@ -31,9 +31,9 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
             var panel = new TaskPanel(sourceTaskTreeNode,
                     new UserShortcutPressed() {
                         @Override
-                        public void newTask() {
+                        public void newTask(boolean isRoot) {
                             AbstractTaskTreeNode abstractTaskTreeNode = null;
-                            if (value instanceof TaskTreeNode) {
+                            if (value instanceof TaskTreeNode || isRoot) {
                                 abstractTaskTreeNode = new TaskTreeNode(Task.builder().build());
                             } else if (value instanceof SubTaskTreeNode) {
                                 abstractTaskTreeNode = new SubTaskTreeNode(Task.builder().build());
@@ -42,6 +42,9 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
                             if (abstractTaskTreeNode != null) {
                                 abstractTaskTreeNode.setCreationReason(CreationReason.USER);
                                 var parent = ((DefaultMutableTreeNode) (sourceTaskTreeNode).getParent());
+                                if (parent instanceof  AbstractTaskTreeNode && isRoot){
+                                    parent = (DefaultMutableTreeNode) parent.getParent();
+                                }
                                 parent.add(abstractTaskTreeNode);
                                 if (parent instanceof AbstractTaskTreeNode) {
                                     ((Task) parent.getUserObject()).setChecked(false);
