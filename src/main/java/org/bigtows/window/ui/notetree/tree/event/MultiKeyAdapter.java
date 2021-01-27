@@ -42,6 +42,9 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
         keyCharBuffer.remove(e.getKeyChar());
     }
 
+    /**
+     * Invoked when a key has been pressed.
+     */
     public abstract void keyPressed();
 
     /**
