@@ -5,11 +5,24 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Key adapter with support multi key
+ */
 public abstract class MultiKeyAdapter extends KeyAdapter {
 
-
+    /**
+     * Buffer of key extended codes
+     */
     private final Set<Integer> extendedKeyCodeBuffer = new HashSet<>();
+
+    /**
+     * Buffer of key codes
+     */
     private final Set<Integer> keyCodeBuffer = new HashSet<>();
+
+    /**
+     * Buffer of key characters
+     */
     private final Set<Character> keyCharBuffer = new HashSet<>();
 
 
@@ -22,8 +35,6 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
     }
 
 
-
-
     @Override
     public synchronized final void keyReleased(KeyEvent e) {
         extendedKeyCodeBuffer.remove(e.getExtendedKeyCode());
@@ -33,7 +44,12 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
 
     public abstract void keyPressed();
 
-
+    /**
+     * Check keys in buffer
+     *
+     * @param keys required keys
+     * @return {@code true} if required keys exists in buffer else {@code false}
+     */
     public boolean hasKeys(Integer... keys) {
         for (Integer key : keys) {
             if (!(extendedKeyCodeBuffer.contains(key)
