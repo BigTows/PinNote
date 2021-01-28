@@ -13,17 +13,17 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
     /**
      * Buffer of key extended codes
      */
-    private final Set<Integer> extendedKeyCodeBuffer = new HashSet<>();
+    private static final Set<Integer> extendedKeyCodeBuffer = new HashSet<>();
 
     /**
      * Buffer of key codes
      */
-    private final Set<Integer> keyCodeBuffer = new HashSet<>();
+    private static final Set<Integer> keyCodeBuffer = new HashSet<>();
 
     /**
      * Buffer of key characters
      */
-    private final Set<Character> keyCharBuffer = new HashSet<>();
+    private static final Set<Character> keyCharBuffer = new HashSet<>();
 
 
     @Override
@@ -62,7 +62,6 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
                 return false;
             }
         }
-
         return true;
     }
 }

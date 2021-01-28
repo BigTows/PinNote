@@ -91,9 +91,7 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
                                 )).getPath());
                             }
 
-                            SwingUtilities.invokeLater(() -> {
-                                tree.startEditingAtPath(cursorPath);
-                            });
+                            SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
                         }
                     }, treeChanged);
             if (sourceTaskTreeNode.getCreationReason() == CreationReason.USER) {
