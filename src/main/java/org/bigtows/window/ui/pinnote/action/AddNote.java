@@ -2,6 +2,7 @@ package org.bigtows.window.ui.pinnote.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.util.IconUtil;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ import javax.swing.*;
  *
  * @see NoteTree
  */
-final public class AddNote extends AnAction {
+final public class AddNote extends AnAction implements DumbAware {
 
     /**
      * Instance of tabbed pane

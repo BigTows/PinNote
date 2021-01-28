@@ -32,6 +32,7 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
         keyCodeBuffer.add(e.getKeyCode());
         keyCharBuffer.add(e.getKeyChar());
         this.keyPressed();
+        System.out.println(extendedKeyCodeBuffer.toString());
     }
 
 

@@ -6,6 +6,7 @@ import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
 import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
+import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.render.PinNoteTreeCellRender;
@@ -129,6 +130,9 @@ public class NoteTree extends JPanel {
         SwingUtilities.invokeLater(() -> {
             ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
             tree.updateUI();
+            var treePath = new TreePath(((AbstractTaskTreeNode)noteTreeNode.getChildAt(0)).getPath());
+            tree.expandPath(treePath);
+            tree.startEditingAtPath(treePath);
         });
     }
 

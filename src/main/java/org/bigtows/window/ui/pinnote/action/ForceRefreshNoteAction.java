@@ -3,13 +3,14 @@ package org.bigtows.window.ui.pinnote.action;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.DumbAware;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-final public class ForceRefreshNoteAction extends AnAction {
+final public class ForceRefreshNoteAction extends AnAction  implements DumbAware {
 
 
     private final JTabbedPane tabbedPane;
