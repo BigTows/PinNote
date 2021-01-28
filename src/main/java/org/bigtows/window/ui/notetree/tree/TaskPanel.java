@@ -89,7 +89,7 @@ public class TaskPanel extends JPanel {
                 if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_ENTER)) {
                     userShortcutPressed.newTask(true);
                 } else if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_DELETE)) {
-                    //a.k.a cmd + shift + del
+                    //a.k.a cmd/ctrl + shift + del
                     userShortcutPressed.delete();
                 } else if (super.hasKeys(KeyEvent.VK_ENTER)) {
                     userShortcutPressed.newTask(false);

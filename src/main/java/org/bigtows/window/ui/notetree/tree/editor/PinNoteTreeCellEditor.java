@@ -42,7 +42,7 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
                             if (abstractTaskTreeNode != null) {
                                 abstractTaskTreeNode.setCreationReason(CreationReason.USER);
                                 var parent = ((DefaultMutableTreeNode) (sourceTaskTreeNode).getParent());
-                                if (parent instanceof  AbstractTaskTreeNode && isRoot){
+                                if (parent instanceof AbstractTaskTreeNode && isRoot) {
                                     parent = (DefaultMutableTreeNode) parent.getParent();
                                 }
                                 parent.add(abstractTaskTreeNode);
@@ -72,12 +72,28 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
                         @Override
                         public void delete() {
                             var parent = ((AbstractTaskTreeNode) value).getParent();
+                            int indexValue = parent.getIndex((AbstractTaskTreeNode) value);
                             ((AbstractTaskTreeNode) value).removeFromParent();
                             if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
                                 ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
                             }
                             tree.updateUI();
                             treeChanged.onChange();
+
+
+                            //Set cursor at nearby position
+                            TreePath cursorPath;
+                            if (parent instanceof TaskTreeNode && parent.getChildCount() == 0) {
+                                cursorPath = new TreePath(((TaskTreeNode) parent).getPath());
+                            } else {
+                                cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(
+                                        parent.getChildCount() - 1 < indexValue ? indexValue - 1 : indexValue
+                                )).getPath());
+                            }
+
+                            SwingUtilities.invokeLater(() -> {
+                                tree.startEditingAtPath(cursorPath);
+                            });
                         }
                     }, treeChanged);
             if (sourceTaskTreeNode.getCreationReason() == CreationReason.USER) {
