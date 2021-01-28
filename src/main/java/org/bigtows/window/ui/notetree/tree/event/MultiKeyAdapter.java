@@ -53,7 +53,7 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
      * @param keys required keys
      * @return {@code true} if required keys exists in buffer else {@code false}
      */
-    public boolean hasKeys(Integer... keys) {
+    public synchronized boolean hasKeys(Integer... keys) {
         for (Integer key : keys) {
             if (!(extendedKeyCodeBuffer.contains(key)
                     || keyCodeBuffer.contains(key)
