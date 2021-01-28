@@ -45,15 +45,14 @@ patchPluginXml {
 <ul>
     <li>
         New feature: Shortcuts idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
-           <ul>
-           Create new target, default shortcut: ctrl/⌘ ⇧ P
-           Create new root task: Shift + enter
-           Delete current task: ctrl/⌘ ⇧ Del
-           Select previous task: ↑
-           Select next task: ↓
-           </ul>
+            <ul>
+                <li>Create new target, default shortcut: ctrl/⌘ ⇧ P</li>
+                <li>Create new root task: Shift + enter</li>
+                <li>Delete current task: ctrl/⌘ ⇧ Del</li>
+                <li>Select previous task: ↑</li>
+                <li>Select next task: ↓</li>
+            </ul>
     </li>
-    
 </ul>     
       """
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
