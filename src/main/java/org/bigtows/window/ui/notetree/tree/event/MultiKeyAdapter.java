@@ -28,6 +28,9 @@ public abstract class MultiKeyAdapter extends KeyAdapter {
 
     @Override
     public synchronized final void keyPressed(KeyEvent e) {
+        if (this.hasKeys(KeyEvent.VK_ENTER)){
+            return;
+        }
         extendedKeyCodeBuffer.add(e.getExtendedKeyCode());
         keyCodeBuffer.add(e.getKeyCode());
         keyCharBuffer.add(e.getKeyChar());

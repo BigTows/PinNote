@@ -28,72 +28,11 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
     public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
         if (value instanceof AbstractTaskTreeNode) {
             var sourceTaskTreeNode = (AbstractTaskTreeNode) value;
-            var panel = new TaskPanel(sourceTaskTreeNode,
-                    new UserShortcutPressed() {
-                        @Override
-                        public void newTask(boolean isRoot) {
-                            AbstractTaskTreeNode abstractTaskTreeNode = null;
-                            if (value instanceof TaskTreeNode || isRoot) {
-                                abstractTaskTreeNode = new TaskTreeNode(Task.builder().build());
-                            } else if (value instanceof SubTaskTreeNode) {
-                                abstractTaskTreeNode = new SubTaskTreeNode(Task.builder().build());
-                            }
-
-                            if (abstractTaskTreeNode != null) {
-                                abstractTaskTreeNode.setCreationReason(CreationReason.USER);
-                                var parent = ((DefaultMutableTreeNode) (sourceTaskTreeNode).getParent());
-                                if (parent instanceof AbstractTaskTreeNode && isRoot) {
-                                    parent = (DefaultMutableTreeNode) parent.getParent();
-                                }
-                                parent.add(abstractTaskTreeNode);
-                                if (parent instanceof AbstractTaskTreeNode) {
-                                    ((Task) parent.getUserObject()).setChecked(false);
-                                }
-                                tree.updateUI();
-                            }
-                        }
-
-                        @Override
-                        public void newSubTask() {
-                            AbstractTaskTreeNode abstractTaskTreeNode = null;
-                            if (value instanceof TaskTreeNode) {
-                                ((TaskTreeNode) value).getUserObject().setChecked(false);
-                                abstractTaskTreeNode = new SubTaskTreeNode(Task.builder().build());
-                            }
-
-                            if (abstractTaskTreeNode != null) {
-                                abstractTaskTreeNode.setCreationReason(CreationReason.USER);
-                                sourceTaskTreeNode.add(abstractTaskTreeNode);
-                                tree.updateUI();
-                                tree.expandPath(new TreePath(((DefaultMutableTreeNode) abstractTaskTreeNode.getParent()).getPath()));
-                            }
-                        }
-
-                        @Override
-                        public void delete() {
-                            var parent = ((AbstractTaskTreeNode) value).getParent();
-                            int indexValue = parent.getIndex((AbstractTaskTreeNode) value);
-                            ((AbstractTaskTreeNode) value).removeFromParent();
-                            if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
-                                ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
-                            }
-                            tree.updateUI();
-                            treeChanged.onChange();
-
-
-                            //Set cursor at nearby position
-                            TreePath cursorPath;
-                            if (parent instanceof TaskTreeNode && parent.getChildCount() == 0) {
-                                cursorPath = new TreePath(((TaskTreeNode) parent).getPath());
-                            } else {
-                                cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(
-                                        parent.getChildCount() - 1 < indexValue ? indexValue - 1 : indexValue
-                                )).getPath());
-                            }
-
-                            SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
-                        }
-                    }, treeChanged);
+            var panel = new TaskPanel(
+                    sourceTaskTreeNode,
+                    new UserShortcutPressedForPinNoteTreeCellEditor(tree, sourceTaskTreeNode),
+                    treeChanged
+            );
             if (sourceTaskTreeNode.getCreationReason() == CreationReason.USER) {
                 SwingUtilities.invokeLater(() -> {
                     var treePath = new TreePath(sourceTaskTreeNode.getPath());
@@ -155,5 +94,104 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
     @Override
     public void removeCellEditorListener(CellEditorListener l) {
 
+    }
+
+    final class UserShortcutPressedForPinNoteTreeCellEditor implements UserShortcutPressed {
+
+        private final AbstractTaskTreeNode value;
+
+        private final JTree tree;
+
+        UserShortcutPressedForPinNoteTreeCellEditor(JTree tree, AbstractTaskTreeNode value) {
+            this.value = value;
+            this.tree = tree;
+        }
+
+
+        @Override
+        public void newTask(boolean isRoot) {
+            AbstractTaskTreeNode abstractTaskTreeNode = null;
+            if (value instanceof TaskTreeNode || isRoot) {
+                abstractTaskTreeNode = new TaskTreeNode(Task.builder().build());
+            } else if (value instanceof SubTaskTreeNode) {
+                abstractTaskTreeNode = new SubTaskTreeNode(Task.builder().build());
+            }
+
+            if (abstractTaskTreeNode != null) {
+                abstractTaskTreeNode.setCreationReason(CreationReason.USER);
+                var parent = ((DefaultMutableTreeNode) (value).getParent());
+                if (parent instanceof AbstractTaskTreeNode && isRoot) {
+                    parent = (DefaultMutableTreeNode) parent.getParent();
+                }
+                parent.add(abstractTaskTreeNode);
+                if (parent instanceof AbstractTaskTreeNode) {
+                    ((Task) parent.getUserObject()).setChecked(false);
+                }
+                tree.updateUI();
+            }
+        }
+
+        @Override
+        public void newSubTask() {
+            AbstractTaskTreeNode abstractTaskTreeNode = null;
+            if (value instanceof TaskTreeNode) {
+                value.getUserObject().setChecked(false);
+                abstractTaskTreeNode = new SubTaskTreeNode(Task.builder().build());
+            }
+
+            if (abstractTaskTreeNode != null) {
+                abstractTaskTreeNode.setCreationReason(CreationReason.USER);
+                value.add(abstractTaskTreeNode);
+                tree.updateUI();
+                tree.expandPath(new TreePath(((DefaultMutableTreeNode) abstractTaskTreeNode.getParent()).getPath()));
+            }
+        }
+
+        @Override
+        public void delete() {
+            var parent = value.getParent();
+            int indexValue = parent.getIndex(value);
+            value.removeFromParent();
+            if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
+                ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
+            }
+            tree.updateUI();
+            treeChanged.onChange();
+
+
+            //Set cursor at nearby position
+            TreePath cursorPath;
+            if (parent instanceof TaskTreeNode && parent.getChildCount() == 0) {
+                cursorPath = new TreePath(((TaskTreeNode) parent).getPath());
+            } else {
+                cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(
+                        parent.getChildCount() - 1 < indexValue ? indexValue - 1 : indexValue
+                )).getPath());
+            }
+
+            SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+        }
+
+        @Override
+        public void selectPreviousTask() {
+            var parent = value.getParent();
+            var index = parent.getIndex(value);
+            if (index <= 0) {
+                return;
+            }
+            var cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(index - 1)).getPath());
+            SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+        }
+
+        @Override
+        public void selectNextTask() {
+            var parent = value.getParent();
+            var index = parent.getIndex(value);
+            if (index == -1 || parent.getChildCount() - 1 == index) {
+                return;
+            }
+            var cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(index + 1)).getPath());
+            SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+        }
     }
 }

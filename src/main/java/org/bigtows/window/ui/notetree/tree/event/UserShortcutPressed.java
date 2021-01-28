@@ -22,4 +22,14 @@ public interface UserShortcutPressed {
      * Delete current task
      */
     void delete();
+
+    /**
+     * Set cursor at previous task
+     */
+    void selectPreviousTask();
+
+    /**
+     * Set cursor at next task
+     */
+    void selectNextTask();
 }

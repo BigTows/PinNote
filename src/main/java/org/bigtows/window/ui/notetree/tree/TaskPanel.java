@@ -95,6 +95,10 @@ public class TaskPanel extends JPanel {
                     userShortcutPressed.newTask(false);
                 } else if (super.hasKeys(KeyEvent.VK_TAB)) {
                     userShortcutPressed.newSubTask();
+                }else if (super.hasKeys(KeyEvent.VK_UP)){
+                    userShortcutPressed.selectPreviousTask();
+                }else if (super.hasKeys(KeyEvent.VK_DOWN)){
+                    userShortcutPressed.selectNextTask();
                 }
             }
         });
