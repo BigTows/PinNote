@@ -56,7 +56,10 @@ public class PinNoteComponent {
         var addAction = (AddNote) ActionManager.getInstance().getAction(AddNote.ACTION_ID);
         addAction.initializeTabbedPane(notebookTabbedPane);
         group.add(addAction);
-        group.add(new RemoveNote(notebookTabbedPane));
+
+        var removeAction = (RemoveNote) ActionManager.getInstance().getAction(RemoveNote.ACTION_ID);
+        removeAction.initializeTabbedPane(notebookTabbedPane);
+        group.add(removeAction);
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
         group.addSeparator();

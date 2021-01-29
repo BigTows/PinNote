@@ -130,7 +130,7 @@ public class NoteTree extends JPanel {
         SwingUtilities.invokeLater(() -> {
             ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
             tree.updateUI();
-            var treePath = new TreePath(((AbstractTaskTreeNode)noteTreeNode.getChildAt(0)).getPath());
+            var treePath = new TreePath(((AbstractTaskTreeNode) noteTreeNode.getChildAt(0)).getPath());
             tree.expandPath(treePath);
             tree.startEditingAtPath(treePath);
         });
@@ -183,4 +183,36 @@ public class NoteTree extends JPanel {
         this.needUpdateModelListeners.forEach(NoteTreeNeedRefreshModelListener::refresh);
     }
 
+
+    public boolean hasFocusedTask() {
+        var path = tree.getEditingPath();
+        return path != null && path.getLastPathComponent() instanceof AbstractTaskTreeNode;
+    }
+
+    public void removeFocusedTask() {
+
+        var value = ((AbstractTaskTreeNode) tree.getEditingPath().getLastPathComponent());
+
+        var parent = value.getParent();
+        int indexValue = parent.getIndex(value);
+        value.removeFromParent();
+        if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
+            ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
+        }
+        tree.updateUI();
+        processChangeEvent();
+
+
+        //Set cursor at nearby position
+        TreePath cursorPath;
+        if (parent instanceof TaskTreeNode && parent.getChildCount() == 0) {
+            cursorPath = new TreePath(((TaskTreeNode) parent).getPath());
+        } else {
+            cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(
+                    parent.getChildCount() - 1 < indexValue ? indexValue - 1 : indexValue
+            )).getPath());
+        }
+
+        SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+    }
 }

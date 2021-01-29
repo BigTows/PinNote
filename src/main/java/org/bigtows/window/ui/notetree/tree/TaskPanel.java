@@ -77,20 +77,17 @@ public class TaskPanel extends JPanel {
         check.addItemListener(this::onCheckBoxChange);
         textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
 
-        textField.addMouseListener(new RightClickPopupMenuMouseAdapter(
+     /*   textField.addMouseListener(new RightClickPopupMenuMouseAdapter(
                 new DeletePopupMenu(
                         actionEvent -> userShortcutPressed.delete()
                 ))
-        );
+        );*/
 
         textField.addKeyListener(new MultiKeyAdapter() {
             @Override
             public void keyPressed() {
                 if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_ENTER)) {
                     userShortcutPressed.newTask(true);
-                } else if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_DELETE)) {
-                    //a.k.a cmd/ctrl + shift + del
-                    userShortcutPressed.delete();
                 } else if (super.hasKeys(KeyEvent.VK_ENTER)) {
                     userShortcutPressed.newTask(false);
                 } else if (super.hasKeys(KeyEvent.VK_TAB)) {

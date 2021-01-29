@@ -19,11 +19,6 @@ public interface UserShortcutPressed {
     void newSubTask();
 
     /**
-     * Delete current task
-     */
-    void delete();
-
-    /**
      * Set cursor at previous task
      */
     void selectPreviousTask();

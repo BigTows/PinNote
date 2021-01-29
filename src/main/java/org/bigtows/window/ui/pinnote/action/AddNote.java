@@ -17,7 +17,10 @@ import javax.swing.*;
  */
 final public class AddNote extends AnAction implements DumbAware {
 
-    public final static String ACTION_ID = "org.bigtows.window.ui.pinnote.action.AddNote";
+    /**
+     * Id of action
+     */
+    public final static String ACTION_ID = AddNote.class.getName();
 
     /**
      * Instance of tabbed pane

@@ -15,17 +15,24 @@ import javax.swing.*;
  *
  * @see NoteTree
  */
-final public class RemoveNote extends AnAction  implements DumbAware {
+final public class RemoveNote extends AnAction implements DumbAware {
 
-    private final JTabbedPane tabbedPane;
+
+    /**
+     * Id of action
+     */
+    public final static String ACTION_ID = RemoveNote.class.getName();
+
+    private JTabbedPane tabbedPane;
 
     /**
      * Constructor
-     *
-     * @param tabbedPane pane
      */
-    public RemoveNote(JTabbedPane tabbedPane) {
+    public RemoveNote() {
         super("Remove selected note or task", "", IconUtil.getRemoveIcon());
+    }
+
+    public void initializeTabbedPane(JTabbedPane tabbedPane) {
         this.tabbedPane = tabbedPane;
     }
 
@@ -33,14 +40,19 @@ final public class RemoveNote extends AnAction  implements DumbAware {
     public void actionPerformed(@NotNull AnActionEvent e) {
         var noteTree = this.getNoteTreeFromTabbedPane();
         if (noteTree != null) {
-            noteTree.removeSelectedElement();
+            if (noteTree.hasFocusedTask()){
+                noteTree.removeFocusedTask();
+            }
+            if (noteTree.hasSelectedElement()){
+                noteTree.removeSelectedElement();
+            }
         }
     }
 
     @Override
     public void update(@NotNull AnActionEvent e) {
         var noteTree = this.getNoteTreeFromTabbedPane();
-        e.getPresentation().setEnabled(noteTree != null && noteTree.hasSelectedElement());
+        e.getPresentation().setEnabled(noteTree != null && (noteTree.hasSelectedElement() || noteTree.hasFocusedTask()));
     }
 
     /**
@@ -50,6 +62,9 @@ final public class RemoveNote extends AnAction  implements DumbAware {
      */
     @Nullable
     private NoteTree getNoteTreeFromTabbedPane() {
+        if (tabbedPane == null) {
+            return null;
+        }
         var selectedComponent = tabbedPane.getSelectedComponent();
         if (selectedComponent instanceof JScrollPane) {
             selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
@@ -57,6 +72,7 @@ final public class RemoveNote extends AnAction  implements DumbAware {
         if (selectedComponent instanceof NoteTree) {
             return (NoteTree) selectedComponent;
         }
+
         return null;
     }
 }
