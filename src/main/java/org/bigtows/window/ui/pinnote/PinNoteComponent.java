@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.Constraints;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
@@ -18,7 +17,6 @@ import org.bigtows.window.ui.pinnote.action.AddNote;
 import org.bigtows.window.ui.pinnote.action.ForceRefreshNoteAction;
 import org.bigtows.window.ui.pinnote.action.OpenSettings;
 import org.bigtows.window.ui.pinnote.action.RemoveNote;
-import org.bigtows.window.ui.pinnote.api.ExternalCallerPinNoteAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,8 +33,6 @@ public class PinNoteComponent {
     private JPanel toolBarPanel;
     private JButton setupStorage;
 
-    private AddNote addAction;
-
     public JPanel getRoot() {
         return root;
     }
@@ -49,7 +45,6 @@ public class PinNoteComponent {
         setupStorage = new JButton("Welcome, set source, for start using.");
         setupStorage.setIcon(AllIcons.General.Settings);
         setupStorage.addActionListener(this::openSettings);
-        ServiceManager.getService(ExternalCallerPinNoteAction.class).registerComponent(this);
     }
 
     private void openSettings(ActionEvent actionEvent) {
@@ -58,8 +53,9 @@ public class PinNoteComponent {
 
     private BorderLayoutPanel createActionToolBar() {
         final DefaultActionGroup group = new DefaultActionGroup();
-        this.addAction = new AddNote(notebookTabbedPane);
-        group.add(this.addAction);
+        var addAction = (AddNote) ActionManager.getInstance().getAction(AddNote.ACTION_ID);
+        addAction.initializeTabbedPane(notebookTabbedPane);
+        group.add(addAction);
         group.add(new RemoveNote(notebookTabbedPane));
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
@@ -93,10 +89,6 @@ public class PinNoteComponent {
     public void removeAllNotebook() {
         notebookTabbedPane.removeAll();
         setupStorage.setVisible(true);
-    }
-
-    public AddNote getAddAction() {
-        return addAction;
     }
 
     /**

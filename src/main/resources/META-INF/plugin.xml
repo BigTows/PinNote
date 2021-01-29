@@ -53,11 +53,9 @@
 
 
         <applicationService serviceImplementation="org.bigtows.notebook.local.LocalNotebookStorageState"/>
-
-        <applicationService serviceImplementation="org.bigtows.window.ui.pinnote.api.ExternalCallerPinNoteAction"/>
     </extensions>
     <actions>
-        <action id="org.bigtows.pinnote.CreateNewTarget" class="org.bigtows.action.AddNewTargetForCurrentStorageAction"
+        <action id="org.bigtows.window.ui.pinnote.action.AddNote" class="org.bigtows.window.ui.pinnote.action.AddNote"
                 text="Create New Target for Current Storage">
             <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
         </action>

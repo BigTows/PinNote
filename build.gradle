@@ -57,5 +57,5 @@ patchPluginXml {
       """
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
-    untilBuild "203.*"
+    untilBuild "213.*"
 }

@@ -17,23 +17,37 @@ import javax.swing.*;
  */
 final public class AddNote extends AnAction implements DumbAware {
 
+    public final static String ACTION_ID = "org.bigtows.window.ui.pinnote.action.AddNote";
+
     /**
      * Instance of tabbed pane
      */
-    private final JTabbedPane tabbedPane;
+    private JTabbedPane tabbedPane;
 
     /**
      * Constructor
-     *
-     * @param tabbedPane instance of tabbed pane
      */
-    public AddNote(@NotNull JTabbedPane tabbedPane) {
+    public AddNote() {
         super("Create new note", "", IconUtil.getAddIcon());
+    }
+
+    /**
+     * Initialization tabbed pane for action
+     *
+     * @param tabbedPane instance of target tabbed pane
+     */
+    public void initializeTabbedPane(JTabbedPane tabbedPane) {
+        if (this.tabbedPane != null) {
+            throw new RuntimeException("Tabbed pane already exists");
+        }
         this.tabbedPane = tabbedPane;
     }
 
     @Override
     public void actionPerformed(@Nullable AnActionEvent e) {
+        if (tabbedPane == null) {
+            return;
+        }
         var selectedComponent = tabbedPane.getSelectedComponent();
         if (selectedComponent instanceof JScrollPane) {
             selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();
@@ -44,6 +58,9 @@ final public class AddNote extends AnAction implements DumbAware {
             String nameOfTarget;
             do {
                 nameOfTarget = JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target");
+                if (nameOfTarget != null) {
+                    nameOfTarget = nameOfTarget.trim();
+                }
             } while (nameOfTarget != null && (nameOfTarget.length() == 0 || nameOfTarget.length() > 100));
             if (nameOfTarget != null) {
                 noteTree.addNewNote(nameOfTarget);
