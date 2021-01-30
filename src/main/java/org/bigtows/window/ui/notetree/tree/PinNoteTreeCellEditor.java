@@ -1,4 +1,4 @@
-package org.bigtows.window.ui.notetree.tree.editor;
+package org.bigtows.window.ui.notetree.tree;
 
 import org.bigtows.window.ui.notetree.tree.component.TargetPanel;
 import org.bigtows.window.ui.notetree.tree.component.TaskPanel;
