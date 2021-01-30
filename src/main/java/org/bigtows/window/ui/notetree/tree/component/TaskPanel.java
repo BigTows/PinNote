@@ -16,28 +16,59 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
-import java.util.Collections;
+import java.util.HashSet;
 
-public class TaskPanel extends JPanel {
+/**
+ * Panel of task
+ */
+public final class TaskPanel extends JPanel {
+
+    /**
+     * Task data
+     */
     private final AbstractTaskTreeNode source;
 
     /**
      * Text filed instance with placeholder
      */
     public final JTextFieldWithPlaceholder textField = new JTextFieldWithPlaceholder("...");
+    /**
+     * Checkbox for display of status task
+     */
     public final JBCheckBox check = new JBCheckBox();
+
+    /**
+     * Notify about changes
+     */
     private final TreeChanged treeChanged;
 
+    /**
+     * Constructor.
+     *
+     * @param value       data of task
+     * @param userAction  user actions
+     * @param treeChanged callback
+     */
     public TaskPanel(AbstractTaskTreeNode value, UserAction userAction, TreeChanged treeChanged) {
         this.treeChanged = treeChanged;
         this.source = value;
-        this.check.setMargin(JBUI.emptyInsets());
         setLayout(new BorderLayout());
         add(check, BorderLayout.WEST);
         add(textField, BorderLayout.CENTER);
-        textField.setSize(textField.getWidth() + 500, textField.getHeight() + 4);
-        textField.setText(this.source.getUserObject().getText());
-        textField.setOpaque(false);
+
+
+        this.initializeCheckbox(userAction);
+        this.initializeTextField(userAction);
+
+    }
+
+    /**
+     * Initialize checkbox view
+     *
+     * @param userAction callback of user actions
+     */
+    private void initializeCheckbox(UserAction userAction) {
+        this.check.setMargin(JBUI.emptyInsets());
         check.setSelected(this.source.getUserObject().getChecked());
         check.addFocusListener(new FocusListener() {
             @Override
@@ -51,6 +82,18 @@ public class TaskPanel extends JPanel {
 
             }
         });
+        check.addItemListener(this::onCheckBoxChange);
+    }
+
+    /**
+     * Initialize text field
+     */
+    private void initializeTextField(UserAction userAction) {
+        textField.setSize(textField.getWidth() + 500, textField.getHeight() + 4);
+        textField.setText(this.source.getUserObject().getText());
+        textField.setOpaque(false);
+
+
         var panel = this;
         textField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
@@ -73,8 +116,8 @@ public class TaskPanel extends JPanel {
                 treeChanged.onChange();
             }
         });
-        check.addItemListener(this::onCheckBoxChange);
-        textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
+
+        textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, new HashSet<>());
 
         textField.addKeyListener(new MultiKeyAdapter() {
             @Override
@@ -92,7 +135,8 @@ public class TaskPanel extends JPanel {
                 }
             }
         });
-        this.calculateBorder();
+
+        textField.setBorder(BorderFactory.createEmptyBorder());
     }
 
     /**
@@ -137,9 +181,5 @@ public class TaskPanel extends JPanel {
             }
         }
         return true;
-    }
-
-    private void calculateBorder() {
-        textField.setBorder(BorderFactory.createEmptyBorder());
     }
 }
