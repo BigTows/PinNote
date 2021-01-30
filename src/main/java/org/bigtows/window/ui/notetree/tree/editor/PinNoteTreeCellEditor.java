@@ -14,6 +14,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.EventObject;
 
 public class PinNoteTreeCellEditor implements TreeCellEditor {
@@ -45,7 +47,14 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
 
             return panel;
         } else if (value instanceof NoteTreeNode) {
-            return new TargetPanel((NoteTreeNode) value);
+            var panel =  new TargetPanel((NoteTreeNode) value);
+            panel.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    tree.addSelectionPath(new TreePath(((NoteTreeNode) value).getPath()));
+                }
+            });
+            return panel;
         }
         return new JLabel("#ROOT");
     }
