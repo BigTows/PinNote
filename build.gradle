@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0.3-b.2'
+version '2.1-b.3'
 
 sourceCompatibility = 11
 
@@ -41,14 +41,14 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0.3-b.2</h1><br>
+<h1>Release: 2.1-b.3</h1><br>
 <ul>
     <li>
         New feature: Shortcuts idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
             <ul>
-                <li>Create new target, default shortcut: ctrl/⌘ ⇧ P</li>
+                <li>Create new target, default shortcut: ctrl/⌘ ⇧ T</li>
                 <li>Create new root task: Shift + enter</li>
-                <li>Delete current task: ctrl/⌘ ⇧ Del</li>
+                <li>Delete current task: ctrl/⌘ ⇧ ⌫</li>
                 <li>Select previous task: ↑</li>
                 <li>Select next task: ↓</li>
             </ul>

@@ -3,6 +3,7 @@ package org.bigtows.window.ui.notetree;
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
 import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
+import org.bigtows.window.ui.notetree.tree.NoteTreeSelection;
 import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
@@ -13,8 +14,10 @@ import org.bigtows.window.ui.notetree.tree.render.PinNoteTreeCellRender;
 import org.bigtows.window.ui.notetree.utils.ExpandTreeUtils;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -35,6 +38,7 @@ public class NoteTree extends JPanel {
         tree.setCellRenderer(new PinNoteTreeCellRender(this::processChangeEvent));
         tree.setEditable(true);
         tree.setRootVisible(false);
+        tree.setSelectionModel(new NoteTreeSelection());
         setLayout(new BorderLayout());
         add(tree, BorderLayout.CENTER);
     }

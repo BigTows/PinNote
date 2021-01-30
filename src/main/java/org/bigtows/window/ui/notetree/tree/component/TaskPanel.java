@@ -1,12 +1,10 @@
-package org.bigtows.window.ui.notetree.tree;
+package org.bigtows.window.ui.notetree.tree.component;
 
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.JBUI;
-import org.bigtows.window.ui.menu.DeletePopupMenu;
-import org.bigtows.window.ui.menu.adapter.RightClickPopupMenuMouseAdapter;
 import org.bigtows.window.ui.notetree.tree.event.MultiKeyAdapter;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
-import org.bigtows.window.ui.notetree.tree.event.UserShortcutPressed;
+import org.bigtows.window.ui.notetree.tree.event.UserAction;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.text.JTextFieldWithPlaceholder;
 
@@ -30,7 +28,7 @@ public class TaskPanel extends JPanel {
     public final JBCheckBox check = new JBCheckBox();
     private final TreeChanged treeChanged;
 
-    public TaskPanel(AbstractTaskTreeNode value, UserShortcutPressed userShortcutPressed, TreeChanged treeChanged) {
+    public TaskPanel(AbstractTaskTreeNode value, UserAction userAction, TreeChanged treeChanged) {
         this.treeChanged = treeChanged;
         this.source = value;
         this.check.setMargin(JBUI.emptyInsets());
@@ -44,6 +42,7 @@ public class TaskPanel extends JPanel {
         check.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
+                userAction.onEditing();
                 textField.requestFocus();
             }
 
@@ -77,25 +76,19 @@ public class TaskPanel extends JPanel {
         check.addItemListener(this::onCheckBoxChange);
         textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
 
-     /*   textField.addMouseListener(new RightClickPopupMenuMouseAdapter(
-                new DeletePopupMenu(
-                        actionEvent -> userShortcutPressed.delete()
-                ))
-        );*/
-
         textField.addKeyListener(new MultiKeyAdapter() {
             @Override
             public void keyPressed() {
                 if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_ENTER)) {
-                    userShortcutPressed.newTask(true);
+                    userAction.newTask(true);
                 } else if (super.hasKeys(KeyEvent.VK_ENTER)) {
-                    userShortcutPressed.newTask(false);
+                    userAction.newTask(false);
                 } else if (super.hasKeys(KeyEvent.VK_TAB)) {
-                    userShortcutPressed.newSubTask();
-                }else if (super.hasKeys(KeyEvent.VK_UP)){
-                    userShortcutPressed.selectPreviousTask();
-                }else if (super.hasKeys(KeyEvent.VK_DOWN)){
-                    userShortcutPressed.selectNextTask();
+                    userAction.newSubTask();
+                } else if (super.hasKeys(KeyEvent.VK_UP)) {
+                    userAction.selectPreviousTask();
+                } else if (super.hasKeys(KeyEvent.VK_DOWN)) {
+                    userAction.selectNextTask();
                 }
             }
         });

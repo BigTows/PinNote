@@ -1,9 +1,10 @@
 package org.bigtows.window.ui.notetree.tree.editor;
 
-import org.bigtows.window.ui.notetree.tree.TaskPanel;
+import org.bigtows.window.ui.notetree.tree.component.TargetPanel;
+import org.bigtows.window.ui.notetree.tree.component.TaskPanel;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
-import org.bigtows.window.ui.notetree.tree.event.UserShortcutPressed;
+import org.bigtows.window.ui.notetree.tree.event.UserAction;
 import org.bigtows.window.ui.notetree.tree.node.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,8 +14,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.EventObject;
 
 public class PinNoteTreeCellEditor implements TreeCellEditor {
@@ -31,7 +30,7 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
             var sourceTaskTreeNode = (AbstractTaskTreeNode) value;
             var panel = new TaskPanel(
                     sourceTaskTreeNode,
-                    new UserShortcutPressedForPinNoteTreeCellEditor(tree, sourceTaskTreeNode),
+                    new UserActionForPinNoteTreeCellEditor(tree, sourceTaskTreeNode),
                     treeChanged
             );
             if (sourceTaskTreeNode.getCreationReason() == CreationReason.USER) {
@@ -46,18 +45,7 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
 
             return panel;
         } else if (value instanceof NoteTreeNode) {
-            var currentValue = (NoteTreeNode) value;
-            var label = new JLabel(currentValue.getUserObject().getName());
-            label.addMouseListener(
-                    new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            tree.getSelectionModel().clearSelection();
-                            tree.setSelectionPath(new TreePath(((NoteTreeNode) value).getPath()));
-                        }
-                    }
-            );
-            return label;
+            return new TargetPanel((NoteTreeNode) value);
         }
         return new JLabel("#ROOT");
     }
@@ -97,13 +85,13 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
 
     }
 
-    final class UserShortcutPressedForPinNoteTreeCellEditor implements UserShortcutPressed {
+    final class UserActionForPinNoteTreeCellEditor implements UserAction {
 
         private final AbstractTaskTreeNode value;
 
         private final JTree tree;
 
-        UserShortcutPressedForPinNoteTreeCellEditor(JTree tree, AbstractTaskTreeNode value) {
+        UserActionForPinNoteTreeCellEditor(JTree tree, AbstractTaskTreeNode value) {
             this.value = value;
             this.tree = tree;
         }
@@ -203,6 +191,11 @@ public class PinNoteTreeCellEditor implements TreeCellEditor {
             this.setEditingAtTarget(target);
         }
 
+
+        @Override
+        public void onEditing() {
+            tree.clearSelection();
+        }
 
         private void setEditingAtTarget(@Nullable AbstractTaskTreeNode target) {
             if (target != null) {

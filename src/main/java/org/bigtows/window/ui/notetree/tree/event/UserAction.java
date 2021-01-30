@@ -3,7 +3,7 @@ package org.bigtows.window.ui.notetree.tree.event;
 /**
  * User shortcut for create new task's
  */
-public interface UserShortcutPressed {
+public interface UserAction {
 
     /**
      * Create task.
@@ -27,4 +27,9 @@ public interface UserShortcutPressed {
      * Set cursor at next task
      */
     void selectNextTask();
+
+    /**
+     * Called when user start editing some tasks
+     */
+    void onEditing();
 }
