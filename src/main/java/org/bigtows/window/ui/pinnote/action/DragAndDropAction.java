@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class DragAndDropAction extends AnAction implements DumbAware {
+public class DragAndDropAction extends AnAction implements Toggleable, DumbAware {
 
 
     private final JTabbedPane notebookTabbedPane;
