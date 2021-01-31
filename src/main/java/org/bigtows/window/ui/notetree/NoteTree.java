@@ -3,14 +3,13 @@ package org.bigtows.window.ui.notetree;
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
 import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
-import org.bigtows.window.ui.notetree.tree.NoteTreeSelection;
 import org.bigtows.window.ui.notetree.tree.PinNoteTreeCellEditor;
+import org.bigtows.window.ui.notetree.tree.PinNoteTreeCellRender;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
-import org.bigtows.window.ui.notetree.tree.PinNoteTreeCellRender;
 import org.bigtows.window.ui.notetree.utils.ExpandTreeUtils;
 
 import javax.swing.*;
@@ -36,7 +35,11 @@ public class NoteTree extends JPanel {
         tree.setCellRenderer(new PinNoteTreeCellRender(this::processChangeEvent));
         tree.setEditable(true);
         tree.setRootVisible(false);
-        tree.setSelectionModel(new NoteTreeSelection());
+        tree.setSelectionModel(new DefaultTreeSelectionModel());
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.setDragEnabled(false);
+        tree.setDropMode(DropMode.ON_OR_INSERT);
+        tree.setTransferHandler(new TreeTransferHandler());
         setLayout(new BorderLayout());
         add(tree, BorderLayout.CENTER);
     }
@@ -216,5 +219,14 @@ public class NoteTree extends JPanel {
         }
 
         SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+    }
+
+    /**
+     * Enable or disable drag and drop mode
+     *
+     * @param isEnable status of mode
+     */
+    public void setDragEnable(boolean isEnable) {
+        tree.setDragEnabled(isEnable);
     }
 }

@@ -9,7 +9,15 @@ public class TaskTreeNode extends AbstractTaskTreeNode {
 
 
     @Override
-    public Object clone() {
-        return new TaskTreeNode(super.getUserObject());
+    public TaskTreeNode clone() {
+        var taskTreeNode = new TaskTreeNode(super.getUserObject());
+        for (int i = 0; i < super.getChildCount(); i++) {
+            var child = super.getChildAt(i);
+
+            if (child instanceof AbstractTaskTreeNode) {
+                taskTreeNode.add(((AbstractTaskTreeNode) child).clone());
+            }
+        }
+        return taskTreeNode;
     }
 }

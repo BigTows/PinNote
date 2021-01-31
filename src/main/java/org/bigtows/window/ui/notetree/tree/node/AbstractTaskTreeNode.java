@@ -28,5 +28,5 @@ public abstract class AbstractTaskTreeNode extends DefaultMutableTreeNode {
 
 
     @Override
-    public abstract Object clone();
+    public abstract AbstractTaskTreeNode clone();
 }

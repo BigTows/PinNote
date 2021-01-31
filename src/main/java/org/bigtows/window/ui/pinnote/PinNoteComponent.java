@@ -13,10 +13,7 @@ import com.intellij.util.ui.components.BorderLayoutPanel;
 import org.bigtows.notebook.Notebook;
 import org.bigtows.window.ui.border.BottomBorder;
 import org.bigtows.window.ui.notetree.NoteTree;
-import org.bigtows.window.ui.pinnote.action.AddNote;
-import org.bigtows.window.ui.pinnote.action.ForceRefreshNoteAction;
-import org.bigtows.window.ui.pinnote.action.OpenSettings;
-import org.bigtows.window.ui.pinnote.action.RemoveNote;
+import org.bigtows.window.ui.pinnote.action.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,6 +61,7 @@ public class PinNoteComponent {
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
         group.addSeparator();
         group.add(new OpenSettings(), Constraints.LAST);
+        group.add(new DragAndDropAction(notebookTabbedPane));
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());
         panel.setBorder(new BottomBorder(JBUI.CurrentTheme.ToolWindow.borderColor()));
