@@ -25,4 +25,8 @@ public abstract class AbstractTaskTreeNode extends DefaultMutableTreeNode {
     public void setCreationReason(CreationReason creationReason) {
         this.creationReason = creationReason;
     }
+
+
+    @Override
+    public abstract Object clone();
 }

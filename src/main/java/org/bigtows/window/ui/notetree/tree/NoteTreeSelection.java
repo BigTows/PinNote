@@ -14,10 +14,10 @@ public class NoteTreeSelection extends DefaultTreeSelectionModel {
 
     @Override
     public void setSelectionPath(TreePath path) {
-        super.clearSelection();
+     /*   super.clearSelection();
         if (!(path.getLastPathComponent() instanceof NoteTreeNode)) {
             return;
-        }
+        }*/
         super.setSelectionPath(path);
     }
 

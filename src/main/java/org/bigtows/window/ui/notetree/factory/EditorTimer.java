@@ -23,7 +23,7 @@ public class EditorTimer {
             while (true) {
                 try {
                     Thread.sleep(5000);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
                 if (status == Status.EDITING) {
                     status = Status.NEED_PUBLISH;

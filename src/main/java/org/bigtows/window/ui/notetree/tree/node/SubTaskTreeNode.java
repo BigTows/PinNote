@@ -6,4 +6,9 @@ public class SubTaskTreeNode extends AbstractTaskTreeNode {
     public SubTaskTreeNode(Task task) {
         super(task, false);
     }
+
+    @Override
+    public Object clone() {
+        return new SubTaskTreeNode(super.getUserObject());
+    }
 }
