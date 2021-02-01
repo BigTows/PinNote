@@ -16,8 +16,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Handler for transfer object between nodes
@@ -39,12 +37,24 @@ public class TreeTransferHandler extends TransferHandler {
      * Meta data about nodes
      */
     private final DataFlavor nodesFlavor;
-    private final TreeChanged event;
 
-    private DefaultMutableTreeNode[] nodesToRemove;
+    /**
+     * Callback when tree change
+     */
+    private final TreeChanged callback;
 
-    public TreeTransferHandler(TreeChanged event) {
-        this.event = event;
+    /**
+     * Buffered node for remove
+     */
+    private DefaultMutableTreeNode nodeToRemove;
+
+    /**
+     * Constructor
+     *
+     * @param callback event of tree change
+     */
+    public TreeTransferHandler(TreeChanged callback) {
+        this.callback = callback;
         try {
             nodesFlavor = new DataFlavor(mimeTypeDefaultMutableTreeNode);
         } catch (ClassNotFoundException e) {
@@ -52,6 +62,7 @@ public class TreeTransferHandler extends TransferHandler {
         }
     }
 
+    @Override
     public boolean canImport(TransferHandler.TransferSupport support) {
         if (!support.isDrop() || support.getDropAction() != MOVE) {
             return false;
@@ -71,14 +82,9 @@ public class TreeTransferHandler extends TransferHandler {
         JTree tree = (JTree) c;
         TreePath[] paths = tree.getSelectionPaths();
         if (paths != null && paths.length == 1 && paths[0].getLastPathComponent() instanceof AbstractTaskTreeNode) {
-            List<AbstractTaskTreeNode> copies = new ArrayList<>();
-            List<AbstractTaskTreeNode> toRemove = new ArrayList<>();
             AbstractTaskTreeNode node = (AbstractTaskTreeNode) paths[0].getLastPathComponent();
-            copies.add(node.clone());
-            toRemove.add(node);
-            AbstractTaskTreeNode[] nodes = copies.toArray(new AbstractTaskTreeNode[0]);
-            nodesToRemove = toRemove.toArray(new AbstractTaskTreeNode[0]);
-            return new PinNoteNodesTransferable(this.nodesFlavor, nodes);
+            this.nodeToRemove = node;
+            return new PinNoteNodesTransferable(this.nodesFlavor, new AbstractTaskTreeNode[]{node.clone()});
         }
         return null;
     }
@@ -88,13 +94,12 @@ public class TreeTransferHandler extends TransferHandler {
         if ((action & MOVE) == MOVE) {
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-            for (DefaultMutableTreeNode defaultMutableTreeNode : nodesToRemove) {
-                model.removeNodeFromParent(defaultMutableTreeNode);
-            }
+            model.removeNodeFromParent(nodeToRemove);
+
             this.fillEmptyTaskAtEmptyTarget(tree);
             this.debugModel(model);
             tree.updateUI();
-            event.onChange();
+            callback.onChange();
         }
     }
 
