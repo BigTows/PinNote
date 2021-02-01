@@ -7,10 +7,28 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
+/**
+ * Implement of Transferable object for PinNoteTree
+ *
+ * @see org.bigtows.window.ui.notetree.NoteTree
+ */
 public class PinNoteNodesTransferable implements Transferable {
+    /**
+     * Available type of data
+     */
     private final DataFlavor[] dataFlavors;
+
+    /**
+     * Data for transfer
+     */
     private final AbstractTaskTreeNode[] nodes;
 
+    /**
+     * Constructor
+     *
+     * @param dataFlavor available of data
+     * @param nodes      data
+     */
     public PinNoteNodesTransferable(DataFlavor dataFlavor, AbstractTaskTreeNode[] nodes) {
         this.dataFlavors = new DataFlavor[]{dataFlavor};
         this.nodes = nodes;
@@ -32,7 +50,6 @@ public class PinNoteNodesTransferable implements Transferable {
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-
         for (DataFlavor dataFlavor : dataFlavors) {
             if (dataFlavor.equals(flavor)) {
                 return true;

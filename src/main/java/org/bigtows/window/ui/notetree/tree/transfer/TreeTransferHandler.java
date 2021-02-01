@@ -1,5 +1,7 @@
 package org.bigtows.window.ui.notetree.tree.transfer;
 
+import org.bigtows.window.ui.notetree.tree.entity.Task;
+import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.SubTaskTreeNode;
@@ -37,10 +39,12 @@ public class TreeTransferHandler extends TransferHandler {
      * Meta data about nodes
      */
     private final DataFlavor nodesFlavor;
+    private final TreeChanged event;
 
     private DefaultMutableTreeNode[] nodesToRemove;
 
-    public TreeTransferHandler() {
+    public TreeTransferHandler(TreeChanged event) {
+        this.event = event;
         try {
             nodesFlavor = new DataFlavor(mimeTypeDefaultMutableTreeNode);
         } catch (ClassNotFoundException e) {
@@ -84,16 +88,42 @@ public class TreeTransferHandler extends TransferHandler {
         if ((action & MOVE) == MOVE) {
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-            // Remove nodes saved in nodesToRemove in createTransferable.
-            for (int i = 0; i < nodesToRemove.length; i++) {
-                model.removeNodeFromParent(nodesToRemove[i]);
+            for (DefaultMutableTreeNode defaultMutableTreeNode : nodesToRemove) {
+                model.removeNodeFromParent(defaultMutableTreeNode);
             }
+            this.fillEmptyTaskAtEmptyTarget(tree);
+            this.debugModel(model);
+            tree.updateUI();
+            event.onChange();
         }
     }
 
+    /**
+     * Adding empty task for each empty target
+     *
+     * @param tree source
+     */
+    private void fillEmptyTaskAtEmptyTarget(JTree tree) {
+        var root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        var hasNewTask = false;
+        for (int i = 0; i < root.getChildCount(); i++) {
+            var note = (DefaultMutableTreeNode) root.getChildAt(i);
+            if (note.getChildCount() == 0) {
+                hasNewTask = true;
+                note.add(new TaskTreeNode(Task.builder().build()));
+            }
+        }
+
+        if (hasNewTask) {
+            tree.updateUI();
+        }
+
+    }
+
+
     @Override
     public int getSourceActions(JComponent c) {
-        return COPY_OR_MOVE;
+        return MOVE;
     }
 
     @Override
@@ -139,11 +169,15 @@ public class TreeTransferHandler extends TransferHandler {
             model.insertNodeInto(node, parent, index++);
         }
 
-        debugModel(model);
-
         return true;
     }
 
+    /**
+     * Get data from transfer object
+     *
+     * @param transferSupport transfer object
+     * @return data
+     */
     @NotNull
     private AbstractTaskTreeNode[] getTransferData(TransferHandler.TransferSupport transferSupport) {
         AbstractTaskTreeNode[] nodes;

@@ -1,5 +1,6 @@
 package org.bigtows.window.ui.notetree;
 
+import com.intellij.ui.JBColor;
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
 import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
@@ -40,7 +41,7 @@ public class NoteTree extends JPanel {
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setDragEnabled(false);
         tree.setDropMode(DropMode.ON_OR_INSERT);
-        tree.setTransferHandler(new TreeTransferHandler());
+        tree.setTransferHandler(new TreeTransferHandler(this::processChangeEvent));
         setLayout(new BorderLayout());
         add(tree, BorderLayout.CENTER);
     }
