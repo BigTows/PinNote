@@ -1,6 +1,5 @@
 package org.bigtows.window.ui.notetree;
 
-import com.intellij.ui.JBColor;
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
 import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
@@ -10,6 +9,7 @@ import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
+import org.bigtows.window.ui.notetree.tree.node.SubTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.transfer.TreeTransferHandler;
 import org.bigtows.window.ui.notetree.utils.ExpandTreeUtils;
@@ -191,11 +191,19 @@ public class NoteTree extends JPanel {
     }
 
 
+    /**
+     * Check has focused (mean editable right now task) task.
+     *
+     * @return {@code true} if exists else {@code false}
+     */
     public boolean hasFocusedTask() {
         var path = tree.getEditingPath();
         return path != null && path.getLastPathComponent() instanceof AbstractTaskTreeNode;
     }
 
+    /**
+     * Remove focused (mean editable right now task) task.
+     */
     public void removeFocusedTask() {
 
         var value = ((AbstractTaskTreeNode) tree.getEditingPath().getLastPathComponent());
@@ -205,6 +213,16 @@ public class NoteTree extends JPanel {
         value.removeFromParent();
         if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
             ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
+        } else if (parent instanceof TaskTreeNode && parent.getChildCount() > 0) {
+            var needCheck = true;
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                var subTask = (SubTaskTreeNode) parent.getChildAt(i);
+                if (!subTask.getUserObject().getChecked()) {
+                    needCheck = false;
+                    break;
+                }
+            }
+            ((TaskTreeNode) parent).getUserObject().setChecked(needCheck);
         }
         tree.updateUI();
         processChangeEvent();
@@ -229,6 +247,8 @@ public class NoteTree extends JPanel {
      * @param isEnable status of mode
      */
     public void setDragEnable(boolean isEnable) {
+        tree.clearSelection();
+        tree.setEditable(!isEnable);
         tree.setDragEnabled(isEnable);
     }
 }

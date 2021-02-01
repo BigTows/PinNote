@@ -94,6 +94,9 @@ public class TreeTransferHandler extends TransferHandler {
         if ((action & MOVE) == MOVE) {
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+
+            updateCheckedStatusForMovedNode(nodeToRemove, true);
+
             model.removeNodeFromParent(nodeToRemove);
 
             this.fillEmptyTaskAtEmptyTarget(tree);
@@ -104,23 +107,50 @@ public class TreeTransferHandler extends TransferHandler {
     }
 
     /**
+     * Update checked status for node
+     *
+     * @param movedAbstractTaskTreeNode moved node
+     * @param isDeletedNode             is deleted node
+     */
+    private void updateCheckedStatusForMovedNode(DefaultMutableTreeNode movedAbstractTaskTreeNode, boolean isDeletedNode) {
+        if (movedAbstractTaskTreeNode instanceof SubTaskTreeNode) {
+            var task = (TaskTreeNode) movedAbstractTaskTreeNode.getParent();
+            boolean needCheck = true;
+            if (task.getChildCount() == 0) {
+                return;
+            }
+            for (int i = 0; i < task.getChildCount(); i++) {
+                var subTask = (SubTaskTreeNode) task.getChildAt(i);
+
+                if (isDeletedNode) {
+                    if (!subTask.equals(movedAbstractTaskTreeNode) && !subTask.getUserObject().getChecked()) {
+                        needCheck = false;
+                        break;
+                    }
+                } else {
+                    if (!subTask.getUserObject().getChecked()) {
+                        needCheck = false;
+                        break;
+                    }
+                }
+
+            }
+            task.getUserObject().setChecked(needCheck);
+        }
+    }
+
+    /**
      * Adding empty task for each empty target
      *
      * @param tree source
      */
     private void fillEmptyTaskAtEmptyTarget(JTree tree) {
         var root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-        var hasNewTask = false;
         for (int i = 0; i < root.getChildCount(); i++) {
             var note = (DefaultMutableTreeNode) root.getChildAt(i);
             if (note.getChildCount() == 0) {
-                hasNewTask = true;
                 note.add(new TaskTreeNode(Task.builder().build()));
             }
-        }
-
-        if (hasNewTask) {
-            tree.updateUI();
         }
 
     }
@@ -172,6 +202,7 @@ public class TreeTransferHandler extends TransferHandler {
 
         for (AbstractTaskTreeNode node : nodes) {
             model.insertNodeInto(node, parent, index++);
+            updateCheckedStatusForMovedNode(node, false);
         }
 
         return true;

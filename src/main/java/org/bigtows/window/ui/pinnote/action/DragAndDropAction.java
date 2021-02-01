@@ -11,10 +11,19 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class DragAndDropAction extends AnAction implements Toggleable, DumbAware {
+/**
+ * Action for switch drag and drop mode
+ */
+public final class DragAndDropAction extends AnAction implements Toggleable, DumbAware {
 
-
+    /**
+     * Tabbed pane
+     */
     private final JTabbedPane notebookTabbedPane;
+
+    /**
+     * Current status
+     */
     private boolean isEnable = false;
 
     public DragAndDropAction(JTabbedPane notebookTabbedPane) {

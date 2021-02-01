@@ -60,8 +60,9 @@ public class PinNoteComponent {
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
         group.addSeparator();
-        group.add(new OpenSettings(), Constraints.LAST);
         group.add(new DragAndDropAction(notebookTabbedPane));
+        group.addSeparator();
+        group.add(new OpenSettings(), Constraints.LAST);
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());
         panel.setBorder(new BottomBorder(JBUI.CurrentTheme.ToolWindow.borderColor()));

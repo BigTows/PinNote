@@ -28,7 +28,6 @@ public class EditorTimer {
                 if (status == Status.EDITING) {
                     status = Status.NEED_PUBLISH;
                 } else if (status == Status.NEED_PUBLISH) {
-                    System.out.println("Publish!!");
                     runnable.run();
                     status = Status.END;
                 }

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.1-b.3'
+version '2.1-b.4'
 
 sourceCompatibility = 11
 
@@ -41,16 +41,19 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.1-b.3</h1><br>
+<h1>Release: 2.1</h1><br>
 <ul>
     <li>
-        New feature: Shortcuts idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
-            <ul>
+        New feature: Shortcuts and Drag and Drop mode idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
+            <ul>Hey! PinNote now support new shortcuts: 
                 <li>Create new target, default shortcut: ctrl/⌘ ⇧ T</li>
                 <li>Create new root task: Shift + enter</li>
                 <li>Delete current task: ctrl/⌘ ⇧ ⌫</li>
                 <li>Select previous task: ↑</li>
                 <li>Select next task: ↓</li>
+            </ul>
+            <ul>
+               Drag and drop mode here! Now you can reorder your tasks or move to another note
             </ul>
     </li>
 </ul>     

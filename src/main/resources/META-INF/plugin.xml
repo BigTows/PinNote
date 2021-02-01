@@ -63,6 +63,12 @@
                 text="Create New Target for Current Storage">
             <keyboard-shortcut first-keystroke="control shift BACK_SPACE" keymap="$default"/>
         </action>
+
+
+        <action id="org.bigtows.window.ui.pinnote.action.OpenSettings" class="org.bigtows.window.ui.pinnote.action.OpenSettings"
+                text="Open plugin settings">
+        </action>
+
     </actions>
     <depends>com.intellij.modules.lang</depends>
 </idea-plugin>
