@@ -190,7 +190,10 @@ public class NoteTree extends JPanel {
         tree.updateUI();
     }
 
-    public void needUpdateModel() {
+    /**
+     * Notify about need update model
+     */
+    public void notifyUpdateModel() {
         this.needUpdateModelListeners.forEach(NoteTreeNeedRefreshModelListener::refresh);
     }
 

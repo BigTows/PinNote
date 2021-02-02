@@ -25,7 +25,7 @@ final public class ForceRefreshNoteAction extends AnAction  implements DumbAware
         var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(this.tabbedPane);
         assert noteTree != null;
         e.getPresentation().setEnabled(false);
-        noteTree.needUpdateModel();
+        noteTree.notifyUpdateModel();
     }
 
     @Override
