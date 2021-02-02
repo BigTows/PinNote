@@ -181,9 +181,13 @@ public class NoteTree extends JPanel {
                         new TaskTreeNode(Task.builder().build())
                 );
             }
-            this.processChangeEvent();
-            tree.updateUI();
         }
+        if (selectedPath instanceof SubTaskTreeNode && tree.getSelectionPath() != null) {
+            var parent = tree.getSelectionPath().getParentPath().getLastPathComponent();
+            this.recalculateCheckStatus((TreeNode) parent);
+        }
+        this.processChangeEvent();
+        tree.updateUI();
     }
 
     public void needUpdateModel() {
@@ -213,17 +217,8 @@ public class NoteTree extends JPanel {
         value.removeFromParent();
         if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
             ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
-        } else if (parent instanceof TaskTreeNode && parent.getChildCount() > 0) {
-            var needCheck = true;
-            for (int i = 0; i < parent.getChildCount(); i++) {
-                var subTask = (SubTaskTreeNode) parent.getChildAt(i);
-                if (!subTask.getUserObject().getChecked()) {
-                    needCheck = false;
-                    break;
-                }
-            }
-            ((TaskTreeNode) parent).getUserObject().setChecked(needCheck);
         }
+        this.recalculateCheckStatus(parent);
         tree.updateUI();
         processChangeEvent();
 
@@ -239,6 +234,20 @@ public class NoteTree extends JPanel {
         }
 
         SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+    }
+
+    private void recalculateCheckStatus(TreeNode parent) {
+        if (parent instanceof TaskTreeNode && parent.getChildCount() > 0) {
+            var needCheck = true;
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                var subTask = (SubTaskTreeNode) parent.getChildAt(i);
+                if (!subTask.getUserObject().getChecked()) {
+                    needCheck = false;
+                    break;
+                }
+            }
+            ((TaskTreeNode) parent).getUserObject().setChecked(needCheck);
+        }
     }
 
     /**
