@@ -60,7 +60,7 @@ final public class AddNote extends AnAction implements DumbAware {
             var nameTab = ((JLabel) tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex())).getText();
             String nameOfTarget;
             do {
-                nameOfTarget = JOptionPane.showInputDialog("<html>Create new Target for " + nameTab + "<br>Enter name of target");
+                nameOfTarget = JOptionPane.showInputDialog(null, "Enter name of target","Create new Target for "+ nameTab, JOptionPane.QUESTION_MESSAGE);
                 if (nameOfTarget != null) {
                     nameOfTarget = nameOfTarget.trim();
                 }

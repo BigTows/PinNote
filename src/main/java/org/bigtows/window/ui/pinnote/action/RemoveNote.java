@@ -23,6 +23,9 @@ final public class RemoveNote extends AnAction implements DumbAware {
      */
     public final static String ACTION_ID = RemoveNote.class.getName();
 
+    /**
+     * Tabbed pane
+     */
     private JTabbedPane tabbedPane;
 
     /**
@@ -32,6 +35,11 @@ final public class RemoveNote extends AnAction implements DumbAware {
         super("Remove selected note or task", "", IconUtil.getRemoveIcon());
     }
 
+    /**
+     * Initialize instance of tabbed pane
+     *
+     * @param tabbedPane instance
+     */
     public void initializeTabbedPane(JTabbedPane tabbedPane) {
         this.tabbedPane = tabbedPane;
     }
@@ -40,10 +48,10 @@ final public class RemoveNote extends AnAction implements DumbAware {
     public void actionPerformed(@NotNull AnActionEvent e) {
         var noteTree = this.getNoteTreeFromTabbedPane();
         if (noteTree != null) {
-            if (noteTree.hasFocusedTask()){
+            if (noteTree.hasFocusedTask()) {
                 noteTree.removeFocusedTask();
             }
-            if (noteTree.hasSelectedElement()){
+            if (noteTree.hasSelectedElement()) {
                 noteTree.removeSelectedElement();
             }
         }
