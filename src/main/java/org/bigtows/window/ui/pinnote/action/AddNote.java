@@ -40,9 +40,6 @@ final public class AddNote extends AnAction implements DumbAware {
      * @param tabbedPane instance of target tabbed pane
      */
     public void initializeTabbedPane(JTabbedPane tabbedPane) {
-        if (this.tabbedPane != null) {
-            throw new RuntimeException("Tabbed pane already exists");
-        }
         this.tabbedPane = tabbedPane;
     }
 
