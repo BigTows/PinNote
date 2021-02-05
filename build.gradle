@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.1-b.4'
+version '2.1'
 
 sourceCompatibility = 11
 
