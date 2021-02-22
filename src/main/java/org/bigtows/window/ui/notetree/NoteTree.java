@@ -3,12 +3,15 @@ package org.bigtows.window.ui.notetree;
 import com.intellij.ui.treeStructure.Tree;
 import org.bigtows.window.ui.notetree.listener.NoteTreeChangeListener;
 import org.bigtows.window.ui.notetree.listener.NoteTreeNeedRefreshModelListener;
-import org.bigtows.window.ui.notetree.tree.editor.PinNoteTreeCellEditor;
+import org.bigtows.window.ui.notetree.tree.PinNoteTreeCellEditor;
+import org.bigtows.window.ui.notetree.tree.PinNoteTreeCellRender;
 import org.bigtows.window.ui.notetree.tree.entity.Note;
 import org.bigtows.window.ui.notetree.tree.entity.Task;
+import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.NoteTreeNode;
+import org.bigtows.window.ui.notetree.tree.node.SubTaskTreeNode;
 import org.bigtows.window.ui.notetree.tree.node.TaskTreeNode;
-import org.bigtows.window.ui.notetree.tree.render.PinNoteTreeCellRender;
+import org.bigtows.window.ui.notetree.tree.transfer.TreeTransferHandler;
 import org.bigtows.window.ui.notetree.utils.ExpandTreeUtils;
 
 import javax.swing.*;
@@ -34,6 +37,11 @@ public class NoteTree extends JPanel {
         tree.setCellRenderer(new PinNoteTreeCellRender(this::processChangeEvent));
         tree.setEditable(true);
         tree.setRootVisible(false);
+        tree.setSelectionModel(new DefaultTreeSelectionModel());
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.setDragEnabled(false);
+        tree.setDropMode(DropMode.ON_OR_INSERT);
+        tree.setTransferHandler(new TreeTransferHandler(this::processChangeEvent));
         setLayout(new BorderLayout());
         add(tree, BorderLayout.CENTER);
     }
@@ -129,6 +137,9 @@ public class NoteTree extends JPanel {
         SwingUtilities.invokeLater(() -> {
             ExpandTreeUtils.expandLeaf(tree, listOfLeaf);
             tree.updateUI();
+            var treePath = new TreePath(((AbstractTaskTreeNode) noteTreeNode.getChildAt(0)).getPath());
+            tree.expandPath(treePath);
+            tree.startEditingAtPath(treePath);
         });
     }
 
@@ -170,13 +181,86 @@ public class NoteTree extends JPanel {
                         new TaskTreeNode(Task.builder().build())
                 );
             }
-            this.processChangeEvent();
-            tree.updateUI();
         }
+        if (selectedPath instanceof SubTaskTreeNode && tree.getSelectionPath() != null) {
+            var parent = tree.getSelectionPath().getParentPath().getLastPathComponent();
+            this.recalculateCheckStatus((TreeNode) parent);
+        }
+        this.processChangeEvent();
+        tree.updateUI();
     }
 
-    public void needUpdateModel() {
+    /**
+     * Notify about need update model
+     */
+    public void notifyUpdateModel() {
         this.needUpdateModelListeners.forEach(NoteTreeNeedRefreshModelListener::refresh);
     }
 
+
+    /**
+     * Check has focused (mean editable right now task) task.
+     *
+     * @return {@code true} if exists else {@code false}
+     */
+    public boolean hasFocusedTask() {
+        var path = tree.getEditingPath();
+        return path != null && path.getLastPathComponent() instanceof AbstractTaskTreeNode;
+    }
+
+    /**
+     * Remove focused (mean editable right now task) task.
+     */
+    public void removeFocusedTask() {
+
+        var value = ((AbstractTaskTreeNode) tree.getEditingPath().getLastPathComponent());
+
+        var parent = value.getParent();
+        int indexValue = parent.getIndex(value);
+        value.removeFromParent();
+        if (parent instanceof NoteTreeNode && parent.getChildCount() == 0) {
+            ((NoteTreeNode) parent).add(new TaskTreeNode(Task.builder().build()));
+        }
+        this.recalculateCheckStatus(parent);
+        tree.updateUI();
+        processChangeEvent();
+
+
+        //Set cursor at nearby position
+        TreePath cursorPath;
+        if (parent instanceof TaskTreeNode && parent.getChildCount() == 0) {
+            cursorPath = new TreePath(((TaskTreeNode) parent).getPath());
+        } else {
+            cursorPath = new TreePath(((AbstractTaskTreeNode) parent.getChildAt(
+                    parent.getChildCount() - 1 < indexValue ? indexValue - 1 : indexValue
+            )).getPath());
+        }
+
+        SwingUtilities.invokeLater(() -> tree.startEditingAtPath(cursorPath));
+    }
+
+    private void recalculateCheckStatus(TreeNode parent) {
+        if (parent instanceof TaskTreeNode && parent.getChildCount() > 0) {
+            var needCheck = true;
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                var subTask = (SubTaskTreeNode) parent.getChildAt(i);
+                if (!subTask.getUserObject().getChecked()) {
+                    needCheck = false;
+                    break;
+                }
+            }
+            ((TaskTreeNode) parent).getUserObject().setChecked(needCheck);
+        }
+    }
+
+    /**
+     * Enable or disable drag and drop mode
+     *
+     * @param isEnable status of mode
+     */
+    public void setDragEnable(boolean isEnable) {
+        tree.clearSelection();
+        tree.setEditable(!isEnable);
+        tree.setDragEnabled(isEnable);
+    }
 }

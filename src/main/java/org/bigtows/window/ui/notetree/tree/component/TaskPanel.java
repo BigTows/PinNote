@@ -1,11 +1,10 @@
-package org.bigtows.window.ui.notetree.tree;
+package org.bigtows.window.ui.notetree.tree.component;
 
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.JBUI;
-import org.bigtows.window.ui.menu.DeletePopupMenu;
-import org.bigtows.window.ui.menu.adapter.RightClickPopupMenuMouseAdapter;
+import org.bigtows.window.ui.notetree.tree.event.MultiKeyAdapter;
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
-import org.bigtows.window.ui.notetree.tree.event.UserShortcutPressed;
+import org.bigtows.window.ui.notetree.tree.event.UserAction;
 import org.bigtows.window.ui.notetree.tree.node.AbstractTaskTreeNode;
 import org.bigtows.window.ui.text.JTextFieldWithPlaceholder;
 
@@ -13,33 +12,68 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Collections;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashSet;
 
-public class TaskPanel extends JPanel {
+/**
+ * Panel of task
+ */
+public final class TaskPanel extends JPanel {
+
+    /**
+     * Task data
+     */
     private final AbstractTaskTreeNode source;
 
     /**
      * Text filed instance with placeholder
      */
     public final JTextFieldWithPlaceholder textField = new JTextFieldWithPlaceholder("...");
+    /**
+     * Checkbox for display of status task
+     */
     public final JBCheckBox check = new JBCheckBox();
+
+    /**
+     * Notify about changes
+     */
     private final TreeChanged treeChanged;
 
-    public TaskPanel(AbstractTaskTreeNode value, UserShortcutPressed userShortcutPressed, TreeChanged treeChanged) {
+    /**
+     * Constructor.
+     *
+     * @param value       data of task
+     * @param userAction  user actions
+     * @param treeChanged callback
+     */
+    public TaskPanel(AbstractTaskTreeNode value, UserAction userAction, TreeChanged treeChanged) {
         this.treeChanged = treeChanged;
         this.source = value;
-        this.check.setMargin(JBUI.emptyInsets());
         setLayout(new BorderLayout());
         add(check, BorderLayout.WEST);
         add(textField, BorderLayout.CENTER);
-        textField.setSize(textField.getWidth() + 500, textField.getHeight() + 4);
-        textField.setText(this.source.getUserObject().getText());
-        textField.setOpaque(false);
+
+
+        this.initializeCheckbox(userAction);
+        this.initializeTextField(userAction);
+
+    }
+
+    /**
+     * Initialize checkbox view
+     *
+     * @param userAction callback of user actions
+     */
+    private void initializeCheckbox(UserAction userAction) {
+        this.check.setMargin(JBUI.emptyInsets());
         check.setSelected(this.source.getUserObject().getChecked());
         check.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
+                userAction.onEditing();
                 textField.requestFocus();
             }
 
@@ -48,6 +82,18 @@ public class TaskPanel extends JPanel {
 
             }
         });
+        check.addItemListener(this::onCheckBoxChange);
+    }
+
+    /**
+     * Initialize text field
+     */
+    private void initializeTextField(UserAction userAction) {
+        textField.setSize(textField.getWidth() + 500, textField.getHeight() + 4);
+        textField.setText(this.source.getUserObject().getText());
+        textField.setOpaque(false);
+
+
         var panel = this;
         textField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
@@ -70,33 +116,27 @@ public class TaskPanel extends JPanel {
                 treeChanged.onChange();
             }
         });
-        check.addItemListener(this::onCheckBoxChange);
-        textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
 
-        textField.addMouseListener(new RightClickPopupMenuMouseAdapter(
-                new DeletePopupMenu(
-                        actionEvent -> userShortcutPressed.delete()
-                ))
-        );
+        textField.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, new HashSet<>());
 
-        textField.addKeyListener(new KeyAdapter() {
+        textField.addKeyListener(new MultiKeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getExtendedKeyCode() == KeyEvent.VK_ENTER
-                        || e.getKeyCode() == KeyEvent.VK_ENTER
-                        || e.getKeyChar() == KeyEvent.VK_ENTER
-                ) {
-                    userShortcutPressed.newTask();
-                } else if (e.getExtendedKeyCode() == KeyEvent.VK_TAB
-                        || e.getKeyCode() == KeyEvent.VK_TAB
-                        || e.getKeyChar() == KeyEvent.VK_TAB
-                ) {
-                    userShortcutPressed.newSubTask();
+            public void keyPressed() {
+                if (super.hasKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_ENTER)) {
+                    userAction.newTask(true);
+                } else if (super.hasKeys(KeyEvent.VK_ENTER)) {
+                    userAction.newTask(false);
+                } else if (super.hasKeys(KeyEvent.VK_TAB)) {
+                    userAction.newSubTask();
+                } else if (super.hasKeys(KeyEvent.VK_UP)) {
+                    userAction.selectPreviousTask();
+                } else if (super.hasKeys(KeyEvent.VK_DOWN)) {
+                    userAction.selectNextTask();
                 }
             }
-
         });
-        this.calculateBorder();
+
+        textField.setBorder(BorderFactory.createEmptyBorder());
     }
 
     /**
@@ -141,9 +181,5 @@ public class TaskPanel extends JPanel {
             }
         }
         return true;
-    }
-
-    private void calculateBorder() {
-        textField.setBorder(BorderFactory.createEmptyBorder());
     }
 }

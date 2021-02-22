@@ -1,4 +1,4 @@
-package org.bigtows.window.ui.notetree.tree.render;
+package org.bigtows.window.ui.notetree.tree;
 
 import org.bigtows.window.ui.notetree.tree.event.TreeChanged;
 

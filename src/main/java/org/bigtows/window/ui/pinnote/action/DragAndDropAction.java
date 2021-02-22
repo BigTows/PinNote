@@ -3,6 +3,7 @@ package org.bigtows.window.ui.pinnote.action;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.Toggleable;
 import com.intellij.openapi.project.DumbAware;
 import org.bigtows.window.ui.notetree.NoteTree;
 import org.jetbrains.annotations.NotNull;
@@ -10,29 +11,45 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-final public class ForceRefreshNoteAction extends AnAction  implements DumbAware {
+/**
+ * Action for switch drag and drop mode
+ */
+public final class DragAndDropAction extends AnAction implements Toggleable, DumbAware {
 
+    /**
+     * Tabbed pane
+     */
+    private final JTabbedPane notebookTabbedPane;
 
-    private final JTabbedPane tabbedPane;
+    /**
+     * Current status
+     */
+    private boolean isEnable = false;
 
-    public ForceRefreshNoteAction(JTabbedPane notebookTabbedPane) {
-        super("Force update notes","",AllIcons.Actions.Refresh);
-        this.tabbedPane = notebookTabbedPane;
+    public DragAndDropAction(JTabbedPane notebookTabbedPane) {
+        super("Enable drag and drop", "", AllIcons.Ide.UpDown);
+        this.notebookTabbedPane = notebookTabbedPane;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(this.tabbedPane);
-        assert noteTree != null;
-        e.getPresentation().setEnabled(false);
-        noteTree.notifyUpdateModel();
+        isEnable = !isEnable;
+        var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(notebookTabbedPane);
+        if (noteTree != null) {
+            noteTree.setDragEnable(isEnable);
+        }
     }
 
     @Override
     public void update(@NotNull AnActionEvent e) {
-        var noteTree = this.tryGetCurrentNoteTreeFromTabbedPane(this.tabbedPane);
-        e.getPresentation().setEnabled(noteTree != null && !noteTree.isLocked());
+        if (isEnable) {
+            e.getPresentation().setText("Disable drag and drop");
+        } else {
+            e.getPresentation().setText("Enable drag and drop");
+        }
+        Toggleable.setSelected(e.getPresentation(), isEnable);
     }
+
 
     @Nullable
     private NoteTree tryGetCurrentNoteTreeFromTabbedPane(JTabbedPane tabbedPane) {
@@ -45,4 +62,5 @@ final public class ForceRefreshNoteAction extends AnAction  implements DumbAware
         }
         return null;
     }
+
 }

@@ -4,12 +4,13 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.project.DumbAware;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * UI - component-action for open PinNote settings
  */
-final public class OpenSettings extends AnAction {
+final public class OpenSettings extends AnAction  implements DumbAware {
     /**
      * Constructor
      */

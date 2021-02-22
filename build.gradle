@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.0.2.2'
+version '2.1'
 
 sourceCompatibility = 11
 
@@ -41,12 +41,24 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.0.2.2</h1><br>
+<h1>Release: 2.1</h1><br>
 <ul>
-    <li>Fix bug from report <a href="https://github.com/BigTows/PinNote/issues/27">#27 By yanchick</a></li>
+    <li>
+        New feature: Shortcuts and Drag and Drop mode idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
+            <ul>Hey! PinNote now support new shortcuts: 
+                <li>Create a new target, default shortcut: ctrl/⌘ ⇧ T</li>
+                <li>Create a new root task: Shift + enter</li>
+                <li>Delete current task: ctrl/⌘ ⇧ ⌫</li>
+                <li>Select previous task: ↑</li>
+                <li>Select next task: ↓</li>
+            </ul>
+            <ul>
+               Drag and drop mode here! Now you can reorder your tasks or move to another note
+            </ul>
+    </li>
 </ul>     
       """
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
     sinceBuild "193.2252"
-    untilBuild "203.*"
+    untilBuild "213.*"
 }

@@ -13,10 +13,7 @@ import com.intellij.util.ui.components.BorderLayoutPanel;
 import org.bigtows.notebook.Notebook;
 import org.bigtows.window.ui.border.BottomBorder;
 import org.bigtows.window.ui.notetree.NoteTree;
-import org.bigtows.window.ui.pinnote.action.AddNote;
-import org.bigtows.window.ui.pinnote.action.ForceRefreshNoteAction;
-import org.bigtows.window.ui.pinnote.action.OpenSettings;
-import org.bigtows.window.ui.pinnote.action.RemoveNote;
+import org.bigtows.window.ui.pinnote.action.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +29,6 @@ public class PinNoteComponent {
     private JTabbedPane notebookTabbedPane;
     private JPanel toolBarPanel;
     private JButton setupStorage;
-
 
     public JPanel getRoot() {
         return root;
@@ -54,10 +50,17 @@ public class PinNoteComponent {
 
     private BorderLayoutPanel createActionToolBar() {
         final DefaultActionGroup group = new DefaultActionGroup();
-        group.add(new AddNote(notebookTabbedPane));
-        group.add(new RemoveNote(notebookTabbedPane));
+        var addAction = (AddNote) ActionManager.getInstance().getAction(AddNote.ACTION_ID);
+        addAction.initializeTabbedPane(notebookTabbedPane);
+        group.add(addAction);
+
+        var removeAction = (RemoveNote) ActionManager.getInstance().getAction(RemoveNote.ACTION_ID);
+        removeAction.initializeTabbedPane(notebookTabbedPane);
+        group.add(removeAction);
         group.addSeparator();
         group.add(new ForceRefreshNoteAction(notebookTabbedPane));
+        group.addSeparator();
+        group.add(new DragAndDropAction(notebookTabbedPane));
         group.addSeparator();
         group.add(new OpenSettings(), Constraints.LAST);
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
