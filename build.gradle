@@ -46,8 +46,8 @@ patchPluginXml {
     <li>
         New feature: Shortcuts and Drag and Drop mode idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
             <ul>Hey! PinNote now support new shortcuts: 
-                <li>Create new target, default shortcut: ctrl/⌘ ⇧ T</li>
-                <li>Create new root task: Shift + enter</li>
+                <li>Create a new target, default shortcut: ctrl/⌘ ⇧ T</li>
+                <li>Create a new root task: Shift + enter</li>
                 <li>Delete current task: ctrl/⌘ ⇧ ⌫</li>
                 <li>Select previous task: ↑</li>
                 <li>Select next task: ↓</li>

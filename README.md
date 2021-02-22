@@ -14,12 +14,18 @@ Features
  * Sync notes between many instance IDE.
  * The opportunity to share notes on target.
     * Support for SubTasks.
+ * Shortcuts  
+   * Create a new target, default shortcut: ctrl/⌘ ⇧ T
+   * Create a new root task: Shift + enter
+   * Delete current task: ctrl/⌘ ⇧ ⌫
+   * Select previous task: ↑
+   * Select next task: ↓
  
 ## [Guide](https://github.com/BigTows/PinNote/wiki/Instruction)
 
 ## Demo.
 ### General view
-![Demo](https://pinnote.bigtows.org/example/demo_new.gif)
+![Demo](https://pinnote.bigtows.org/example/review-new.gif)
 ### Setup.
 ![Demo](https://pinnote.bigtows.org/example/demo_setup.gif)
 ### Sync demo (GUI from old version).
