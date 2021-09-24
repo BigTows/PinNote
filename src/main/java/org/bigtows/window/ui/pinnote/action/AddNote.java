@@ -70,6 +70,9 @@ final public class AddNote extends AnAction implements DumbAware {
 
     @Override
     public void update(@NotNull AnActionEvent e) {
+        if (tabbedPane == null) {
+            return;
+        }
         var selectedComponent = tabbedPane.getSelectedComponent();
         if (selectedComponent instanceof JScrollPane) {
             selectedComponent = ((JScrollPane) selectedComponent).getViewport().getView();

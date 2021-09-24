@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.1'
+version '2.1.1'
 
 sourceCompatibility = 11
 
@@ -14,14 +14,14 @@ repositories {
 
 dependencies {
     compile 'com.evernote:evernote-api:1.25.1'
-    compileOnly 'org.projectlombok:lombok:1.18.12'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'org.mockito:mockito-core:2.7.22'
 
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    testCompileOnly 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 intellij {
@@ -41,24 +41,15 @@ jar {
 
 patchPluginXml {
     changeNotes """
-<h1>Release: 2.1</h1><br>
+<h1>Release: 2.1.1</h1><br>
 <ul>
     <li>
-        New feature: Shortcuts and Drag and Drop mode idea by <a href="https://github.com/BigTows/PinNote/issues/26">#26 By ash0080</a>
-            <ul>Hey! PinNote now support new shortcuts: 
-                <li>Create a new target, default shortcut: ctrl/⌘ ⇧ T</li>
-                <li>Create a new root task: Shift + enter</li>
-                <li>Delete current task: ctrl/⌘ ⇧ ⌫</li>
-                <li>Select previous task: ↑</li>
-                <li>Select next task: ↓</li>
-            </ul>
-            <ul>
-               Drag and drop mode here! Now you can reorder your tasks or move to another note
-            </ul>
+        New feature: Nope :(
+        Just fix Exception <a href="https://github.com/BigTows/PinNote/issues/30">Issues ref</a>
     </li>
 </ul>     
       """
     //https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html?search=build
-    sinceBuild "193.2252"
+    sinceBuild "202.*"
     untilBuild "213.*"
 }
