@@ -1,7 +1,7 @@
 package org.bigtows.utils;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.util.SVGLoader;
+import com.intellij.util.ImageLoader;
 import com.intellij.util.ui.JBImageIcon;
 
 import javax.swing.*;
@@ -59,9 +59,12 @@ public class PinNoteIcon {
         try {
             return Optional.of(
                     new JBImageIcon(
-                            SVGLoader.load(
-                                    Objects.requireNonNull(PinNoteIcon.class.getClassLoader().getResource(resource)),
-                                    scale
+                            ImageLoader.scaleImage(
+                                    Objects.requireNonNull(ImageLoader.loadFromResource(
+                                                    resource,
+                                                    PinNoteIcon.class
+                                            )
+                                    ), scale
                             )
                     )
             );

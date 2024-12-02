@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.bigtows'
-version '2.1.4'
+version '2.1.5'
 
 sourceCompatibility = 21
 
@@ -70,7 +70,7 @@ intellijPlatform {
           <p>Created by: Alexander Chapchuk @BigTows<p>
         """
         changeNotes = """
-        <h1>Release: 2.1.4</h1><br>
+        <h1>Release: 2.1.5</h1><br>
 <ul>
     <li>
         new Idea core build support.

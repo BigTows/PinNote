@@ -65,6 +65,7 @@ public class PinNoteComponent {
         group.add(new OpenSettings(), Constraints.LAST);
         final ActionToolbar actionToolBar = ActionManager.getInstance().createActionToolbar("PinNoteToolbar", group, true);
         var panel = JBUI.Panels.simplePanel(actionToolBar.getComponent());
+        actionToolBar.setTargetComponent(panel);
         panel.setBorder(new BottomBorder(JBUI.CurrentTheme.ToolWindow.borderColor()));
         return panel;
     }
